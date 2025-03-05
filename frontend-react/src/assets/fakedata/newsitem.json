@@ -1,0 +1,37 @@
+[
+    {
+      "id": 1,
+      "title": "Mách bạn 3 cách kiểm tra trang web lừa đảo...",
+      "image": "src/components/fakeimags/news-1.jpg",
+      "description": "Tránh bị mất tiền và thông tin quan trọng.",
+      "category": "24h công nghệ",
+      "tag": "today"
+    },
+    {
+      "id": 2,
+      "title": "Cơ hội trúng ngay Xiaomi Pad 7 miễn phí...",
+      "image": "src/components/fakeimags/news-2.jpg",
+      "description": "Chỉ với vài thao tác, nhanh tay kẻo lỡ!",
+      "category": "24h công nghệ",
+      "tag": "today"
+
+    },
+    {
+      "id": 3,
+      "title": "Acer Aspire Lite 16 G2 AL16 - Đáng mua!",
+      "image": "src/components/fakeimags/news-3.jpg",
+      "description": "Thiết kế đẹp, giá hợp lý cực kỳ đáng mua.",
+      "category": "24h công nghệ",
+      "tag": "today"
+
+    },
+    {
+      "id": 4,
+      "title": "Lên đời smartphone từ 7 triệu - Siêu ưu đãi!",
+      "image": "src/components/fakeimags/new-4.jpg",
+      "description": "Giảm đến 4 triệu, trả góp 0% lãi suất.",
+      "category": "24h công nghệ",
+      "tag": "today"
+
+    }
+  ]

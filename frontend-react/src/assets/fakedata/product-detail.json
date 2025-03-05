@@ -1,0 +1,133 @@
+[
+    {"id": 1,
+    "name": "Đèn năng lượng mặt trời 300W",
+    "description": "Đèn năng lượng mặt trời cao cấp, tiết kiệm điện và bền bỉ",
+    "newprice": 129000,
+    "oldprice": 200000,
+    "productVariant": [
+      {
+        "id": 1,
+        "wat": "300W",
+        "brand": "Jindian",
+        "newprice": 129000,
+        "oldprice": 200000,
+        "images": [
+          {
+            "id": 101,
+            "nameAlt": "Hình ảnh đèn 1",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          },
+          {
+            "id": 102,
+            "nameAlt": "Hình ảnh đèn 2",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          },
+          {
+            "id": 103,
+            "nameAlt": "Hình ảnh đèn 3",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          },
+          {
+            "id": 104,
+            "nameAlt": "Hình ảnh đèn 4",
+            "nameUrl": "/imgs/anh_banner1_home.jpg"
+          }
+        ]
+      }
+    ]
+    },
+    {"id": 2,
+    "name": "Đèn năng lượng mặt trời 300W",
+    "description": "Đèn năng lượng mặt trời cao cấp, tiết kiệm điện và bền bỉ",
+    "newprice": 129000,
+    "oldprice": 300000,
+    "productVariant": [
+      {
+        "id": 1,
+        "wat": "100W",
+        "brand": "Jindian",
+        "newprice": 129000,
+        "oldprice": 300000,
+        "images": [
+          {
+            "id": 201,
+            "nameAlt": "2Hình ảnh đèn 1",
+            "nameUrl": "/imgs/anh_banner1_home.jpg"
+          },
+          {
+            "id": 202,
+            "nameAlt": "2Hình ảnh đèn 2",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          },
+          {
+            "id": 203,
+            "nameAlt": "2Hình ảnh đèn 3",
+            "nameUrl": "/imgs/anh_banner1_home.jpg"
+          },
+          {
+            "id": 204,
+            "nameAlt": "2Hình ảnh đèn 4",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          }
+        ]
+      },{
+        "id": 2,
+        "wat": "200W",
+        "brand": "Jindian",
+        "newprice": 129000,
+        "oldprice": 200000,
+        "images": [
+          {
+            "id": 301,
+            "nameAlt": "2Hình ảnh đèn 1",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          },
+          {
+            "id": 302,
+            "nameAlt": "2Hình ảnh đèn 2",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          },
+          {
+            "id": 303,
+            "nameAlt": "2Hình ảnh đèn 3",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          },
+          {
+            "id": 304,
+            "nameAlt": "2Hình ảnh đèn 4",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "wat": "300W",
+        "brand": "Jindian",
+        "newprice": 129000,
+        "oldprice": 300000,
+        "images": [
+          {
+            "id": 401,
+            "nameAlt": "2Hình ảnh đèn 1",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          },
+          {
+            "id": 402,
+            "nameAlt": "2Hình ảnh đèn 2",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          },
+          {
+            "id": 403,
+            "nameAlt": "2Hình ảnh đèn 3",
+            "nameUrl": "/imgs/dien-mat-troi-ho-gia-dinh.jpg"
+          },
+          {
+            "id": 404,
+            "nameAlt": "2Hình ảnh đèn 4",
+            "nameUrl": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg"
+          }
+        ]
+      }
+    ]
+  }
+]

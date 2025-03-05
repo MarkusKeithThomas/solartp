@@ -1,0 +1,61 @@
+[
+    {
+      "id": 1,
+      "name": "Đèn pha đen sạc siêu nhanh",
+      "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+      "priceOld": 1490000,
+      "priceNew": 990000,
+      "discount": 34,
+      "tag": "hotsale"
+    },
+    {
+      "id": 2,
+      "name": "Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao",
+      "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+      "priceOld": 1990000,
+      "priceNew": 1290000,
+      "discount": 35,
+      "tag": "hotsale"
+
+    },
+    {
+        "id": 3,
+        "name": "Đèn pha năng lượng mặt trời 100W SACO - Pin Mono đen sạc siêu nhanh",
+        "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+        "priceOld": 1490000,
+        "priceNew": 990000,
+        "discount": 34,
+        "tag": "hotsale"
+
+      },
+      {
+        "id": 4,
+        "name": "Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao",
+        "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+        "priceOld": 1990000,
+        "priceNew": 1290000,
+        "discount": 35,
+        "tag": "hotsale"
+
+      },
+      {
+        "id": 5,
+        "name": "Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao",
+        "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+        "priceOld": 1990000,
+        "priceNew": 1290000,
+        "discount": 35,
+        "tag": "hotsale"
+
+      },
+      {
+        "id": 6,
+        "name": "Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao Đèn đường năng lượng mặt trời 200W cao cấp - Bền bỉ, hiệu suất cao",
+        "image": "/imgs/320x320_Den-duong-nang-luong-mat-troi-400W-gia-re.jpg",
+        "priceOld": 1990000,
+        "priceNew": 1290000,
+        "discount": 35,
+        "tag": "hotsale"
+
+      }
+  ]
