@@ -8,11 +8,13 @@ import { useProductDetailContext } from "../../context/ProductProvider";
 import { formatMoney } from "../../ultities/formatMoney";
 import { formatNumberPer } from "../../ultities/formatNumberPer";
 import { formatSlug } from "../../ultities/formatForLug";
+import { useShoppingCart } from "../../context/ProductContext";
 
 const ProductDetail = () => {
   // Lấy tham số từ URL
   const { productId, idDetail } = useParams();
   const { productList } = useProductDetailContext();
+  const { increaseItemQuantity } = useShoppingCart();
   const product = productList.find((item) => item.id === Number(productId)) || null;
   const productVariantList = productList.find(
     (item) => item.id === Number(productId)
@@ -69,16 +71,16 @@ const ProductDetail = () => {
 
           {/* Khuyến mãi */}
           <Card className="p-3 border-primary">
-            <h5 className="text-primary">Khuyến mãi trị giá 500.000đ</h5>
+            <h5 className="text-primary">Đăng Ký Sớm – Nhận Ngay Ưu Đãi Đặc Biệt</h5>
             <ListGroup>
               <ListGroup.Item>
-                ✔️ Phiếu mua hàng AirPods, Apple Watch, Macbook trị giá 500.000đ
+              🌞 Ưu đãi dành riêng cho khách hàng đặt trước!
               </ListGroup.Item>
               <ListGroup.Item>
-                ✔️ Giảm giá thêm khi mua nhóm sản phẩm âm thanh
+              📢 Giảm ngay 300.000Đ cho 50 khách hàng đầu tiên đặt mua đèn năng lượng mặt trời
               </ListGroup.Item>
               <ListGroup.Item>
-                ✔️ Hỗ trợ trả góp 0% qua thẻ tín dụng
+              🎁 Tặng ngay bộ pin sạc hoặc cáp nối dài khi mua từ 2 sản phẩm
               </ListGroup.Item>
             </ListGroup>
           </Card>
@@ -86,6 +88,8 @@ const ProductDetail = () => {
             {/* Nút Mua Ngay */}
             <Col xs={6}>
               <Button
+                        href="/thanh-toan"
+                  onClick={() => increaseItemQuantity(Number(productId))}
                 variant="danger"
                 className="w-100 d-flex align-items-center justify-content-center"
                 style={{
@@ -102,6 +106,7 @@ const ProductDetail = () => {
             {/* Nút Thêm vào giỏ */}
             <Col xs={6}>
               <Button
+              onClick={()=> increaseItemQuantity(Number(productId))}
                 variant="outline-primary"
                 className="w-100 d-flex align-items-center justify-content-center"
                 style={{

@@ -2,18 +2,17 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { FaGoogle } from "react-icons/fa";
 import FaGogle from '../../assets/Google.svg'
 
-
-export function Login(){
+export function SignUp(){
   return (
-    <Container className="d-flex justify-content-center align-items-center">
+    <Container className="d-flex justify-content-center">
       <Row className="w-100" style={{ maxWidth: "400px" }}>
         <Col>
           {/* Tiêu đề */}
-          <h1 className="text-center fw-bold mb-5 mt-5">Đăng Nhập</h1>
+          <h1 className="text-center fw-bold mb-5 mt-5">Đăng Ký</h1>
 
           <Button variant="light" className="w-100 mb-4 d-flex align-items-center" style={{height:"60px"}}>
           <img src={FaGogle} alt="Google Icon" width="24" height="24" className="me-2" />
-          Đăng Nhập Với Google
+             Đăng Kí Với Google
           </Button>
 
           {/* Hoặc */}
@@ -52,9 +51,9 @@ export function Login(){
 
           {/* Đăng ký tài khoản */}
           <p className="text-center mt-3">
-            Chưa có tài khoản?{" "}
-            <a href="/tai-khoan/sign-up" className="text-success fw-bold">
-              Tạo tài khoản mới
+            Bạn đã có tài khoản?{" "}
+            <a href="/tai-khoan" className="text-success fw-bold">
+              Đăng nhập
             </a>
           </p>
         </Col>
@@ -63,4 +62,4 @@ export function Login(){
   );
 };
 
-export default Login;
+export default SignUp;

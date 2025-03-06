@@ -30,7 +30,7 @@ export function Home() {
             </span>
             </div>
             <Row >
-              {productHotSale.map((product) => (
+              {productHotSale.slice(0,4).map((product) => (
                 <Col key={product.id} xs={6} md={6} lg={3}>
                   <ProductCard {...product} />
                 </Col>
@@ -50,7 +50,7 @@ export function Home() {
           Sản Phẩm Bán Chạy
         </span>
         <Row className="mt-2">
-        {productItem.map((product) => (
+        {productItem.slice(0,4).map((product) => (
                 <Col key={product.id} xs={6} md={6} lg={3}>
               <ProductCard {...product} />
             </Col>
@@ -68,7 +68,7 @@ export function Home() {
           Thiết Bị Hệ Tống Điện Mặt Trời
         </span>
         <Row className="mt-2">
-        {productItem.map((product) => (
+        {productItem.slice(0,4).map((product) => (
                 <Col key={product.id} xs={6} md={6} lg={3}>
               <ProductCard {...product} />
             </Col>
@@ -83,10 +83,10 @@ export function Home() {
 
       <div className="bg-light mt-3">
         <span className="bg-primary text-white px-3 py-1 rounded shadow-lg fw-bold fs-4 mb-3 mt-3">
-          Giang Hàng Ưu Đãi
+          Gian Hàng Ưu Đãi
         </span>
         <Row className="mt-2">
-        {productItem.map((product) => (
+        {productItem.slice(0,4).map((product) => (
                 <Col key={product.id} xs={6} md={6} lg={3}>
               <ProductCard {...product} />
             </Col>
@@ -105,7 +105,7 @@ export function Home() {
         {/* Danh sách bài viết */}
         <Row className="g-3">
         {newsItem
-            .filter((news) => news.tag === "today")
+            .filter((news) => news.tag === "today").slice(0,4)
             .map((news) => (
               <Col key={news.id} xs={6} md={6} lg={3}>
                 <NewsCard {...news} />
