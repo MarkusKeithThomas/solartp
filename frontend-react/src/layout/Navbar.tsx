@@ -8,7 +8,7 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import "../styles/custom.css"; // Import CSS tùy chỉnh
-import { Login } from "../pages/tai-khoan/Login.tsx";
+import { LoginDropDown } from "../components/LoginDropDown.tsx";
 import { useShoppingCart } from "../context/ProductContext.tsx";
 import { CustomBreadcrumb } from "./CustomBreadcrumb.tsx";
 export function Navbar() {
@@ -366,7 +366,7 @@ export function Navbar() {
             <Nav.Link href="/tim-kiem" className="text-dark d-none d-lg-flex">
               <i className="bi bi-search fs-4" style={{ color: "#007BFF" }}></i>{" "}
             </Nav.Link>
-            <Login className="text-dark d-none d-lg-flex custom-dropdown"></Login>
+            <LoginDropDown className="text-dark d-none d-lg-flex custom-dropdown"></LoginDropDown>
             <Button
             onClick={openCart}
             style={{ width: "3rem", height: "3rem", position: "relative" }}

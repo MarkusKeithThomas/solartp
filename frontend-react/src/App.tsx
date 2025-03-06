@@ -13,6 +13,8 @@ import { Checkout } from "./pages/thanh-toan/Checkout";
 import ProductDetail from "./pages/product-deatail/ProductDetail";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProductProvider } from "./context/ProductProvider";
+import { Login } from "./pages/tai-khoan/Login";
+import SignUp from "./pages/tai-khoan/Signup";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -35,6 +37,9 @@ function App() {
             <Route path="/lien-he" element={<Contact />} />
             <Route path="/thanh-toan" element={<Checkout />} />
             <Route path="/den-nang-luong-mat-troi/:slug/:productId/:idDetail" element={<ProductDetail/>} />
+            <Route path="/tai-khoan" element={<Login />} />
+            <Route path="/tai-khoan/sign-up" element={<SignUp/>} />
+
           </Routes>
         </Container>
         </ProductProvider>
