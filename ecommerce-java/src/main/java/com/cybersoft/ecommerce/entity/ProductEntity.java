@@ -25,4 +25,5 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "productEntity")
     private List<ProductDetailEntity> detailEntityList;
+
 }

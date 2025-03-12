@@ -1,9 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { CartCheckout } from "../gio-hang/CartCheckout";
+import { useAuthContext } from "../../context/AuthProvider";
 
 export function Checkout() {
   const [selectedPayment, setSelectedPayment] = useState("cod");
+  const [email, setEmail] = useState("");
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email); // ✅ Điền email từ localStorage
+    }
+  }, []);
 
   return (
     <Container className="checkout-container">
@@ -37,7 +46,12 @@ export function Checkout() {
             <Row className="mb-3">
               <Col>
                 <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Nhập email" />
+                <Form.Control
+                  type="email"
+                  placeholder="Nhập email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </Col>
               <Col>
                 <Form.Label>Ghi chú</Form.Label>

@@ -5,6 +5,7 @@ import { ProductCard } from "../components/ProductCard";
 import productItem from "../assets/fakedata/dataitem.json";
 import newsItem from "../assets/fakedata/newsitem.json";
 import { NewsCard } from "../components/NewsCard";
+import { useAuthContext } from "../context/AuthProvider";
 
 export function Home() {
   const quantityHotSale = productItem.filter(

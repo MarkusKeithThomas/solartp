@@ -1,10 +1,11 @@
 package com.cybersoft.ecommerce.config;
 
 import com.cybersoft.ecommerce.filter.CustomSecurityFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.cybersoft.ecommerce.filter.OAuth2LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,9 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,35 +24,52 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final OAuth2LoginSuccessHandler successHandler;
+
+    public SecurityConfig(OAuth2LoginSuccessHandler successHandler) {
+        this.successHandler = successHandler;
+    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomSecurityFilter filter, CorsConfigurationSource corsConfigurationSource)throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomSecurityFilter filter,@Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource)throws Exception{
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .sessionManagement(ss -> ss.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> {
                     // giúp định nghĩa quyền truy cập cho các link
-                    request.requestMatchers("/login", "/register", "/download/**").permitAll();
-                    request.requestMatchers("/user/auth/social", "/user/auth/social/callback").permitAll();
+                    request.requestMatchers("/tai-khoan/**","/tai-khoan-oauth2/**", "/register", "/download/**").permitAll();
+                    request.requestMatchers("/tai-khoan/sign-up").permitAll();
+                    request.requestMatchers("/auth/**").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/product").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/category").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/collection").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/register/admin", "/register/staff").hasRole("ADMIN");
 
+                    request.requestMatchers(HttpMethod.GET, "/order").hasAnyRole("ADMIN", "STAFF");
 
-                    request.requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN");
-                    request.requestMatchers(HttpMethod.PUT, "/product").hasRole("ADMIN");
-                    request.requestMatchers(HttpMethod.DELETE, "/product").hasRole("ADMIN");
+                    request.requestMatchers(HttpMethod.GET, "/cart/**").hasAnyRole("ADMIN", "STAFF", "USER");
+                    request.requestMatchers(HttpMethod.POST, "/cart/**").hasAnyRole("ADMIN","STAFF", "USER");
+                    request.requestMatchers(HttpMethod.DELETE, "/cart/**").hasAnyRole("ADMIN","STAFF", "USER");
 
-                    request.requestMatchers(HttpMethod.POST, "/category").hasRole("ADMIN");
-                    request.requestMatchers(HttpMethod.PUT, "/category").hasRole("ADMIN");
-                    request.requestMatchers(HttpMethod.DELETE, "/category").hasRole("ADMIN");
+                    request.requestMatchers(HttpMethod.POST, "/product/**").hasAnyRole("ADMIN","STAFF");
+                    request.requestMatchers(HttpMethod.PUT, "/product").hasAnyRole("ADMIN", "STAFF");
+                    request.requestMatchers(HttpMethod.DELETE, "/product/**").hasAnyRole("ADMIN", "STAFF");
 
-                    request.requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN");
-                    request.requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN");
+                    request.requestMatchers(HttpMethod.POST, "/category").hasAnyRole("ADMIN", "STAFF");
+                    request.requestMatchers(HttpMethod.PUT, "/category").hasAnyRole("ADMIN", "STAFF");
+                    request.requestMatchers(HttpMethod.DELETE, "/category").hasAnyRole("ADMIN", "STAFF");
+
+                    request.requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ADMIN", "STAFF");
+                    request.requestMatchers(HttpMethod.PATCH, "/users/**").hasAnyRole("ADMIN");
+                    request.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("ADMIN");
+
+                    request.requestMatchers(HttpMethod.GET, "/account").hasAnyRole("ADMIN", "STAFF", "USER");
+                    request.requestMatchers(HttpMethod.POST, "/account").hasAnyRole("ADMIN", "STAFF", "USER");
 
                     request.anyRequest().authenticated();
-                })
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                }) .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler).defaultSuccessUrl("http://localhost:5137/", true)) // Chuyển hướng sau khi đăng nhập thành công
                 .build();
     }
 
@@ -64,14 +79,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Primary
     public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
