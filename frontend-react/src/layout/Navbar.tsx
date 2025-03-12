@@ -10,7 +10,6 @@ import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import "../styles/custom.css"; // Import CSS tùy chỉnh
 import { LoginDropDown } from "../components/LoginDropDown.tsx";
 import { useShoppingCart } from "../context/ProductContext.tsx";
-import { CustomBreadcrumb } from "./CustomBreadcrumb.tsx";
 export function Navbar() {
   const { openCart, cartQuantity } = useShoppingCart();
   return (

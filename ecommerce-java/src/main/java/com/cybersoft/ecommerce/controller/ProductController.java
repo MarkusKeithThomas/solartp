@@ -1,7 +1,6 @@
 package com.cybersoft.ecommerce.controller;
 
 import com.cybersoft.ecommerce.request.ProductRequest;
-import com.cybersoft.ecommerce.request.TryObject;
 import com.cybersoft.ecommerce.response.BaseResponse;
 import com.cybersoft.ecommerce.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,6 +56,16 @@ public class ProductController {
         baseResponse.setCode(200);
         baseResponse.setMessage("Success");
         baseResponse.setData(productService.getAllProduct(pageSize,pageNumber));
+        return baseResponse;
+    }
+
+    @DeleteMapping("/{id}")
+    public BaseResponse deleteProduct(@PathVariable int id){
+        BaseResponse baseResponse = new BaseResponse();
+        productService.deleteProduct(id);
+        baseResponse.setCode(200);
+        baseResponse.setMessage("Success");
+        baseResponse.setData("Success");
         return baseResponse;
     }
 }

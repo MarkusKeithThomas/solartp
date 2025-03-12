@@ -15,13 +15,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProductProvider } from "./context/ProductProvider";
 import { Login } from "./pages/tai-khoan/Login";
 import SignUp from "./pages/tai-khoan/Signup";
+import { AuthProvider } from "./context/AuthProvider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import LoginSuccess from "./pages/tai-khoan/LoginSuccess";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
+const clientId = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com"; // 🔹 Thay bằng giá trị thực từ Google Cloud
+
 
 function App() {
   return (
     <>
+    <GoogleOAuthProvider clientId={clientId}>
+    <AuthProvider>  
       <ProductContext>
       <QueryClientProvider client={queryClient}>
         <ProductProvider>
@@ -39,6 +46,7 @@ function App() {
             <Route path="/den-nang-luong-mat-troi/:slug/:productId/:idDetail" element={<ProductDetail/>} />
             <Route path="/tai-khoan" element={<Login />} />
             <Route path="/tai-khoan/sign-up" element={<SignUp/>} />
+            <Route path="/login-success" element={<LoginSuccess />} />
 
           </Routes>
         </Container>
@@ -47,6 +55,8 @@ function App() {
         </QueryClientProvider>
 
       </ProductContext>
+      </AuthProvider>
+      </GoogleOAuthProvider>
     </>
   );
 }

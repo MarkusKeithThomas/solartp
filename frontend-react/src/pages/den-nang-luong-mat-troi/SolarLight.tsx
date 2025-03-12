@@ -44,13 +44,13 @@ export function SolarLight() {
           <option value="newest">Mới nhất</option>
           <option value="bestseller">Bán chạy nhất</option>
         </Form.Select>
-        <span className="text-muted fs-4"> của {productItem.length} sản phẩm</span>
+        <span className="text-muted fs-4"> của {productItem.slice(0,4).length} sản phẩm</span>
       </div>
 
       {/* Danh sách sản phẩm */}
       <div className="mt-4 bg-light p-3">
         <Row  className="g-2">
-          {productItem.map((item) => (
+          {productItem.slice(0,4).map((item) => (
               <Col key={item.id} xs={6} md={6} lg={3}>
               <ProductCard {...item} />
             </Col>

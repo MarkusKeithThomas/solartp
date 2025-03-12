@@ -27,11 +27,12 @@ public class CustomSecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authenHeader = request.getHeader("Authorization");
         if(authenHeader != null && authenHeader.startsWith("Bearer ")) {
-            //Authen header có giá trị
-            //Cắt chữ bearer để lấy token
+//            Authen header có giá trị
+//            Cắt chữ bearer để lấy token
             String token = authenHeader.substring(7);
             boolean isSuccess = jwtHelper.decryptToken(token);
             if(isSuccess){
+                // TODO START: recheck this code snippet to see if it's correct
                 String role = jwtHelper.getDataToken(token);
 
                 List<SimpleGrantedAuthority> authoritiesList = new ArrayList<>();
@@ -43,7 +44,9 @@ public class CustomSecurityFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken("","", authoritiesList);
                 securityContext.setAuthentication(authenticationToken);
+                // TODO END: recheck this code snippet to see if it's correct
             }
+
         }
         filterChain.doFilter(request, response);
     }

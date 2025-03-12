@@ -1,18 +1,49 @@
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import { FaGoogle } from "react-icons/fa";
-import FaGogle from '../../assets/Google.svg'
+import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
+import FaGogle from "../../assets/Google.svg";
+import { useAuthContext } from "../../context/AuthProvider";
+import { useState } from "react";
 
-export function SignUp(){
+export function SignUp() {
+  const [email1, setEmail1] = useState("");
+  const [password1, setPassword1] = useState("");
+  const { register, handleErrorRegister, successMessage } = useAuthContext();
+  const errorMessage = handleErrorRegister();
+
+  const handleSubmit2 = (e: React.FormEvent) => {
+    e.preventDefault(); // Ngăn form tải lại trang
+    register(email1, password1);
+  };
   return (
     <Container className="d-flex justify-content-center">
       <Row className="w-100" style={{ maxWidth: "400px" }}>
         <Col>
           {/* Tiêu đề */}
           <h1 className="text-center fw-bold mb-5 mt-5">Đăng Ký</h1>
+          {/* Hiển thị lỗi chung nếu có */}
+          {errorMessage && (
+            <Alert variant="danger" className="text-center">
+              {errorMessage}
+            </Alert>
+          )}
+          {successMessage && (
+            <Alert variant="success" className="text-center">
+              {successMessage}
+            </Alert>
+          )}
 
-          <Button variant="light" className="w-100 mb-4 d-flex align-items-center" style={{height:"60px"}}>
-          <img src={FaGogle} alt="Google Icon" width="24" height="24" className="me-2" />
-             Đăng Kí Với Google
+          <Button
+            variant="light"
+            className="w-100 mb-4 d-flex align-items-center"
+            style={{ height: "60px" }}
+          >
+            <img
+              src={FaGogle}
+              alt="Google Icon"
+              width="24"
+              height="24"
+              className="me-2"
+            />
+            Đăng Kí Với Google
           </Button>
 
           {/* Hoặc */}
@@ -23,10 +54,15 @@ export function SignUp(){
           </div>
 
           {/* Form đăng nhập */}
-          <Form>
+          <Form onSubmit={handleSubmit2}>
             <Form.Group className="mb-3">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="example@example.com" />
+              <Form.Control
+                value={email1}
+                onChange={(e) => setEmail1(e.target.value)}
+                type="email"
+                placeholder="example@example.com"
+              />
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -36,11 +72,17 @@ export function SignUp(){
                   Forgot password?
                 </a>
               </div>
-              <Form.Control type="password" placeholder="Enter your password" />
+              <Form.Control
+                value={password1}
+                onChange={(e) => setPassword1(e.target.value)}
+                type="password"
+                placeholder="Enter your password"
+              />
             </Form.Group>
 
             {/* Nút đăng nhập */}
             <Button
+              type="submit"
               variant="dark"
               className="w-100 rounded-pill py-2 mt-3"
               style={{ fontSize: "18px" }}
@@ -60,6 +102,6 @@ export function SignUp(){
       </Row>
     </Container>
   );
-};
+}
 
 export default SignUp;
