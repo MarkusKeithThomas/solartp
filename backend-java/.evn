@@ -1,0 +1,16 @@
+# MySQL Configuration
+MYSQL_ROOT_PASSWORD=Hit@My5QL
+MYSQL_DATABASE=solartp
+MYSQL_USER=root
+MYSQL_PASSWORD=Hit@My5QL
+
+# OAuth2 Configuration
+GOOGLE_CLIENT_ID=707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+# JWT Configuration
+JWT_SECRET=h2f8D9sK4vB6nP3zX5qT7wL0J1gC2mY8
+
+# Email Configuration
+EMAIL_USERNAME=hthuongtn2905@gmail.com
+EMAIL_PASSWORD=reqjmbypjqkrpasl
