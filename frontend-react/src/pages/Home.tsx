@@ -5,7 +5,6 @@ import { ProductCard } from "../components/ProductCard";
 import productItem from "../assets/fakedata/dataitem.json";
 import newsItem from "../assets/fakedata/newsitem.json";
 import { NewsCard } from "../components/NewsCard";
-import { useAuthContext } from "../context/AuthProvider";
 
 export function Home() {
   const quantityHotSale = productItem.filter(
@@ -108,7 +107,7 @@ export function Home() {
         {newsItem
             .filter((news) => news.tag === "today").slice(0,8)
             .map((news) => (
-              <Col key={news.id} xs={6} md={6} lg={3} className="gx-2 gy-2">
+              <Col key={news.id} xs={12} md={6} lg={3} className="gx-2 gy-2">
                 <NewsCard {...news} />
               </Col>
             ))}
