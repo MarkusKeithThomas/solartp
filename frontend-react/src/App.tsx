@@ -18,6 +18,12 @@ import SignUp from "./pages/tai-khoan/Signup";
 import { AuthProvider } from "./context/AuthProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginSuccess from "./pages/tai-khoan/LoginSuccess";
+import { ConfirmOrder } from "./pages/thanh-toan/ConfirmOrder";
+import { ForgotPassword } from "./pages/tai-khoan/ForgotPassword";
+import { ResetPassword } from "./pages/tai-khoan/ResetPassword";
+import { PostDetail } from "./pages/bai-viet/PostDetail";
+import { HelmetProvider } from "react-helmet-async";
+import { CheckLayout, Checklayout } from "./layout/CheckLayout";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -27,6 +33,7 @@ const clientId = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleuserc
 function App() {
   return (
     <>
+    <HelmetProvider>
     <GoogleOAuthProvider clientId={clientId}>
     <AuthProvider>  
       <ProductContext>
@@ -41,11 +48,17 @@ function App() {
             <Route path="/den-nang-luong-mat-troi" element={<SolarLight />} />
             <Route path="/he-thong-dien-mat-troi" element={<SolarPanel />} />
             <Route path="/bai-viet" element={<Post />} />
+            <Route path="/bai-viet/detail" element={<PostDetail />} />
+            <Route path="/bai-viet/detail/check-layout" element={<CheckLayout />} />
+
             <Route path="/lien-he" element={<Contact />} />
             <Route path="/thanh-toan" element={<Checkout />} />
+            <Route path="/thanh-toan/confirm" element={<ConfirmOrder />} />
             <Route path="/den-nang-luong-mat-troi/:slug/:productId/:idDetail" element={<ProductDetail/>} />
             <Route path="/tai-khoan" element={<Login />} />
             <Route path="/tai-khoan/sign-up" element={<SignUp/>} />
+            <Route path="/tai-khoan/forgot-password" element={<ForgotPassword/>} />
+            <Route path="/tai-khoan/reset-password" element={<ResetPassword/>} />
             <Route path="/login-success" element={<LoginSuccess />} />
 
           </Routes>
@@ -57,6 +70,7 @@ function App() {
       </ProductContext>
       </AuthProvider>
       </GoogleOAuthProvider>
+      </HelmetProvider>
     </>
   );
 }

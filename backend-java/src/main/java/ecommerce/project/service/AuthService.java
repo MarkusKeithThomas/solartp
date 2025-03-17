@@ -16,6 +16,7 @@ import ecommerce.project.utils.JWTUtil;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -33,14 +35,47 @@ public class AuthService {
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
     private static final String GOOGLE_CLIENT_ID = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com";
+    private final EmailService emailService;
 
 
-    public AuthService(UserRepository userRepository, JWTUtil jwtUtil,RoleRepository roleRepository) {
+    public AuthService(UserRepository userRepository, JWTUtil jwtUtil,RoleRepository roleRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.roleRepository = roleRepository;
+        this.emailService = emailService;
     }
+    public boolean resetPassword(String token,String newPassword){
+        String email = jwtUtil.extractEmail(token);
+        Optional<UserEntity> user = userRepository.findByEmail(email);
+        UserEntity user1;
+        if (user.isEmpty()) {
+            throw new ForgotPassWordException("Email không có trong hệ thống.") ;
+        } else {
+            user1 = user.get();
+            // ✅ Tạo mã reset token và gửi email
+            user1.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user1);
+            return true;
+        }
+    }
+
+    public String forgotPassword(String email){
+        Optional<UserEntity> user = userRepository.findByEmail(email);
+        UserEntity user1;
+        if (user.isEmpty()) {
+            throw new ForgotPassWordException("Email không có trong hệ thống.") ;
+        } else {
+            user1 = user.get();
+            // ✅ Tạo mã reset token và gửi email
+            String accessToken = jwtUtil.generateAccessToken(email,user1.getRole().getName());
+            user1.setPassword(accessToken);
+            userRepository.save(user1);
+            emailService.sendResetPasswordEmail(email, accessToken);
+            return "Vui lòng kiểm tra email.";
+        }
+    }
+
     public  UserDTO getUserInfo(String accessToken){
         String email = jwtUtil.extractEmail(accessToken.replace("Bearer ", ""));
 
@@ -83,8 +118,8 @@ public class AuthService {
             userEntity = optionalUser.get();
         }
         // ✅ Tạo Access Token của hệ thống
-        String accessToken = jwtUtil.generateAccessToken(email);
-        String refreshToken = jwtUtil.generateRefreshToken(email);
+        String accessToken = jwtUtil.generateAccessToken(email,"USER");
+        String refreshToken = jwtUtil.generateRefreshToken(email,"USER");
         userEntity.setRefreshToken(refreshToken);
         userRepository.save(userEntity);
         return accessToken;
@@ -160,23 +195,27 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new LoginException("Invalid credentials");
         }
-        String accessToken = jwtUtil.generateAccessToken(email);
-        String refreshToken = jwtUtil.generateRefreshToken(email);
+        RoleEntity role = user.getRole();
+        System.out.println(role.getName()+ " AuthService");
+            String accessToken = jwtUtil.generateAccessToken(email,role.getName());
+            String refreshToken = jwtUtil.generateRefreshToken(email,role.getName());
 
-        // Lưu Refresh Token vào DB (nếu cần)
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
-        setRefreshTokenCookie(response,refreshToken);
-        return accessToken;
+            // Lưu Refresh Token vào DB (nếu cần)
+            user.setRefreshToken(refreshToken);
+            userRepository.save(user);
+            setRefreshTokenCookie(response,refreshToken);
+            return accessToken;
+
     }
     public String refreshToken(String refreshToken, HttpServletResponse response) {
         // Tìm người dùng dựa trên Refresh Token
         UserEntity user = userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Invalid or expired refresh token"));
+        RoleEntity role = user.getRole();
 
         // Nếu token hợp lệ, tạo Access Token và Refresh Token mới
-        String newAccessToken = jwtUtil.generateAccessToken(user.getEmail());
-        String newRefreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+        String newAccessToken = jwtUtil.generateAccessToken(user.getEmail(),role.getName());
+        String newRefreshToken = jwtUtil.generateRefreshToken(user.getEmail(),role.getName());
 
         // Cập nhật Refresh Token mới vào database và vô hiệu hóa cái cũ
         user.setRefreshToken(newRefreshToken);

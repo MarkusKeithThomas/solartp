@@ -22,10 +22,13 @@ export function SolarLight() {
       </div>
 
       {/* Sản phẩm bán chạy */}
-      <div className="hot-sale-section rounded-4 mt-3 bg-danger text-white">
-        <h4 className="fw-bold d-flex align-items-center mt-2">
-          <i className="bi bi-fire me-2"></i> SẢN PHẨM BÁN CHẠY TRONG THÁNG
+      <div className="hot-sale-section rounded-4 mt-3 bg-danger text-white ">
+      <div className="d-flex justify-content-center text-center mt-2">
+      <h4 className="fw-bold d-flex align-items-center mt-2">
+          <i className="bi bi-fire me-2"></i> SẢN PHẨM BÁN CHẠY TRONG THÁNG <i className=" ms-2 bi bi-fire"></i>
         </h4>
+        </div>
+
         <Row className="mb-3">
           {productItem.slice(0, 4).map((item) => (
               <Col key={item.id} xs={6} md={6} lg={3}>

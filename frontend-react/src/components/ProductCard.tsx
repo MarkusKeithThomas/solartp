@@ -27,7 +27,7 @@ export function ProductCard({
     <Card className="shadow-sm border-0 rounded-4 product-card mt-2">
       {/* Huy hiệu giảm giá */}
       {discount > 0 && (
-        <Badge className="position-absolute top-0 start-0 bg-danger text-white fs-6 rounded-end p-2">
+        <Badge className="position-absolute top-0 start-0 bg-danger text-white fs-6 rounded-end p-2 mt-2">
           {discount}% GIẢM
         </Badge>
       )}

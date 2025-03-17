@@ -2,17 +2,60 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { CartCheckout } from "../gio-hang/CartCheckout";
 import { useAuthContext } from "../../context/AuthProvider";
+import { useNavigate } from 'react-router-dom';
 
 export function Checkout() {
-  const [selectedPayment, setSelectedPayment] = useState("cod");
-  const [email, setEmail] = useState("");
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    email: "",
+    note: "",
+  });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    email: "",
+  });
   useEffect(() => {
-    if (user?.email) {
-      setEmail(user.email); // ✅ Điền email từ localStorage
+    const savedData = localStorage.getItem("formData");
+    if (savedData) {
+      setFormData(JSON.parse(savedData)); // ✅ Chuyển chuỗi JSON thành object
+    }
+    if(user?.email){
+      setFormData((prev) => ({ ...prev, email: user.email }));
     }
   }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateForm = () => {
+    let newErrors = { name: "", phone: "", address: "", email: "" };
+
+    if (!formData.name) newErrors.name = "Vui lòng nhập họ tên!";
+    if (!formData.phone) newErrors.phone = "Vui lòng nhập số điện thoại!";
+    if (!formData.address) newErrors.address = "Vui lòng nhập địa chỉ!";
+    if (!formData.email.includes("@")) newErrors.email = "Email không hợp lệ!";
+
+    setErrors(newErrors);
+    return Object.values(newErrors).every((error) => error === "");
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+    localStorage.setItem("formData", JSON.stringify(formData));
+    navigate("/thanh-toan/confirm");
+    
+  };
 
   return (
     <Container className="checkout-container">
@@ -28,29 +71,51 @@ export function Checkout() {
             <Row className="mb-3">
               <Col>
                 <Form.Label>Họ tên *</Form.Label>
-                <Form.Control type="text" placeholder="Nhập họ tên" required />
+                <Form.Control
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  isInvalid={!!errors.name}
+                  type="text"
+                  placeholder="Nhập họ tên"
+                  required
+                />
               </Col>
               <Col>
                 <Form.Label>Số điện thoại *</Form.Label>
                 <Form.Control
                   type="text"
+                  name="phone"
                   placeholder="Nhập số điện thoại"
-                  required
+                  value={formData.phone}
+                  onChange={handleChange}
+                  isInvalid={!!errors.phone}
                 />
               </Col>
             </Row>
             <Form.Group className="mb-3">
               <Form.Label>Địa chỉ giao hàng *</Form.Label>
-              <Form.Control type="text" placeholder="Địa chỉ đầy đủ" required />
+              <Form.Control
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                isInvalid={!!errors.address}
+                type="text"
+                placeholder="Địa chỉ đầy đủ"
+                required
+              />
             </Form.Group>
             <Row className="mb-3">
               <Col>
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
-                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  isInvalid={!!errors.email}
+                  type="text"
                   placeholder="Nhập email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </Col>
               <Col>
@@ -66,7 +131,7 @@ export function Checkout() {
           <CartCheckout />
 
           {/* Đẩy nút "Hoàn tất đặt hàng" xuống cuối */}
-          <Button variant="primary" size="lg" className="w-100 mt-auto">
+          <Button variant="primary" size="lg" className="w-100 mt-auto" onClick={handleSubmit}>
             Hoàn tất đặt hàng
           </Button>
         </Col>

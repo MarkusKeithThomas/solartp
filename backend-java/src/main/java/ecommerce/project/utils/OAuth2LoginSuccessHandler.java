@@ -37,8 +37,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         userDTO.setName(name);
         userDTO.setAvatar(picture);
          // ✅ Tạo Access Token & Refresh Token
-            String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24); // 15 phút
-            String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15); // 7 ngày
+            String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24,"USER"); // 15 phút
+            String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
             response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
     }

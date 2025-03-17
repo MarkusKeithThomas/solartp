@@ -88,6 +88,19 @@ public class CentralException {
         LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
         return buildErrorResponse(400, "Lỗi khi lấy dữ liệu!", e);
     }
+    // 🛑 Xử lý lỗi khi quen password thất bại
+    @ExceptionHandler({ForgotPassWordException.class})
+    public ResponseEntity<BaseResponse> handleForgotPassWordException(Exception e) {
+        LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
+        return buildErrorResponse(400, "Lỗi khi re-set password!", e);
+    }
+
+    // 🛑 Xử lý lỗi khi upload csv thất bại
+    @ExceptionHandler({UploadCSVException.class})
+    public ResponseEntity<BaseResponse> handleUploadCSVException(Exception e) {
+        LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
+        return buildErrorResponse(403, "Truy cập bị từ chối.", e);
+    }
 
     // 🛑 Xử lý tất cả các lỗi chưa được định nghĩa phía trên
     @ExceptionHandler(Exception.class)

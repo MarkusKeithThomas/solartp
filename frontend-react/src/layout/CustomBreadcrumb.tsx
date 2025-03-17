@@ -4,9 +4,11 @@ import "../styles/custom.css"; // Import CSS
 import { formatStringViewLink } from '../ultities/formatStringViewLink';
 import { formatTitle } from "../ultities/formatTitle";
 
-export function CustomBreadcrumb() {
+export function CustomBreadcrumb({ hideOnNavbar }: { hideOnNavbar?: boolean }) {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+  if (hideOnNavbar) return null; // ✅ Nếu Breadcrumb đã có trên navbar, ẩn nó
+
 
   return (
     <div className="breadcrumb-container mb-3">

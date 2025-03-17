@@ -30,7 +30,7 @@ export function Home() {
               Sản Phẩm Giảm Sốc
             </span>
             </div>
-            <Row >
+            <Row className="gx-1" >
               {productHotSale.slice(0,4).map((product) => (
                 <Col key={product.id} xs={6} md={6} lg={3}>
                   <ProductCard {...product} />
@@ -100,15 +100,15 @@ export function Home() {
         </div>
       </div>
 
-      <div className="bg-light p-4 mt-5 container">
+      <div className="bg-light p-2 mt-2 container">
         {/* Tiêu đề */}
-        <h2 className=" fw-bold mb-3 mt-3">Bản tin</h2>
+        <h2 className=" fw-bold mb-2 mt-2">Bản tin</h2>
         {/* Danh sách bài viết */}
-        <Row className="g-3">
+        <Row className="gx-2 gy-2 p-2">
         {newsItem
-            .filter((news) => news.tag === "today").slice(0,4)
+            .filter((news) => news.tag === "today").slice(0,8)
             .map((news) => (
-              <Col key={news.id} xs={6} md={6} lg={3}>
+              <Col key={news.id} xs={6} md={6} lg={3} className="gx-2 gy-2">
                 <NewsCard {...news} />
               </Col>
             ))}
