@@ -376,10 +376,10 @@ export function Navbar() {
 
           {/* Icons bên phải */}
           <Nav className="d-flex flex-row">
-            <Nav.Link href="/tim-kiem" className="text-dark d-none d-lg-flex">
+            <Nav.Link href="/tim-kiem" className="text-dark d-none d-lg-flex ms-5">
               <i className="bi bi-search fs-4" style={{ color: "#007BFF" }}></i>{" "}
             </Nav.Link>
-            <LoginDropDown className="text-dark d-none d-lg-flex custom-dropdown"></LoginDropDown>
+            <LoginDropDown className="text-dark d-none d-lg-flex custom-dropdown ms-5 me-5"></LoginDropDown>
             <Button
             onClick={openCart}
             style={{ width: "3rem", height: "3rem", position: "relative" }}
