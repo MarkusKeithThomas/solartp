@@ -9,12 +9,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import "../styles/custom.css"; // Import CSS tùy chỉnh
 import { LoginDropDown } from "../components/LoginDropDown.tsx";
+import { useState, useEffect } from "react";
 import { useShoppingCart } from "../context/ProductContext.tsx";
 export function Navbar() {
   const { openCart, cartQuantity } = useShoppingCart();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <>
-      <NavbarBs sticky="top" className="bg-light justify-content-center align-items-center shadow-sm">
+      <NavbarBs
+        sticky="top"
+        className={`justify-content-center align-items-center shadow-sm mb-2 navbar-custom ${scrolled ? "scrolled" : ""}`}
+      >
           {/* Logo */}
           <NavbarBs.Brand href="/" className="ms-2">
             <img src="/imgs/logo_tpsolar.png" alt="Logo" height="60" />
@@ -381,7 +395,7 @@ export function Navbar() {
             </svg>
 
             <div
-              className="rounded-circle bg-danger d-flex justify-content-center align-items-center me-2"
+              className="rounded-circle bg-danger d-flex justify-content-center align-items-center me-1"
               style={{
                 color: "white",
                 width: "1.5rem",

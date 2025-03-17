@@ -14,19 +14,54 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tai-khoan")
 public class AuthController {
+
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
+
     @GetMapping("/check")
     public ResponseEntity<String> checkGoogleConfig() {
         return ResponseEntity.ok("Hello");
+    }
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("password");
+        boolean isReset = authService.resetPassword(token,newPassword);
+        BaseResponse baseResponse = new BaseResponse();
+        if (isReset){
+            baseResponse.setCode(200);
+            baseResponse.setMessage("Reset password thành công");
+            baseResponse.setData(null);
+            return ResponseEntity.ok(baseResponse);
+        } else {
+            baseResponse.setCode(200);
+            baseResponse.setMessage("Reset password không thành công");
+            baseResponse.setData(null);
+            return ResponseEntity.ok(baseResponse);
+        }
+
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String note = authService.forgotPassword(email);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setCode(200);
+        baseResponse.setMessage(note);
+        baseResponse.setData(null);
+        return ResponseEntity.ok(baseResponse);
     }
 
     @GetMapping("/user-info")

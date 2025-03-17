@@ -68,9 +68,6 @@ export function SignUp() {
             <Form.Group className="mb-3">
               <div className="d-flex justify-content-between">
                 <Form.Label>Password</Form.Label>
-                <a href="#" className="text-success text-decoration-none">
-                  Forgot password?
-                </a>
               </div>
               <Form.Control
                 value={password1}

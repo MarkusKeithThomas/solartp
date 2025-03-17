@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useAuthContext } from "../../context/AuthProvider";
 import { useState } from "react";
 import FaGogle from "../../assets/Google.svg";
+import { useNavigate } from 'react-router-dom';
 
 const GOOGLE_CLIENT_ID =
   "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com"; // 🔹 Thay bằng Client ID của bạn
@@ -14,6 +15,7 @@ export function Login() {
   const { login, loginWithGoogle, handleErrorLogin, successMessage } =
     useAuthContext();
   const errorMessage = handleErrorLogin();
+  const navite = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Ngăn form tải lại trang
@@ -77,7 +79,7 @@ export function Login() {
               <Form.Group className="mb-3">
                 <div className="d-flex justify-content-between">
                   <Form.Label>Password</Form.Label>
-                  <a href="#" className="text-success text-decoration-none">
+                  <a href="/tai-khoan/forgot-password"  className="text-success text-decoration-none">
                     Forgot password?
                   </a>
                 </div>

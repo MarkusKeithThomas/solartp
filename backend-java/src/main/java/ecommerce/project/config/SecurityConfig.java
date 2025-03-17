@@ -1,27 +1,32 @@
 package ecommerce.project.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ecommerce.project.filter.JwtAuthenticationFilter;
-import ecommerce.project.repository.UserRepository;
 import ecommerce.project.service.AuthService;
 import ecommerce.project.utils.JWTUtil;
 import ecommerce.project.utils.OAuth2LoginSuccessHandler;
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
@@ -53,9 +58,13 @@ public class SecurityConfig {
                             "/tai-khoan/log-out",
                             "/oauth2/**",
                             "/tai-khoan/google",
-                            "/").permitAll(); // ✅ Cho phép OAuth2
+                            "/tai-khoan/**").permitAll(); // ✅ Cho phép OAuth2
+                    auth.requestMatchers("/bai-viet/upload-csv").hasAuthority("ROLE_ADMIN");
                     auth.anyRequest().authenticated();
                 })
+                .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler()))
                 .oauth2Login(oauth2login -> oauth2login.successHandler(new OAuth2LoginSuccessHandler(jwtUtil,authService))) // ✅ Chỉ cần truyền `oAuth2LoginSuccessHandler`
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // ✅ Thêm filter JWT
                 .build();
@@ -64,5 +73,36 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException, java.io.IOException {
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                Map<String, Object> errorDetails = new HashMap<>();
+                errorDetails.put("status", HttpStatus.UNAUTHORIZED.value());
+                errorDetails.put("error", "Unauthorized");
+                errorDetails.put("message", "Bạn chưa đăng nhập hoặc không có quyền truy cập.");
+                response.getWriter().write(new ObjectMapper().writeValueAsString(errorDetails));
+            }
+        };
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new AccessDeniedHandler() {
+            @Override
+            public void handle(HttpServletRequest request, HttpServletResponse response, org.springframework.security.access.AccessDeniedException accessDeniedException) throws IOException, ServletException, java.io.IOException {
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                Map<String, Object> errorDetails = new HashMap<>();
+                errorDetails.put("status", HttpStatus.FORBIDDEN.value());
+                errorDetails.put("error", "Forbidden");
+                errorDetails.put("message", "Bạn không có quyền truy cập vào tài nguyên này.");
+                response.getWriter().write(new ObjectMapper().writeValueAsString(errorDetails));
+            }
+        };
     }
 }

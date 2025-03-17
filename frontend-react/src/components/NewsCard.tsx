@@ -1,23 +1,59 @@
-import React from "react";
-import { Card } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Col, Row } from "react-bootstrap";
+import '../styles/NewsCard.css'
+
 
 interface NewsProps {
     id: number;
     title: string;
     image: string;
     description: string;
-    category: string;
-    tags?: string
+    category?: string;
+    tags?: string;
 }
 
-export function NewsCard({id,title,image,description,category,tags}: NewsProps) {
+export function NewsCard({ id, title, image, description }: NewsProps) {
+  const [isClicked, setIsClicked] = useState(false);
+
   return (
-    <Card className="shadow-sm border-0 rounded-4 overflow-hidden" style={{height:'300px'}}>
-      <Card.Img variant="top" src={image} className="p-2" />
-      <Card.Body className="p-3">
-        <Card.Title className="fs-6 fw-bold">{title}</Card.Title>
-        <Card.Text className="text-muted small">{description}</Card.Text>
-      </Card.Body>
+    <Card
+      className={`shadow-sm h-100 d-flex mb-3 border-0 news-card ${isClicked ? "clicked" : ""}`}
+      onMouseDown={() => setIsClicked(true)}
+      onMouseUp={() => setIsClicked(false)}
+      onMouseLeave={() => setIsClicked(false)}
+    >
+      <Row className="d-flex align-items-center">
+        {/* 🔥 Image on the left */}
+        <Col xs={4} md={6} lg={4}>
+          <Card.Img
+            src={image}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100px",
+              objectFit: "contain",
+              borderRadius: "5px"
+            }}
+            loading="lazy"
+
+          />
+        </Col>
+
+        {/* 🔥 Content on the right */}
+        <Col xs={8} md={6} lg={8}>
+          <Card.Body className="d-flex flex-column justify-content-center p-0">
+            {/* 🔥 Title */}
+            <Card.Title className="fw-bold mb-1" style={{ fontSize: "1.1rem" }}>
+              {title}
+            </Card.Title>
+
+            {/* 🔥 Description */}
+            <Card.Text className="text-muted" style={{ fontSize: "0.9rem" }}>
+              {description}
+            </Card.Text>
+          </Card.Body>
+        </Col>
+      </Row>
     </Card>
   );
 }
