@@ -1,6 +1,6 @@
 import { HelmetProvider } from "react-helmet-async";
 import { Card, Col, Row } from "react-bootstrap";
-import Seo from '../../components/Seo';
+import Seo from "../../components/Seo";
 import newsItem from "../../assets/fakedata/newsitempost.json";
 
 interface NewsItem {
@@ -16,39 +16,59 @@ interface NewsItem {
 export function Post() {
   return (
     <HelmetProvider>
-      <div className="container mt-4">
-        <Row className="bg-light">
-          {newsItem.map((item:NewsItem) => (
-            <Col key={item.id} sm={12} md={6} lg={4} className="mb-3 d-flex">
-              <Card className="shadow-sm h-100 d-flex flex-column">
-                <Card.Img
-                  className="flex-shrink-0"
-                  variant="top"
-                  src={item.image}
-                  alt={item.title}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
-                <Card.Body className="d-flex flex-column flex-grow-1">
-                  <Card.Title>{item.title}</Card.Title>
-                  <Card.Text className="flex-grow-1">{item.description}</Card.Text>
-                  <a href={item.url} className="btn btn-primary mt-auto">Xem Chi Tiết</a>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+      {newsItem.map((item: NewsItem) => (
+        <Row key={item.id} className="bg-light p-1 w-75 mx-auto" style={{minWidth: "380px"}}>
+          <Col
+            sm={12}
+            md={12}
+            lg={12}
+            className="mb-3 d-flex justify-content-center"
+          >
+            <Card className="news-card border-0 shadow-sm p-2">
+              <Row className="align-items-center">
+                {/* Hình ảnh trên desktop - nằm bên trái */}
+                <Col xs={12} md={4} className="d-none d-md-block">
+                  <Card.Img
+                    src={item.image}
+                    className="rounded img-fluid"
+                    alt={item.title}
+                  />
+                </Col>
 
-        {/* Thêm SEO */}
-        {newsItem.length > 0 && (
-          <Seo
-            title={newsItem[0].title}
-            description={newsItem[0].description}
-            image={newsItem[0].image}
-            url={newsItem[0].url}
-            date={newsItem[0].date}
-          />
-        )}
-      </div>
+                {/* Nội dung tin tức */}
+                <Col xs={12} md={8}>
+                  <Card.Body>
+                    <Card.Title className="fw-bold">{item.title}</Card.Title>
+                    <Card.Text className="text-muted">
+                      {item.description}
+                    </Card.Text>
+                  </Card.Body>
+                </Col>
+
+                {/* Hình ảnh trên mobile - nằm dưới nội dung */}
+                <Col xs={12} className="d-block d-md-none">
+                  <Card.Img
+                    src={item.image}
+                    className="rounded img-fluid mt-2"
+                    alt={item.title}
+                  />
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+      ))}
+
+      {/* Thêm SEO */}
+      {newsItem.length > 0 && (
+        <Seo
+          title={newsItem[0].title}
+          description={newsItem[0].description}
+          image={newsItem[0].image}
+          url={newsItem[0].url}
+          date={newsItem[0].date}
+        />
+      )}
     </HelmetProvider>
   );
 }
