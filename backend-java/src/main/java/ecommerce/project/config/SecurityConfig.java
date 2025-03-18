@@ -58,6 +58,7 @@ public class SecurityConfig {
                             "/tai-khoan/log-out",
                             "/oauth2/**",
                             "/tai-khoan/google",
+                            "/check-env",
                             "/tai-khoan/**").permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("/bai-viet/upload-csv").hasAuthority("ROLE_ADMIN");
                     auth.anyRequest().authenticated();

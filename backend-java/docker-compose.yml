@@ -1,20 +1,41 @@
-version: '3.8'
-
 services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: solartp
+      MYSQL_PASSWORD: Hit@My5QL
+      MYSQL_ROOT_PASSWORD: Hit@My5QL
+    ports:
+      - "3307:3306"
+    networks:
+      - mynetwork
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6380:6379"
+    networks:
+      - mynetwork
+
   app:
     image: spring-boot-solartp
     container_name: spring-boot-container
     restart: always
-    env_file:
-      - .evn
     depends_on:
       - mysql
       - redis
+    env_file:
+      - .env
     environment:
+      FRONTEND_URL: https://solartp-sh3l.vercel.app
       SPRING_APPLICATION_NAME: ecommerce
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
-      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/solartp
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Hit@My5QL
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
 
