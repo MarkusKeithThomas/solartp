@@ -10,8 +10,6 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
-
     @Column(name = "email")
     private String email;
 
@@ -25,10 +23,6 @@ public class UserEntity {
     private String name;
     @Column(name = "refresh_token")
     private String refreshToken;
-
-    @Column(name = "oauth_id")
-    private String oauthId;
-
 
     @ManyToOne
     @JoinColumn(name = "role_id")

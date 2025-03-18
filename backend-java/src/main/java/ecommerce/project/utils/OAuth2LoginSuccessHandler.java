@@ -1,9 +1,8 @@
 package ecommerce.project.utils;
 
 import ecommerce.project.dto.UserDTO;
-import ecommerce.project.entity.UserEntity;
-import ecommerce.project.repository.UserRepository;
 import ecommerce.project.service.AuthService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -13,16 +12,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTUtil jwtUtil;
     private final AuthService authService;
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
+
 
     public OAuth2LoginSuccessHandler(JWTUtil jwtUtil,AuthService authService) {
         this.jwtUtil = jwtUtil;
         this.authService = authService;
+        System.out.println(frontendUrl + "OAuth2LoginSuccessHandler");
+
     }
 
     @Override
@@ -41,5 +45,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
             response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
+
     }
 }
