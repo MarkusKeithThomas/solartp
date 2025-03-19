@@ -23,41 +23,41 @@ public class CSVServicesImpl implements CSVServices{
 
     @Autowired
     private FilesService filesService;
+    @Autowired
+    private CloudflareR2Service cloudflareR2Service;
 
 
     @Override
-    public void saveCSVToDatabase(MultipartFile file, MultipartFile image1, MultipartFile image2) {
+    public void saveCSVToDatabase(MultipartFile file, List<MultipartFile> images) {
         try {
             BufferedReader fileReader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
             CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT.withDelimiter(';').withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
             List<ArticleEntity> articles = new ArrayList<>();
-            String image1Url = filesService.uploadFile(image1);
-            String image2Url = filesService.uploadFile(image2);
+            List<String> imageList = cloudflareR2Service.uploadFileToCloudFlare(images);
+            if (imageList.size() ==  images.size()){
+                for (CSVRecord csvRecord : csvParser) {
+                    ArticleEntity article = new ArticleEntity();
+                    article.setTitle(csvRecord.get("Tên bài viết"));
+                    article.setHeader1(csvRecord.get("Tiêu đề 1"));
+                    article.setContent11(csvRecord.get("Nội dung 1.1"));
+                    article.setContent12(csvRecord.get("Nội dung 1.2"));
+                    article.setHeader2(csvRecord.get("Tiêu đề 2"));
+                    article.setContent21(csvRecord.get("Nội dung 2.1"));
+                    article.setContent22(csvRecord.get("Nội dung 2.2"));
+                    article.setHeader3(csvRecord.get("Tiêu đề 3"));
+                    article.setContent31(csvRecord.get("Nội dung 3.1"));
+                    article.setContent32(csvRecord.get("Nội dung 3.2"));
+                    article.setHeader4(csvRecord.get("Tiêu đề 4"));
+                    article.setContent41(csvRecord.get("Nội dung 4.1"));
+                    article.setContent42(csvRecord.get("Nội dung 4.2"));
+                    article.setImage1Url(imageList.getFirst());
+                    article.setAltImage1(csvRecord.get("AltImage1"));
+                    article.setImage2Url(imageList.get(1));
+                    article.setAltImage2(csvRecord.get("AltImage2"));
+                    articles.add(article);
+                }
 
-
-
-            for (CSVRecord csvRecord : csvParser) {
-                ArticleEntity article = new ArticleEntity();
-                article.setTitle(csvRecord.get("Tên bài viết"));
-                article.setHeader1(csvRecord.get("Tiêu đề 1"));
-                article.setContent11(csvRecord.get("Nội dung 1.1"));
-                article.setContent12(csvRecord.get("Nội dung 1.2"));
-                article.setHeader2(csvRecord.get("Tiêu đề 2"));
-                article.setContent21(csvRecord.get("Nội dung 2.1"));
-                article.setContent22(csvRecord.get("Nội dung 2.2"));
-                article.setHeader3(csvRecord.get("Tiêu đề 3"));
-                article.setContent31(csvRecord.get("Nội dung 3.1"));
-                article.setContent32(csvRecord.get("Nội dung 3.2"));
-                article.setHeader4(csvRecord.get("Tiêu đề 4"));
-                article.setContent41(csvRecord.get("Nội dung 4.1"));
-                article.setContent42(csvRecord.get("Nội dung 4.2"));
-                article.setImage1Url(image1Url);
-                article.setAltImage1(csvRecord.get("AltImage1"));
-                article.setImage2Url(image2Url);
-                article.setAltImage2(csvRecord.get("AltImage2"));
-                articles.add(article);
             }
-
             articleRepository.saveAll(articles);
         } catch (Exception e) {
             throw new UploadCSVException(e.getMessage());
