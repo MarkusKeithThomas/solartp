@@ -99,14 +99,20 @@ public class CentralException {
     @ExceptionHandler({UploadCSVException.class})
     public ResponseEntity<BaseResponse> handleUploadCSVException(Exception e) {
         LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
-        return buildErrorResponse(403, "Truy cập bị từ chối.", e);
+        return buildErrorResponse(400, "Truy cập bị từ chối.", e);
     }
 
     // 🛑 Xử lý lỗi khi upload anh loi thất bại
     @ExceptionHandler({UploadFileToCloudFlareException.class})
     public ResponseEntity<BaseResponse> handleUploadFileToCloudFlareException(Exception e) {
         LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
-        return buildErrorResponse(403, "Upload bị lỗi.", e);
+        return buildErrorResponse(400, "Upload bị lỗi.", e);
+    }
+    // 🛑 Xử lý lỗi khi upload anh loi thất bại
+    @ExceptionHandler({ArticleGetException.class})
+    public ResponseEntity<BaseResponse> handleArticleGetException(Exception e) {
+        LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
+        return buildErrorResponse(400, "Lấy bài viết bị lỗi.", e);
     }
 
     // 🛑 Xử lý tất cả các lỗi chưa được định nghĩa phía trên

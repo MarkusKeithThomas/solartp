@@ -3,6 +3,8 @@ package ecommerce.project.controller;
 import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.entity.ArticleEntity;
 import ecommerce.project.repository.ArticleRepository;
+import ecommerce.project.service.ArticleService;
+import ecommerce.project.service.ArticleServiceImpl;
 import ecommerce.project.service.CSVServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +26,7 @@ public class ArticleController {
     @Autowired
     private CSVServices csvServices;
     @Autowired
-    private ArticleRepository articleRepository;
+    private ArticleService articleService;
 
 
     @PostMapping("/upload-csv")
@@ -45,20 +47,7 @@ public class ArticleController {
     @Cacheable(value = "articles", key = "#lastId") // Cache dữ liệu theo lastId
     public ResponseEntity<?> getArticles(@RequestParam(required = false) Long lastId,
                                          @RequestParam(defaultValue = "10") int limit) {
-        List<ArticleEntity> articles;
-        if (lastId == null) {
-            articles = articleRepository.findTopByOrderByIdDesc(limit);
-        } else {
-            articles = articleRepository.findByIdLessThanOrderByIdDesc(lastId, limit);
-        }
-
-        // Lấy ID đầu tiên của danh sách để làm lastId cho lần load tiếp theo
-        Long newLastId = articles.isEmpty() ? null : Long.valueOf(articles.get(0).getId());
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("articles", articles);
-        response.put("lastId", newLastId);
-
+        Map<String, Object> response = articleService.getAllArticle(lastId,limit);
         return ResponseEntity.ok(response);
     }
 
