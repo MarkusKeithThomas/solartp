@@ -40,7 +40,10 @@ public class FilesServicesImpl implements FilesService{
     public Resource downloadFile(String fileName) {
         try {
             Path imagePath = Paths.get(uploadPath).resolve(fileName);
+            System.out.println("FilesServicesImpl"+imagePath);
             Resource resource = new UrlResource(imagePath.toUri());
+            System.out.println("FilesServicesImpl"+resource);
+
             if (resource.exists()) {
                 return resource;
             }
