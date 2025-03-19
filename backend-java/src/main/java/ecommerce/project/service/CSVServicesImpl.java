@@ -22,8 +22,6 @@ public class CSVServicesImpl implements CSVServices{
     private ArticleRepository articleRepository;
 
     @Autowired
-    private FilesService filesService;
-    @Autowired
     private CloudflareR2Service cloudflareR2Service;
 
 

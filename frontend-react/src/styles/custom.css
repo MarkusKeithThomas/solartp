@@ -360,5 +360,16 @@
     background:  #F8D648 ; /* Nền trắng */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng */
   }
-
+  .popular-title-link {
+    text-decoration: none;
+    color: black;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+  }
+  
+  .popular-title-link:hover {
+    color: blue;
+    text-decoration: underline;
+    transform: scale(1.05);
+  }
 
