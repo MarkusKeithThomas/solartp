@@ -102,6 +102,13 @@ public class CentralException {
         return buildErrorResponse(403, "Truy cập bị từ chối.", e);
     }
 
+    // 🛑 Xử lý lỗi khi upload anh loi thất bại
+    @ExceptionHandler({UploadFileToCloudFlareException.class})
+    public ResponseEntity<BaseResponse> handleUploadFileToCloudFlareException(Exception e) {
+        LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
+        return buildErrorResponse(403, "Upload bị lỗi.", e);
+    }
+
     // 🛑 Xử lý tất cả các lỗi chưa được định nghĩa phía trên
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse> handleGlobalException(Exception e) {
