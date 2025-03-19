@@ -1,5 +1,6 @@
 package ecommerce.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -64,11 +65,8 @@ public class ArticleEntity {
     @Column(name = "alt_image2")
     private String altImage2;
 
-    @Column(name = "date_create", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "date_create")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") // Chỉ lấy ngày
     private LocalDateTime dateCreate;
 
-    @PrePersist
-    protected void onCreate() {
-        this.dateCreate = LocalDateTime.now();
-    }
 }
