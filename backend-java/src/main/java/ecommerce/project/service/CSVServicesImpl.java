@@ -3,6 +3,7 @@ package ecommerce.project.service;
 import ecommerce.project.entity.ArticleEntity;
 import ecommerce.project.exception.UploadCSVException;
 import ecommerce.project.repository.ArticleRepository;
+import ecommerce.project.utils.StringUtil;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class CSVServicesImpl implements CSVServices{
 
     @Autowired
     private CloudflareR2Service cloudflareR2Service;
+    @Autowired
+    private StringUtil stringUtil;
 
 
     @Override
@@ -36,6 +40,8 @@ public class CSVServicesImpl implements CSVServices{
                 for (CSVRecord csvRecord : csvParser) {
                     ArticleEntity article = new ArticleEntity();
                     article.setTitle(csvRecord.get("Tên bài viết"));
+                    String slugTitle = stringUtil.toSlug(csvRecord.get("Tên bài viết"));
+                    article.setSlugTitle(slugTitle);
                     article.setHeader1(csvRecord.get("Tiêu đề 1"));
                     article.setContent11(csvRecord.get("Nội dung 1.1"));
                     article.setContent12(csvRecord.get("Nội dung 1.2"));
@@ -52,6 +58,7 @@ public class CSVServicesImpl implements CSVServices{
                     article.setAltImage1(csvRecord.get("AltImage1"));
                     article.setImage2Url(imageList.get(1));
                     article.setAltImage2(csvRecord.get("AltImage2"));
+                    article.setDateCreate(LocalDateTime.now());
                     articles.add(article);
                 }
 

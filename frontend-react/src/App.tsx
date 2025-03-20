@@ -50,7 +50,7 @@ function App() {
             <Route path="/den-nang-luong-mat-troi" element={<SolarLight />} />
             <Route path="/he-thong-dien-mat-troi" element={<SolarPanel />} />
             <Route path="/bai-viet" element={<Post />} />
-            <Route path="/bai-viet/detail" element={<PostDetail />} />
+            <Route path="/bai-viet/:slug" element={<PostDetail />} />
             <Route path="/bai-viet/detail/check-layout" element={<CheckLayout />} />
 
             <Route path="/lien-he" element={<Contact />} />
