@@ -8,6 +8,7 @@ import { formatContentForPost } from "../../ultities/formatContentForCardPost";
 
 export function Post() {
   const {articles} = useArticleContext();
+  console.log(articles);
   
 
   return (
