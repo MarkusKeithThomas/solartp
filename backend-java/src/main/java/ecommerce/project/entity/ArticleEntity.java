@@ -16,6 +16,8 @@ public class ArticleEntity {
 
     @Column(name = "title", nullable = false)
     private String title;
+    @Column(name = "slug_title", nullable = false)
+    private String slugTitle;
 
     @Column(name = "header_1")
     private String header1;
@@ -68,5 +70,8 @@ public class ArticleEntity {
     @Column(name = "date_create")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") // Chỉ lấy ngày
     private LocalDateTime dateCreate;
+
+    @Column(name = "note")
+    private String note;
 
 }

@@ -5,6 +5,7 @@ import { useArticleLocalStorage } from "../hook/useArticleLocalStorage";
 export type Article = {
     id: number;
     title: string;
+    slugTitle:string;
     header1: string;
     content11: string;
     content12: string;
@@ -63,6 +64,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
             if (newArticles.length === 0) {
                 setHasMore(false); // Không còn bài viết mới
             } else {
+                
                 setArticle((prev) => [...prev, ...newArticles]); // Gộp dữ liệu đúng cách
                 setLastId(res.data.lastId); // Cập nhật lastId đúng cách
             }
