@@ -6,29 +6,30 @@ import { CustomBreadcrumb } from "../../layout/CustomBreadcrumb";
 import { CardGotInfo } from "../../components/CardGotInfo";
 import { TableOfContents } from "../../components/TableOfContents";
 import { PopularArticles } from "../../components/PopularArticles";
+import { useArticleContext } from "../../context/ArticleProvider";
 import { NewsCard } from "../../components/NewsCard";
-// 📌 Định nghĩa kiểu dữ liệu cho bài viết
-interface NewsItem {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-  date: string;
-}
+import { formatContentForPost } from "../../ultities/formatContentForCardPost";
 
 export function PostDetail() {
   const { slug } = useParams<{ slug: string }>(); // Lấy slug từ URL
+  const { articles } = useArticleContext();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  // Lấy ngày hôm nay theo local timezone (YYYY-MM-DD)
+  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  const fifteenDaysAgo = new Date();
+fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+const formattedDate = fifteenDaysAgo.toLocaleDateString("vi-VN");
 
-  // 🔥 Chuyển title sang slug để so sánh
-  const article: NewsItem | undefined = newsItem.find((item) => item.id === 1);
+  
 
-  console.log("🔍 Bài viết được tìm thấy:", article);
+  const articlePost = articles.find((item) => item.slugTitle === slug);
 
-  if (!article) {
+  if (!articlePost) {
     return (
       <Container>
         <h2>Bài viết không tồn tại!</h2>
+        <p>Xin lỗi, chúng tôi không tìm thấy nội dung bạn đang tìm kiếm.</p>
+        <Link to="/">Quay lại trang chủ</Link>
       </Container>
     );
   }
@@ -39,8 +40,8 @@ export function PostDetail() {
   // 🔥 Schema Markup JSON-LD cho bài viết + Breadcrumbs
   const schemaMarkup = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: article.title,
+    "@type": "articlePost",
+    headline: articlePost.title,
     author: { "@type": "Person", name: "Tác giả Solar TP" },
     publisher: {
       "@type": "Organization",
@@ -50,12 +51,12 @@ export function PostDetail() {
         url: "https://yourwebsite.com/logo.png",
       },
     },
-    datePublished: article.date,
+    datePublished: articlePost.dateCreate,
     dateModified: lastModified,
-    image: article.image,
+    image: articlePost.image1Url,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://yourwebsite.com/bai-viet/${slug}`,
+      "@id": `${API_BASE_URL}/bai-viet/${slug}`,
     },
     breadcrumb: {
       "@context": "https://schema.org",
@@ -65,161 +66,115 @@ export function PostDetail() {
           "@type": "ListItem",
           position: 1,
           name: "Trang chủ",
-          item: "https://yourwebsite.com/",
+          item: `${API_BASE_URL}`,
         },
         {
           "@type": "ListItem",
           position: 2,
           name: "Bài viết",
-          item: "https://yourwebsite.com/bai-viet",
+          item: `${API_BASE_URL}/bai-viet`,
         },
         {
           "@type": "ListItem",
           position: 3,
-          name: article.title,
-          item: `https://yourwebsite.com/bai-viet/${slug}`,
+          name: articlePost.title,
+          item: `${API_BASE_URL}/bai-viet/${slug}`,
         },
       ],
     },
   };
 
   return (
-    <Container
->
-      <Row className="gx=0">
-        <Col
-          xs={12}
-          md={0}
-          lg={3}
-          className="bg-light text-white text-center d-none d-lg-block"
-        >
+<Container className="post-container mx-auto" style={{ maxWidth: "100vw", padding: 0 }}>
+<Row className="gx-0 gy-0 p-0">
+      <Col xs={12} md={3} lg={3} className="bg-light text-white text-center d-none d-lg-block">
           <TableOfContents />
         </Col>
-        <Col xs={12} md={12} lg={6} className="bg-light">
+        <Col xs={12} md={12} lg={6} className="bg-light p-3">
           {/* 🔥 SEO Metadata */}
           <Helmet>
-            <title>{article.title} | Solar TP</title>
+            <title>{articlePost.title} | Solar TP</title>
             <meta
               name="description"
-              content={`${article.description}. Xem ngay để khám phá!`}
+              content={`${articlePost.content11}. Xem ngay để khám phá!`}
             />
-            <meta property="og:title" content={article.title} />
-            <meta property="og:description" content={article.description} />
-            <meta property="og:image" content={article.image} />
+            <meta property="og:title" content={articlePost.header1} />
+            <meta property="og:description" content={articlePost.content12} />
+            <meta property="og:image" content={articlePost.altImage1} />
             <meta
               property="og:url"
-              content={`https://yourwebsite.com/bai-viet/${slug}`}
+              content={`${API_BASE_URL}/bai-viet/${slug}`}
             />
-            <script type="application/ld+json">
-              {JSON.stringify(schemaMarkup)}
-            </script>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+            />
           </Helmet>
 
           {/* 🔥 Breadcrumb SEO */}
           <CustomBreadcrumb hideOnNavbar={true} />
 
-          <h1 className="mt-2 text-center mb-4">{article.title}</h1>
+          <h1 className="mt-2 text-center mb-4">{articlePost.title}</h1>
           <p>
-            <strong>Ngày đăng:</strong> {article.date} |{" "}
-            <strong>Cập nhật gần nhất:</strong>{" "}
-            {new Date().toLocaleDateString()}
+            <strong>Ngày đăng:</strong> {articlePost.dateCreate} |{" "}
+            <strong>Cập nhật gần nhất:</strong>{" "}{formattedDate}
           </p>
           <div className="mt-3">
-            <h2>Lý do nên chọn các loại đèn năng lượng1</h2>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
+            <h2>{articlePost.header1}</h2>
+            <p>{articlePost.content11}</p>
+            <p>{articlePost.content12}</p>
           </div>
           <div className="d-flex justify-content-center">
             <img
-              src={article.image}
-              alt={article.title}
+              src={articlePost.image1Url}
+              alt={articlePost.altImage1}
               className="img-fluid"
               loading="lazy"
-
             />
           </div>
           <div className="mt-4">
-            <h2>Lý do nên chọn các loại đèn năng lượng2</h2>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
+            <h2>{articlePost.header2}</h2>
+            <p>{articlePost.content21}</p>
+            <p>{articlePost.content22}</p>
           </div>
           <div className="mt-4 justify-content-center">
-            <h2>Lý do nên chọn các loại đèn năng lượng3</h2>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
+            <h2>{articlePost.header3}</h2>
+            <p>{articlePost.content31}</p>
+            <p>{articlePost.content32}</p>
           </div>
           <div className="d-flex justify-content-center">
             <img
-              src={article.image}
-              alt={article.title}
+              src={articlePost.image2Url}
+              alt={articlePost.altImage2}
               className="img-fluid"
               loading="lazy"
-
             />
           </div>
           <div className="mt-4 justify-content-center">
-            <h2>Lời khuyên cho người tiêu dùng4</h2>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
-            <p>
-              "Tôi nghĩ họ có lẽ là những người am hiểu nhất thế giới về tấn
-              công mạng. Khi biết nhóm đến từ Việt Nam, tôi thực sự thấy ngạc
-              nhiên và thú vị", Ben Zhou chia sẻ với VnExpress sau vụ tấn công
-              gây thiệt hại 400.000 ETH.
-            </p>
+            <h2>{articlePost.header4}</h2>
+            <p>{articlePost.content41}</p>
+            <p>{articlePost.content42}</p>
           </div>
           <CardGotInfo />
           <Row className="gx-1 gy-1 mb-4 mt-2 bg-danger py-2">
-            {newsItem
-              .filter((news) => news.tag === "today")
+            {articles
+              .filter((news) => news.dateCreate === today)
               .slice(0, 10)
               .map((news) => (
                 <Col xs={12} key={news.id}>
-                  <NewsCard {...news} />
+
+                  <NewsCard
+                    id={news.id}
+                    title={news.title}
+                    image={news.image1Url} // Đổi thành `image` nếu cần
+                    description={formatContentForPost(news.content11)} // Đổi thành `description` nếu cần
+                    slug={news.slugTitle}
+                  />{" "}                  
                 </Col>
               ))}
           </Row>
         </Col>
-        <Col
-          xs={12}
-          md={12}
-          lg={3}
-          className="bg-light text-white text-center"
-        >
+        <Col xs={12} md={12} lg={3} className="bg-light text-white text-center">
           <PopularArticles />
         </Col>
       </Row>
