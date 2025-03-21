@@ -16,6 +16,7 @@ public class ArticleEntity {
 
     @Column(name = "title", nullable = false)
     private String title;
+
     @Column(name = "slug_title", nullable = false)
     private String slugTitle;
 

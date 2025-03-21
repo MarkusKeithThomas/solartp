@@ -96,8 +96,8 @@ public class CentralException {
     }
 
     // 🛑 Xử lý lỗi khi upload csv thất bại
-    @ExceptionHandler({UploadCSVException.class})
-    public ResponseEntity<BaseResponse> handleUploadCSVException(Exception e) {
+    @ExceptionHandler({UploadExcelException.class})
+    public ResponseEntity<BaseResponse> handleUploadExcelException(Exception e) {
         LOGGER.log(Level.WARNING, "GetInfo: " + e.getMessage(), e);
         return buildErrorResponse(400, "Truy cập bị từ chối.", e);
     }
