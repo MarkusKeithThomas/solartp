@@ -53,29 +53,6 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
         return uploadFutures.stream().map(CompletableFuture::join).collect(Collectors.toList());
     }
 
-
-//    @Override
-//    public String uploadFileToCloudFlare(MultipartFile file) {
-//
-//        try {
-//            if (file.isEmpty()) {
-//                throw new IllegalArgumentException("File rỗng hoặc không hợp lệ!");
-//            }
-//
-//            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-//
-//            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-//                    .bucket(bucketName)
-//                    .key(fileName)
-//                    .contentType(file.getContentType())
-//                    .build();
-//
-//            PutObjectResponse response = s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
-//            return link_image_get + fileName;
-//        } catch (java.io.IOException e) {
-//            throw new UploadFileToCloudFlareException(e.getMessage());
-//        }
-//    }
     private String uploadFile(MultipartFile file) {
         try {
             if (file.isEmpty()) {
