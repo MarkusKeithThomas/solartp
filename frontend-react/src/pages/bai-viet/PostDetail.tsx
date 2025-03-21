@@ -1,18 +1,25 @@
 import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
-import newsItem from "../../assets/fakedata/newsitempost.json";
 import { CustomBreadcrumb } from "../../layout/CustomBreadcrumb";
 import { CardGotInfo } from "../../components/CardGotInfo";
 import { TableOfContents } from "../../components/TableOfContents";
-import { PopularArticles } from "../../components/PopularArticles";
+import { PopularArticles } from '../../components/PopularArticles';
 import { useArticleContext } from "../../context/ArticleProvider";
 import { NewsCard } from "../../components/NewsCard";
 import { formatContentForPost } from "../../ultities/formatContentForCardPost";
+import { useEffect } from "react";
+
 
 export function PostDetail() {
   const { slug } = useParams<{ slug: string }>(); // Lấy slug từ URL
-  const { articles } = useArticleContext();
+  const { articles, shortArticles } = useArticleContext();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [slug]);
+
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Lấy ngày hôm nay theo local timezone (YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
@@ -20,9 +27,8 @@ export function PostDetail() {
 fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
 const formattedDate = fifteenDaysAgo.toLocaleDateString("vi-VN");
 
-  
 
-  const articlePost = articles.find((item) => item.slugTitle === slug);
+const articlePost = articles.find((item) => item.slugTitle === slug);
 
   if (!articlePost) {
     return (
@@ -175,7 +181,7 @@ const formattedDate = fifteenDaysAgo.toLocaleDateString("vi-VN");
           </Row>
         </Col>
         <Col xs={12} md={12} lg={3} className="bg-light text-white text-center">
-          <PopularArticles />
+        <PopularArticles articles={shortArticles} />        
         </Col>
       </Row>
     </Container>
