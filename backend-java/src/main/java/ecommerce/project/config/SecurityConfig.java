@@ -62,7 +62,7 @@ public class SecurityConfig {
                             "/tai-khoan/**",
                             "/bai-viet/list"
                     ).permitAll(); // ✅ Cho phép OAuth2
-                    auth.requestMatchers("/bai-viet/upload-csv").hasAuthority("ROLE_ADMIN");
+                    auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/file/**").hasAuthority("ROLE_ADMIN");
 
                     auth.anyRequest().authenticated();

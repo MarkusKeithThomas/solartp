@@ -1,11 +1,8 @@
 package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
-import ecommerce.project.entity.ArticleEntity;
-import ecommerce.project.repository.ArticleRepository;
 import ecommerce.project.service.ArticleService;
-import ecommerce.project.service.ArticleServiceImpl;
-import ecommerce.project.service.CSVServices;
+import ecommerce.project.service.ExcelServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,21 +19,20 @@ import java.util.Map;
 @RequestMapping("/bai-viet")
 public class ArticleController {
 
-    @Qualifier("CSVServicesImpl")
     @Autowired
-    private CSVServices csvServices;
+    private ExcelServices excelServices;
     @Autowired
     private ArticleService articleService;
 
 
-    @PostMapping("/upload-csv")
+    @PostMapping("/upload-excel")
     @CacheEvict(value = "articles", allEntries = true) // Xóa toàn bộ cache
     public ResponseEntity<?> uploadCSV(@RequestParam("file") MultipartFile file,
                                        @RequestParam("listimage") List<MultipartFile> images) {
-        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
-            return ResponseEntity.badRequest().body("Vui lòng tải lên một file CSV hợp lệ.");
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".xlsx")) {
+            return ResponseEntity.badRequest().body("Vui lòng tải lên một file Excel hợp lệ.");
         }
-        csvServices.saveCSVToDatabase(file,images);
+        excelServices.saveExcelToDatabase(file,images);
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode(200);
         baseResponse.setMessage("Dữ liệu từ CSV đã được nhập vào MySQL thành công.");

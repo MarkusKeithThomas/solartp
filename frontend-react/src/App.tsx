@@ -25,6 +25,7 @@ import { PostDetail } from "./pages/bai-viet/PostDetail";
 import { HelmetProvider } from "react-helmet-async";
 import { CheckLayout, Checklayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
+import { PopularArticles } from "./components/PopularArticles";
 
 // Tạo Query Client
 const queryClient = new QueryClient();

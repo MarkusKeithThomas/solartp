@@ -8,8 +8,7 @@ import { formatContentForPost } from "../../ultities/formatContentForCardPost";
 import { Link } from "react-router-dom";
 
 export function Post() {
-  const { articles } = useArticleContext();
-  console.log(articles[0].slugTitle);
+  const { articles,shortArticles } = useArticleContext();
 
   return (
     <HelmetProvider>
@@ -70,7 +69,7 @@ export function Post() {
 
         {/* Cột bài viết phổ biến */}
         <Col lg={4} className="bg-light text-dark text-center">
-          <PopularArticles />
+          <PopularArticles articles={shortArticles} />
         </Col>
       </Row>
 
