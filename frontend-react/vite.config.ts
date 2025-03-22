@@ -8,11 +8,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_BASE_URL, // hoặc dùng biến môi trường VITE_API_BASE_URL
+        target: 'https://5058-115-73-178-46.ngrok-free.app',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''), // ⚠️ Bắt buộc nếu BE không có /api
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
-    },
+    }
   },
 });
