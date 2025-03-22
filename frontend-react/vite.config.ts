@@ -2,17 +2,17 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: './',  // Giúp định tuyến đúng khi deploy lên Vercel
+  base: './',
   plugins: [react()],
   server: {
     port: 5173,
     proxy: {
       '/api': {
-        target:'https://56b0-115-73-178-46.ngrok-free.app',
-        // target: 'http://localhost:8080', // Backend API
+        target: process.env.VITE_API_BASE_URL, // hoặc dùng biến môi trường VITE_API_BASE_URL
         changeOrigin: true,
         secure: false,
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, ''), // ⚠️ Bắt buộc nếu BE không có /api
+      },
+    },
   },
 });
