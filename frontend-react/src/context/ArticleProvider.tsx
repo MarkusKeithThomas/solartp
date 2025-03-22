@@ -40,6 +40,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 export function ArticleProvider({ children }: { children: ReactNode }) {
+    console.log("BASE URL:", API_BASE_URL);
     const [articles, setArticle] = useArticleLocalStorage<Article[]>("article-save",[]);
     const[shortArticles,setShortArticles] = useState<Article[]>([])
     const [lastId, setLastId] = useState(0);
