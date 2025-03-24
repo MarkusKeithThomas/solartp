@@ -1,18 +1,28 @@
 package ecommerce.project.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Entity(name = "roles")
+import java.util.List;
+
+@Entity
+@Table(name = "roles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RoleEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    @Column(name = "role")
+    private String name;
+
     private String role;
 
-    @Column(name = "name")
-    private String name;
+    // Optional: nếu muốn xem người dùng nào có role này
+    @OneToMany(mappedBy = "role")
+    private List<UserEntity> users;
 }

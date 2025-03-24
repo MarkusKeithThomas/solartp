@@ -5,7 +5,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import ecommerce.project.baseresponse.LoginResponse;
 import ecommerce.project.dto.UserDTO;
 import ecommerce.project.entity.RoleEntity;
 import ecommerce.project.entity.UserEntity;
@@ -16,17 +15,13 @@ import ecommerce.project.utils.JWTUtil;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {

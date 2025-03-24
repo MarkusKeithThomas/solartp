@@ -1,27 +1,36 @@
 package ecommerce.project.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Entity(name = "user_info")
-public class UserInfoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+import java.sql.Timestamp;
 
-    @Column(name = "full_name")
-    private String fullName;
-    @Column(name = "gender")
-    private String gender;
-    @Column(name = "birthday")
-    private String birthday;
-    @Column(name = "address")
-    private String address;
-    @Column(name = "phone")
-    private String phone;
-    @Column(name = "description")
-    private String description;
-    @Column(name="image")
-    private String image;
-}
+    @Entity
+    @Table(name = "user_info")
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public class UserInfoEntity {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Integer id;
+
+        @Column(name = "full_name")
+        private String fullName;
+
+        private String gender;
+
+        private Timestamp birthday;
+
+        private String address;
+
+        private String phone;
+
+        private String description;
+
+        private String image;
+    }
+
