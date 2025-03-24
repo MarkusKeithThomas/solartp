@@ -17,15 +17,12 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTUtil jwtUtil;
     private final AuthService authService;
-    @Value("${app.frontend.url}")
-    private String frontendUrl;
 
 
 
     public OAuth2LoginSuccessHandler(JWTUtil jwtUtil,AuthService authService) {
         this.jwtUtil = jwtUtil;
         this.authService = authService;
-        System.out.println(frontendUrl + "OAuth2LoginSuccessHandler");
 
     }
 
@@ -41,10 +38,10 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         userDTO.setName(name);
         userDTO.setAvatar(picture);
          // ✅ Tạo Access Token & Refresh Token
-            String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24,"USER"); // 15 phút
+            String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24,"USER"); //
             String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
-            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
+            response.sendRedirect("https://solartp.com.vn/login-success?accessToken=" + accessToken);
 
     }
 }

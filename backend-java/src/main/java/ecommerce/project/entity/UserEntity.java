@@ -1,34 +1,39 @@
 package ecommerce.project.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
     private String password;
-    //Sua sao
-    @Column(name = "picture")
+
     private String picture;
 
-    @Column(name = "name")
     private String name;
+
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private RoleEntity role;
-
-    @OneToOne
-    @JoinColumn(name = "user_info_id")
+    // Quan hệ với bảng user_info
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_info_id", referencedColumnName = "id")
     private UserInfoEntity userInfo;
+
+    // Quan hệ với bảng roles (có thể nullable)
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = true)
+    private RoleEntity role; // Tạo sau nếu cần
 }

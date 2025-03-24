@@ -164,7 +164,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/tai-khoan/register",
+        `${API_BASE_URL}/tai-khoan/register`,
         { email, password }
       );
 
@@ -190,7 +190,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
   };
 
   // Đăng xuất người dùng
