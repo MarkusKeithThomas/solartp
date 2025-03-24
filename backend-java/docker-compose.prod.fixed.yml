@@ -1,0 +1,54 @@
+
+version: "3.8"
+
+services:
+  backend:
+    image: markus2905/solartp
+    container_name: solartp_backend_prod
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.prod
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_prod
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Hit@My5QL
+      MYSQL_DATABASE: solartp
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_prod
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+volumes:
+  mysql_data_prod:
+
+networks:
+  app_network:
+    driver: bridge
