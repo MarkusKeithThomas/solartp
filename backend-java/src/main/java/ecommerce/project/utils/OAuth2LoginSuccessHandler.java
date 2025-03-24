@@ -44,7 +44,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24,"USER"); // 15 phút
             String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
-            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
+            response.sendRedirect(frontendUrl+"/login-success?accessToken=" + accessToken);
 
     }
 }

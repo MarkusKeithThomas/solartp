@@ -1,14 +1,17 @@
-# Sử dụng OpenJDK 23 thay vì OpenJDK 17
-FROM openjdk:23-jdk-slim
+# Sử dụng JDK để chạy ứng dụng
+FROM eclipse-temurin:23-jdk
 
 # Đặt thư mục làm việc trong container
 WORKDIR /app
 
-# Copy file JAR vào container
+COPY wait-for-it.sh .
+RUN chmod +x wait-for-it.sh
+
+# Copy file JAR đã build sẵn ở local
 COPY target/solartp.jar app.jar
 
-# Expose cổng 8080
+# Mở port (tùy backend bạn chạy ở port nào, ví dụ 8080)
 EXPOSE 8080
 
-# Chạy ứng dụng bằng Java 23
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Chạy ứng dụng
+ENTRYPOINT ["./wait-for-it.sh", "mysql_local:3306", "--", "java", "-jar", "app.jar"]

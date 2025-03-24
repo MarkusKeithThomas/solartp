@@ -3,6 +3,7 @@ package ecommerce.project.utils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
@@ -10,8 +11,9 @@ import java.util.Date;
 
 @Component
 public class JWTUtil {
-    @Value("${jwt.secret}")
-    private String SECRET_KEY1;
+
+//    @Value("${jwt.secret}")
+//    private String SECRET_KEY1;
 
     private static final String SECRET_KEY = "4XKjK9AL/B0qX2msu3FIC4udzH+V2MsGg7TTPKbafbo="; // Thay bằng chuỗi bí mật đủ dài
     private static final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 1 ngay

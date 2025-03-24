@@ -136,7 +136,16 @@
 			<artifactId>s3</artifactId>
 			<version>2.17.89</version>
 		</dependency>
+
+		<!-- Flyway Migration (FREE) -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>10.20.1</version>
+		</dependency>
     </dependencies>
+
+
 
 	<build>
 		<plugins>
@@ -166,6 +175,14 @@
 			</plugin>
 		</plugins>
 		<finalName>solartp</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>db/migration/**</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 
 </project>
