@@ -1,8 +1,10 @@
 import axios from "axios";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 // ✅ Tạo một instance Axios
 const authAPI = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: `${API_BASE_URL}`,
   withCredentials: true, // ✅ Quan trọng nếu dùng HTTP-Only Cookies
 });
 
@@ -15,7 +17,7 @@ authAPI.interceptors.response.use(
   
         try {
           const refreshResponse = await axios.post(
-            "http://localhost:8080/tai-khoan/refresh",
+            `${API_BASE_URL}/refresh`,
             {},
             { withCredentials: true }
           );

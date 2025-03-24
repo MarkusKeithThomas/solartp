@@ -37,6 +37,7 @@ export function useArticleContext() {
     return useContext(ArticleContext);
 }
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log(API_BASE_URL+"ArticleProvider")
 
 
 export function ArticleProvider({ children }: { children: ReactNode }) {

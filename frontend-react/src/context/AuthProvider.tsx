@@ -36,7 +36,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // **Provider bao bọc ứng dụng**
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useUserLocalStorage<User | null>("user-info", null); // ✅ Thêm user-info
+  const [user, setUser] = useUserLocalStorage<User | null>("user-info",null); // ✅ Thêm user-info
   const [errorMessage, setErrorMessage] = useState(""); // Biến lưu lỗi
   const [errorMessageRegister, setErrorMessageRegister] = useState("");
   const [successMessage, setSuccessMessage] = useState<string>("");
