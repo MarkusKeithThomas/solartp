@@ -17,6 +17,8 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTUtil jwtUtil;
     private final AuthService authService;
+    @Value("${app.base-url}")
+    private String BASE_URL_GOOGLE_LOGIN;
 
 
 
@@ -41,7 +43,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             String accessToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24,"USER"); //
             String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
-            response.sendRedirect("https://solartp.com.vn/login-success?accessToken=" + accessToken);
+            // có thể khởi tạo không kịp với fileter nên lỗi đây cân sửa tay
+            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
 
     }
 }

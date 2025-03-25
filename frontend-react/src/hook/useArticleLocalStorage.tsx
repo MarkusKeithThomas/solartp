@@ -1,20 +1,69 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
-export function useArticleLocalStorage<T>(key:string,initialValue:T 
-    | (()=>T)){
-        const [value,setValue] = useState<T>(()=>{
-            const jsonValue = localStorage.getItem(key)
-            if(jsonValue != null) return JSON.parse(jsonValue)
-            if(typeof initialValue === "function"){
-                return (initialValue as ()=>T)()
-            } else {
-                return initialValue
-            }
-        })
-        useEffect(()=>{
-            localStorage.setItem(key,JSON.stringify(value))
-        },[key,value])
-        return [value,setValue] as [typeof value,typeof setValue]
-    
+type StoredValue<T> = {
+  value: T;
+  expiry: number;
+};
 
+type SetValue<T> = (value: T | ((prev: T) => T)) => void;
+
+export function useArticleLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  ttl: number
+): [T, SetValue<T>, () => void] {
+  const getStoredValue = (): T => {
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) return initialValue;
+
+    try {
+      const item: StoredValue<T> = JSON.parse(itemStr);
+      const now = Date.now();
+
+      if (now > item.expiry) {
+        localStorage.removeItem(key);
+        return initialValue;
+      }
+
+      return item.value;
+    } catch (error) {
+      console.warn("parse error:", error);
+      return initialValue;
+    }
+  };
+
+  const [storedValue, setStoredValue] = useState<T>(getStoredValue);
+
+  const setValue: SetValue<T> = (valueOrFn) => {
+    const value =
+      typeof valueOrFn === "function"
+        ? (valueOrFn as (prev: T) => T)(storedValue)
+        : valueOrFn;
+
+    const item: StoredValue<T> = {
+      value,
+      expiry: Date.now() + ttl,
+    };
+
+    localStorage.setItem(key, JSON.stringify(item));
+    setStoredValue(value);
+  };
+
+  const remove = () => {
+    localStorage.removeItem(key);
+    setStoredValue(initialValue);
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const value = getStoredValue();
+      if (value !== storedValue) {
+        setStoredValue(value);
+      }
+    }, 1000 * 1);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return [storedValue, setValue, remove];
 }
