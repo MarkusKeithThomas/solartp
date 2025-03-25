@@ -1,9 +1,9 @@
 User-agent: *
-Disallow: /gio-hang
-Disallow: /checkout
+Disallow: /den-nang-luong-mat-troi
+Disallow: /he-thong-dien-mat-troi
 Disallow: /tai-khoan
-Disallow: /dev
-Disallow: /test
-Disallow: /tag
+Disallow: /lien-he
+Disallow: /thanh-toan
+Disallow: /tim-kiem
 
 Sitemap: https://solartp.com.vn/sitemap.xml
