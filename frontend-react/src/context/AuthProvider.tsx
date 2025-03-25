@@ -53,28 +53,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const accessToken = localStorage.getItem("accessToken");
     const savedUser = localStorage.getItem("user-info");
 
-    if (savedUser) {
-        setUser(JSON.parse(savedUser)); // ✅ Load user từ localStorage ngay khi app khởi chạy
+    if (!accessToken || savedUser === null) return;
+
+    try {
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser); // ✅ Load user từ localStorage
+
+      axios
+        .get(`${API_BASE_URL}/tai-khoan/user-info`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+        .then((response) => {
+          setUser(response.data.data);
+          localStorage.setItem("user-info", JSON.stringify(response.data.data)); // ✅ Cập nhật lại user vào localStorage
+        })
+        .catch((error) => {
+          if (error.response?.status === 401) {
+            handleRefreshToken();
+          }
+        });
+    } catch (error) {
+      localStorage.removeItem("user-info");
     }
-
-    if (!accessToken) return;
-
-    axios
-      .get(`${API_BASE_URL}/tai-khoan/user-info`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
-      .then((response) => {
-        setUser(response.data.data);
-        localStorage.setItem("user-info", JSON.stringify(response.data.data)); // ✅ Cập nhật lại user vào localStorage
-      })
-      .catch((error) => {
-        console.error("Lỗi lấy thông tin người dùng:", error);
-        if (error.response?.status === 401) {
-          console.warn("Access Token hết hạn! Cần refresh token.");
-          handleRefreshToken();
-        }
-      });
-}, []);
+  }, []);
 
   const handleRefreshToken = async () => {
     try {
@@ -86,19 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.data.data) {
         localStorage.setItem("accessToken", response.data.data);
-        console.log(
-          "Refresh token thành công, Access Token mới:",
-          response.data.data
-        );
       } else {
-        console.warn(
-          "Không lấy được Access Token mới, user cần đăng nhập lại!"
-        );
         logout();
         navigate("/tai-khoan");
       }
     } catch (error) {
-      console.error("Lỗi refresh token:", error);
       logout();
     }
   };
@@ -121,7 +114,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (accessToken) {
         localStorage.setItem("accessToken", response.data.data);
       } else {
-        console.error("Lỗi: Không có accessToken trả về từ API");
       }
 
       // ✅ 2. Gọi API `/user-info` để lấy thông tin user
@@ -135,7 +127,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userData = userResponse.data.data;
       setUser(userData);
 
-      console.log("Login success userData:", userData);
 
       // ✅ Chuyển hướng đến trang chủ
       setSuccessMessage("🎉 Đăng nhập thành công! Welcome to SolarTP.");
@@ -147,13 +138,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setErrorMessage(
           error.response?.data?.message || "Vui lòng đăng nhập lại"
         );
-        console.error(
-          "Lỗi Đăng Thông Tin Đăng Nhập:",
-          error.response?.data?.message || "Lỗi không xác định từ API"
-        );
+
       } else {
         setErrorMessage(error.message);
-        console.error("Lỗi hệ thống:", error.message);
       }
     }
   };
@@ -179,10 +166,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigate("/tai-khoan");
       }, 2000);
     } catch (error: any) {
-      console.error(
-        "Lỗi Đăng Kí:",
-        error.response?.data?.message || "Lỗi không xác định từ API"
-      );
       setErrorMessageRegister(
         error.response?.data?.data || "Vui lòng đăng kí lại"
       );

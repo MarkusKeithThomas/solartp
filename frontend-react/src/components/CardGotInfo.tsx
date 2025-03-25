@@ -39,10 +39,8 @@ export function CardGotInfo() {
         {/* 🔥 Điều khoản */}
         <p className="text-muted small mt-2 text-center">
           *Khi đăng ký, bạn đồng ý{" "}
-          <p className="text-decoration-none">
             điều khoản của Solar TP
-          </p>
-        </p>
+            </p>
       </Card.Body>
     </Card>
   );

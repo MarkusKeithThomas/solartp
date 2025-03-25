@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Dropdown, Image, Form } from "react-bootstrap";
 import {
   BsPerson,
-  BsBox,
-  BsHeart,
   BsQuestionCircle,
   BsArrowRight,
   BsLightbulb,
 } from "react-icons/bs";
 import { useAuthContext } from "../context/AuthProvider";
-import { logout } from "../api/authApi";
 interface LoginProps {
   className?: string; // Cho phép nhận className từ ngoài
 }
@@ -17,7 +14,6 @@ interface LoginProps {
 export function LoginDropDown({ className }: LoginProps) {
   const [darkMode, setDarkMode] = useState(false);
   const { user, logout } = useAuthContext();
-  console.log(user?.avatar);
 
   return (
     <Dropdown align="end" className={className}>
