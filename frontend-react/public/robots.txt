@@ -1,4 +1,9 @@
 User-agent: *
-Allow: /
+Disallow: /gio-hang
+Disallow: /checkout
+Disallow: /tai-khoan
+Disallow: /dev
+Disallow: /test
+Disallow: /tag
 
 Sitemap: https://solartp.com.vn/sitemap.xml
