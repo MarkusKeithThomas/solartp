@@ -1,6 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
 import "../styles/custom.css"; // Import CSS tùy chỉnh
-import hello from "../components/fakeimags/logo_shopee.png";
 
 export function Footer() {
   return (
@@ -28,7 +27,7 @@ export function Footer() {
 
           {/* Cột 2: Giới thiệu công ty */}
           <Col md={3} className="justify-content-center">
-            <h5 className="fw-bold">Công ty TNHH MTV</h5>
+            <h5 className="fw-bold">Công ty TNHH MTV SOLAR TP</h5>
             <p>
               <a href="#" className="footer-link">
                 Địa chỉ: 320/10 Hà Huy Giáp, P. Thạnh Lộc, Quận 12, Thành phố Hồ

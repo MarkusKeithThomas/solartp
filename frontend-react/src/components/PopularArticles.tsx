@@ -9,7 +9,7 @@ interface ArticlePopu {
   slugTitle:string
 }
 interface PopularArticlesProps {
-  articles:ArticlePopu[]
+  articles?:ArticlePopu[]
 }
 
 export function PopularArticles({articles}:PopularArticlesProps) {
@@ -21,7 +21,7 @@ export function PopularArticles({articles}:PopularArticlesProps) {
     <div className="popular-articles">
 
       <h4 className="fw-bold border-bottom pb-2 mt-2" style={{color:"black"}}>Xem nhiều</h4>
-      {articles.map((article) => (
+      {articles?.map((article) => (
             <Link to={`/bai-viet/${article.slugTitle}`}>
 
         <Card key={article.id} className="border-0 gx-1 gy-0 mb-3 popular-card">

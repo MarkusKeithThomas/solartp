@@ -35,9 +35,10 @@ export function useArticleLocalStorage<T>(
   const [storedValue, setStoredValue] = useState<T>(getStoredValue);
 
   const setValue: SetValue<T> = (valueOrFn) => {
+    const current = getStoredValue();
     const value =
       typeof valueOrFn === "function"
-        ? (valueOrFn as (prev: T) => T)(storedValue)
+        ? (valueOrFn as (prev: T) => T)(Array.isArray(current) ? [...current] : current)
         : valueOrFn;
 
     const item: StoredValue<T> = {
@@ -60,7 +61,7 @@ export function useArticleLocalStorage<T>(
       if (value !== storedValue) {
         setStoredValue(value);
       }
-    }, 1000 * 60);
+    }, 1000 * 1); // kiểm tra mỗi giây (nếu cần kiểm tra gấp hơn)
 
     return () => clearInterval(interval);
   }, []);

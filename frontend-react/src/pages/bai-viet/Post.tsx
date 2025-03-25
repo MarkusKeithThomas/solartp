@@ -17,7 +17,7 @@ export function Post() {
 
         {/* Cột chứa danh sách bài viết */}
         <Col lg={8}>
-          {articles.map((item) => (
+          {articles?.map((item) => (
             <Row key={item.id} className="bg-light p-1">
               <Col
                 sm={12}
@@ -74,7 +74,7 @@ export function Post() {
       </Row>
 
       {/* Thêm SEO */}
-      {articles.length > 0 && (
+      {articles?.length > 0 && (
         <Seo
           title={articles[0].title}
           description={articles[0].header1}
