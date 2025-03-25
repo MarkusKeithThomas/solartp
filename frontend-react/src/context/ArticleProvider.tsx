@@ -42,7 +42,7 @@ console.log(API_BASE_URL+"ArticleProvider")
 
 export function ArticleProvider({ children }: { children: ReactNode }) {
     console.log("BASE URL:", API_BASE_URL);
-    const [articles, setArticle] = useArticleLocalStorage<Article[]>("article-save",[],1000 * 5);
+    const [articles, setArticle] = useArticleLocalStorage<Article[]>("article-save",[],1000 * 60 * 60);
     const[shortArticles,setShortArticles] = useState<Article[]>([])
     const [lastId, setLastId] = useState(0);
     const observerRef = useRef(null);

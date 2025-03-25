@@ -60,7 +60,7 @@ export function useArticleLocalStorage<T>(
       if (value !== storedValue) {
         setStoredValue(value);
       }
-    }, 1000 * 1);
+    }, 1000 * 60);
 
     return () => clearInterval(interval);
   }, []);
