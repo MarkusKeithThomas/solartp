@@ -42,7 +42,7 @@ console.log(API_BASE_URL+"ArticleProvider")
 
 export function ArticleProvider({ children }: { children: ReactNode }) {
     console.log("BASE URL:", API_BASE_URL);
-    const [articles, setArticle] = useArticleLocalStorage<Article[]>("article-save",[]);
+    const [articles, setArticle] = useArticleLocalStorage<Article[]>("article-save",[],1000 * 5);
     const[shortArticles,setShortArticles] = useState<Article[]>([])
     const [lastId, setLastId] = useState(0);
     const observerRef = useRef(null);
@@ -50,6 +50,10 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
     const [hasMore, setHasMore] = useState(true); // Kiểm soát còn bài để tải hay không
 
 
+    useEffect(() => {
+        console.log("Articles:", articles);
+      }, [articles]);
+      
     const fetchArticles = async () => {
         if (loading || !hasMore) return; // Tránh gọi API liên tục khi chưa có dữ liệu mới
       setLoading(true);
@@ -58,7 +62,9 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
         const res = await axios.get(`${API_BASE_URL}/bai-viet/list`, {
           params: { lastId: lastId, limit: 10 },
         });
-        if (res.data.articles.length > 0) {
+        if (res.data.articles?.length > 0) {
+            console.log("BASE URL:", res.data.articles);
+
             // Kiểm tra xem có dữ liệu mới không, tránh trùng lặp
             const newArticles: Article[] = res.data.articles.filter(
                 (newArticle: Article) => !articles.some((oldArticle: Article) => oldArticle.id === newArticle.id)
@@ -67,7 +73,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
                 setHasMore(false); // Không còn bài viết mới
             } else {
                 
-                setArticle((prev) => [...prev, ...newArticles]); // Gộp dữ liệu đúng cách
+                setArticle((prev: Article[]) => [...prev, ...newArticles]); // Gộp dữ liệu đúng cách
                 setLastId(res.data.lastId); // Cập nhật lastId đúng cách
             }
         }
@@ -78,7 +84,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
       }
     };
     useEffect(() => {
-        if (articles.length >= 10) {
+        if (articles?.length >= 10) {
             setShortArticles(articles.slice(5, 10)); // Lấy từ bài viết số 5 đến số 10
         }
     }, [articles]);

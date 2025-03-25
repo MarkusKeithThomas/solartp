@@ -1,19 +1,22 @@
 import { useState } from "react";
-import { Form, Button, Alert, Container, Col, Row } from "react-bootstrap";
+import { Form, Button, Alert, Container, Col, Row, Spinner } from "react-bootstrap";
 import axios from "axios";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
   const handleForgotPassword = async () => {
+    setLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/tai-khoan/forgot-password`, { email });//Todo Can doi API
+      const response = await axios.post(`${API_BASE_URL}/tai-khoan/forgot-password`, { email });
       setMessage(response.data.message);
     } catch (error) {
       setMessage("❌ Không tìm thấy tài khoản với email này.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,10 +34,30 @@ export function ForgotPassword() {
                 placeholder="Nhập email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </Form.Group>
-            <Button variant="primary" className="mt-3 w-100" onClick={handleForgotPassword}>
-              Gửi yêu cầu đặt lại mật khẩu
+            <Button
+              variant="primary"
+              className="mt-3 w-100 d-flex justify-content-center align-items-center"
+              onClick={handleForgotPassword}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Đang gửi yêu cầu...
+                </>
+              ) : (
+                "Gửi yêu cầu đặt lại mật khẩu"
+              )}
             </Button>
           </Form>
         </Col>

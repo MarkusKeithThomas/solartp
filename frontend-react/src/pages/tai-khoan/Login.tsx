@@ -1,10 +1,9 @@
 import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"; // ✅ Dùng thư viện mới
-import { jwtDecode } from "jwt-decode";
 import { useAuthContext } from "../../context/AuthProvider";
 import { useState } from "react";
 import FaGogle from "../../assets/Google.svg";
-import { useNavigate } from 'react-router-dom';
+
 
 const GOOGLE_CLIENT_ID =
   "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com"; // 🔹 Thay bằng Client ID của bạn
@@ -15,7 +14,6 @@ export function Login() {
   const { login, loginWithGoogle, handleErrorLogin, successMessage } =
     useAuthContext();
   const errorMessage = handleErrorLogin();
-  const navite = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Ngăn form tải lại trang
