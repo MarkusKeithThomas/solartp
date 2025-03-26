@@ -60,7 +60,8 @@ public class SecurityConfig {
                             "/tai-khoan/google",
                             "/check-env",
                             "/tai-khoan/**",
-                            "/bai-viet/list/**"
+                            "/bai-viet/list/**",
+                            "/robots.txt"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/file/**").hasAuthority("ROLE_ADMIN");
