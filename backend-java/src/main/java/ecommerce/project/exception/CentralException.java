@@ -121,6 +121,15 @@ public class CentralException {
         LOGGER.log(Level.SEVERE, "Unhandled Exception: " + e.getMessage(), e);
         return buildErrorResponse(500, "Lỗi hệ thống! Vui lòng thử lại sau.", e);
     }
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<BaseResponse> handleProductNotFound(ProductNotFoundException ex) {
+        return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<BaseResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
+        return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
+    }
 
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi
