@@ -49,5 +49,10 @@ public class FileController {
         List<String> imageUrl = cloudflareR2Service.uploadFileToCloudFlare(files);
         return ResponseEntity.ok(imageUrl);
     }
+    @GetMapping("/get-list-url")
+    public ResponseEntity<?> downloadUrlFile (){
+        List<String> listUrl = cloudflareR2Service.getAllUrlImage();
+        return  ResponseEntity.ok(new BaseResponse(200,"Lấy danh sách Url thành công",listUrl));
+    }
 
 }

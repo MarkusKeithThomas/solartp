@@ -14,21 +14,38 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "sku_product", nullable = false, unique = true)
+    private String skuProduct;
+
+    @Column(nullable = false)
     private String name;
-    @Column(name = "slug")
+
     private String slug;
 
-    @Column(name = "new_price")
+    @Column(name = "new_price", precision = 10, scale = 1)
     private BigDecimal newPrice;
 
-    @Column(name = "old_price")
+    @Column(name = "old_price", precision = 10, scale = 1)
     private BigDecimal oldPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private CategoryEntity category;
 
-    @Column(name = "created_at")
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
+    @Column(name = "sold_quantity")
+    private int soldQuantity;
+
+    private String wattage;
+
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }

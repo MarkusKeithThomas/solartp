@@ -14,10 +14,10 @@ public class ProductImageEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @Column(name = "alt_text")
@@ -29,7 +29,7 @@ public class ProductImageEntity {
     @Column(name = "display_order")
     private Integer displayOrder;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
 }
