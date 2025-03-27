@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CloudflareR2Service {
     List<String> uploadFileToCloudFlare(List<MultipartFile> file);
+    List<String> getAllUrlImage ();
 }

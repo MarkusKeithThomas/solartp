@@ -11,9 +11,8 @@ public class ProductSpecificationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId; // Hoặc dùng @ManyToOne nếu cần liên kết entity
 
     @Column(name = "spec_group")
     private String specGroup;
@@ -22,6 +21,6 @@ public class ProductSpecificationEntity {
     private String value;
 
     @Column(name = "display_order")
-    private Integer displayOrder = 0;
+    private Integer displayOrder;
 }
 

@@ -1,7 +1,5 @@
 package ecommerce.project.service;
 
-import ecommerce.project.exception.UploadFileToCloudFlareException;
-import io.jsonwebtoken.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,12 +8,15 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Object;
+
 
 import java.net.URI;
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -52,6 +53,21 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
         // Chờ tất cả file upload hoàn tất và trả về danh sách URL
         return uploadFutures.stream().map(CompletableFuture::join).collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> getAllUrlImage() {
+        ListObjectsV2Request request = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .build();
+
+        ListObjectsV2Response response = s3Client.listObjectsV2(request);
+
+        return response.contents().stream()
+                .map(S3Object::key)
+                .map(key -> link_image_get + key)
+                .collect(Collectors.toList());
+    }
+
 
     private String uploadFile(MultipartFile file) {
         try {

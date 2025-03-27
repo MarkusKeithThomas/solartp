@@ -1,20 +1,16 @@
 package ecommerce.project.controller;
 
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import ecommerce.project.baseresponse.BaseResponse;
-import ecommerce.project.baseresponse.LoginResponse;
 import ecommerce.project.dto.UserDTO;
 import ecommerce.project.request.RequestUser;
 import ecommerce.project.service.AuthService;
-import ecommerce.project.utils.JWTUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/tai-khoan")
@@ -88,7 +84,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RequestUser requestUser) {
+    public ResponseEntity<?> register(@Validated @RequestBody RequestUser requestUser) {
         String mess = authService.register(requestUser.getEmail(), requestUser.getPassword());
         BaseResponse baseResponse = new BaseResponse();
         baseResponse.setCode(200);
