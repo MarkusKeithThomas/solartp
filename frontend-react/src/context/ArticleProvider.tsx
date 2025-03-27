@@ -95,7 +95,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
   };
   useEffect(() => {
     if (articles?.length >= 4) {
-      setShortArticles(articles.slice(5, 10)); // Lấy từ bài viết số 5 đến số 10
+      setShortArticles(articles.slice(5, 11)); // Lấy từ bài viết số 5 đến số 10
     }
   }, [articles]);
 

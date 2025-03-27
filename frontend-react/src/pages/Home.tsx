@@ -5,6 +5,8 @@ import { ProductCard } from "../components/ProductCard";
 import productItem from "../assets/fakedata/dataitem.json";
 import newsItem from "../assets/fakedata/newsitem.json";
 import { NewsCard } from "../components/NewsCard";
+import { useArticleContext } from "../context/ArticleProvider";
+import { formatContentForPost } from "../ultities/formatContentForCardPost";
 
 export function Home() {
   const quantityHotSale = productItem.filter(
@@ -13,6 +15,8 @@ export function Home() {
   const productHotSale = productItem.filter(
     (product) => product.tag === "hotsale"
   );
+
+  const {shortArticles} = useArticleContext()
 
   return (
     <>
@@ -103,14 +107,21 @@ export function Home() {
         {/* Tiêu đề */}
         <h2 className=" fw-bold mb-2 mt-2">Bản tin</h2>
         {/* Danh sách bài viết */}
-        <Row className="gx-2 gy-2 p-2">
-        {newsItem
-            .filter((news) => news.tag === "today").slice(0,8)
-            .map((news) => (
-              <Col key={news.id} xs={12} md={6} lg={3} className="gx-2 gy-2">
-                <NewsCard {...news} />
-              </Col>
-            ))}
+        <Row className="gx-0 gy-2 p-0">
+          {shortArticles
+                        .slice(0, 10)
+                        .map((news) => (
+                          <Col xs={12} md={4} lg={6} key={news.id}>
+          
+                            <NewsCard
+                              id={news.id}
+                              title={news.title}
+                              image={news.image1Url} // Đổi thành `image` nếu cần
+                              description={formatContentForPost(news.content11)} // Đổi thành `description` nếu cần
+                              slug={news.slugTitle}
+                            />{" "}                  
+                          </Col>
+                        ))}
         </Row>
 
         {/* Nút "Xem thêm bài tin" */}
