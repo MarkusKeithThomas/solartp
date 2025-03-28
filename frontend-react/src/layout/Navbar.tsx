@@ -31,7 +31,7 @@ export function Navbar() {
       >
           {/* Logo */}
           <NavbarBs.Brand href="/" className="ms-2">
-            <img src="/imgs/logo_tpsolar.png" alt="Logo" height="60" />
+            <img src="/imgs/logo_tpsolar.webp" alt="Logo" height="60" />
           </NavbarBs.Brand>
 
           {/* Navigation */}
