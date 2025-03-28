@@ -38,14 +38,14 @@ export function useArticleLocalStorage<T>(
     const current = getStoredValue();
     const value =
       typeof valueOrFn === "function"
-        ? (valueOrFn as (prev: T) => T)(Array.isArray(current) ? [...current] : current)
+        ? (valueOrFn as (prev: T) => T)(current)
         : valueOrFn;
-
+  
     const item: StoredValue<T> = {
       value,
       expiry: Date.now() + ttl,
     };
-
+  
     localStorage.setItem(key, JSON.stringify(item));
     setStoredValue(value);
   };

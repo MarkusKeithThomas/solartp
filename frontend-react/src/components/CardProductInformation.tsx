@@ -1,4 +1,4 @@
-import { Container, Row, Col, Accordion } from "react-bootstrap";
+import { Row, Col, Accordion } from "react-bootstrap";
 
 export function CardProductInformation() {
   return (

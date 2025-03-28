@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import '../styles/NewsCard.css'
 import { Link } from "react-router-dom";
@@ -27,7 +27,7 @@ export function NewsCard({ id, title, image, description,slug }: NewsProps) {
       
     >
 
-      <Row className="d-flex align-items-center gx-0 p-1">
+      <Row key={id} className="d-flex align-items-center gx-0 p-1">
         {/* 🔥 Image on the left */}
         <Col xs={4} md={6} lg={4}>
           <Card.Img
