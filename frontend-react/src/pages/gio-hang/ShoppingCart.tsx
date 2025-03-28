@@ -2,7 +2,6 @@ import { Button, Offcanvas, Stack } from "react-bootstrap";
 import { useShoppingCart } from "../../context/ProductContext";
 import "../../styles/custom.css";
 import { CartItem } from '../../components/CartItem';
-import { Footer } from "../../layout/Footer";
 import storeItem from '../../assets/fakedata/dataitem.json'
 type ShoppingCartProps = {
   isOpen: boolean;

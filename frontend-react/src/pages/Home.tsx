@@ -3,7 +3,6 @@ import { HomeSlider } from "../components/HomeSlider";
 import "../styles/custom.css"; // Kiểm tra đúng đường dẫn
 import { ProductCard } from "../components/ProductCard";
 import productItem from "../assets/fakedata/dataitem.json";
-import newsItem from "../assets/fakedata/newsitem.json";
 import { NewsCard } from "../components/NewsCard";
 import { useArticleContext } from "../context/ArticleProvider";
 import { formatContentForPost } from "../ultities/formatContentForCardPost";

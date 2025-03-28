@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { CustomBreadcrumb } from "../../layout/CustomBreadcrumb";
 import { CardGotInfo } from "../../components/CardGotInfo";
