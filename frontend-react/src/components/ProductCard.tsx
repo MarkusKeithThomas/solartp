@@ -2,7 +2,6 @@ import { Card, Button, Badge } from "react-bootstrap";
 import { useShoppingCart } from "../context/ProductContext";
 import { Link } from "react-router-dom";
 import { formatTitle } from "../ultities/formatTitle";
-import { formatSlug } from "../ultities/formatForLug";
 import { discountProduct } from "../ultities/discountProduct";
 
 interface ProductProps {
@@ -18,7 +17,6 @@ interface ProductProps {
 export function ProductCard({
   id,
   name,
-  description,
   slug,
   image,
   priceOld,

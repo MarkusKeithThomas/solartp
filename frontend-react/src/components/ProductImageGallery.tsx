@@ -1,6 +1,6 @@
 import { Container, Row, Col, Image } from "react-bootstrap";
-import { useEffect, useState, RefObject } from "react";
 import imageDefault from "../components/imgs/image.png";
+import { useEffect, useState } from "react";
 
 type ProductGalleryProps = {
   id: number;
