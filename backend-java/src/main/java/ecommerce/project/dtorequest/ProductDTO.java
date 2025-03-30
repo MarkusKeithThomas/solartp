@@ -1,4 +1,4 @@
-package ecommerce.project.dto;
+package ecommerce.project.dtorequest;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ProductDTO {
     private long id;
-    private long category_id;
+    private Long category_id;
     private String sku_product;
     private String wattage;
     private String name;
@@ -18,6 +18,7 @@ public class ProductDTO {
     private int stock_quantity;
     private int sold_quantity;
     private String description;
+    private boolean isActive;
 
     // Dữ liệu đi kèm khi thêm mới sản phẩm
     private List<ProductImageDTO> images;

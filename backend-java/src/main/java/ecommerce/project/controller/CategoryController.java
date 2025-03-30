@@ -1,7 +1,7 @@
 package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
-import ecommerce.project.dto.CategoryDTO;
+import ecommerce.project.dtorequest.CategoryDTO;
 import ecommerce.project.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
-
-import static org.springframework.data.redis.connection.ReactiveStreamCommands.AddStreamRecord.body;
 
 @RestController
 @RequestMapping("/categories")

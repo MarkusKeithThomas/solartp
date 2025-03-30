@@ -14,21 +14,21 @@ export function HomeSlider() {
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="/imgs/anh_banner1_home.jpg"
+            src="/imgs/anh_banner1_home.webp"
             alt="Dự án 1"
           />
         </Carousel.Item>
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="/imgs/anh_banner2_home.jpg"
+            src="/imgs/anh_banner2_home.webp"
             alt="Dự án 2"
           />
         </Carousel.Item>
         <Carousel.Item>
           <img
             className="d-block w-100"
-            src="/imgs/anh_banner3_home.jpg"
+            src="/imgs/anh_banner3_home.webp"
             alt="Dự án 3"
           />
         </Carousel.Item>

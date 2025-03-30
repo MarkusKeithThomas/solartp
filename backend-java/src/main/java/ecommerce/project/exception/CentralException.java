@@ -130,6 +130,10 @@ public class CentralException {
     public ResponseEntity<BaseResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
         return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
     }
+    @ExceptionHandler(DeleteProductException.class)
+    public ResponseEntity<BaseResponse> handleDeleteProductNotFound(Exception ex) {
+        return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
+    }
 
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi

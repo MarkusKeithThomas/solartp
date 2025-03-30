@@ -2,6 +2,7 @@ package ecommerce.project.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class ProductEntity {
     private String name;
 
     private String slug;
+    private String description;
 
     @Column(name = "new_price", precision = 10, scale = 1)
     private BigDecimal newPrice;
@@ -46,6 +48,10 @@ public class ProductEntity {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @Column(name = "note")
+    private String note;
+
     @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }

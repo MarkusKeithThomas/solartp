@@ -3,28 +3,32 @@ import { useShoppingCart } from "../context/ProductContext";
 import { Link } from "react-router-dom";
 import { formatTitle } from "../ultities/formatTitle";
 import { formatSlug } from "../ultities/formatForLug";
+import { discountProduct } from "../ultities/discountProduct";
 
 interface ProductProps {
   id: number;
   name: string;
+  description: string;
+  slug: string;
   image: string;
   priceOld: number;
   priceNew: number;
-  discount: number;
 }
 
 export function ProductCard({
   id,
   name,
+  description,
+  slug,
   image,
   priceOld,
   priceNew,
-  discount,
 }: ProductProps) {
   const { increaseItemQuantity, getItemQuantity } = useShoppingCart();
+  const discount = discountProduct(priceNew,priceOld);
 
   return (
-    <Card className="shadow-sm border-0 rounded-4 product-card mt-2">
+    <Card key={id} className="shadow-sm border-0 rounded-4 product-card mt-2">
       {/* Huy hiệu giảm giá */}
       {discount > 0 && (
         <Badge className="position-absolute top-0 start-0 bg-danger text-white fs-6 rounded-end p-2 mt-2">
@@ -33,18 +37,17 @@ export function ProductCard({
       )}
 
       {/* Ảnh sản phẩm - Được bọc bởi Link */}
-      <Link to={`/den-nang-luong-mat-troi/${formatSlug(name)}/${id}/2`} className="text-decoration-none">
+      <Link to={`/den-nang-luong-mat-troi/${slug}`} className="text-decoration-none">
         <Card.Img variant="top" src={image} className="product-image mt-3" />
       </Link>
 
       <Card.Body className="d-flex flex-column justify-content-between text-center p-3 card-body-fixed">
         {/* Tên sản phẩm - Được bọc bởi Link */}
-        <Link to={`/den-nang-luong-mat-troi/${formatSlug(name)}/${id}`} className="text-decoration-none">
+        <Link to={`/den-nang-luong-mat-troi/${slug}`} className="text-decoration-none">
           <Card.Title className="fs-6 fw-bold product-title d-flex align-items-center justify-content-center">
             {formatTitle(name)}
           </Card.Title>
         </Link>
-
         {/* Giá cũ và giá mới */}
         <div className="d-flex flex-column justify-content-between price-container">
           <span className="text-decoration-line-through old-price" style={{ color: "red" }}>

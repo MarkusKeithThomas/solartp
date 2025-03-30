@@ -52,28 +52,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const savedUser = localStorage.getItem("user-info");
-
-    if (!accessToken || savedUser === null) return;
-
+  
+    // Nếu không có token hoặc user => Xem như chưa đăng nhập
+    if (!accessToken || !savedUser) {
+      logout(); // đảm bảo dọn dẹp nếu cần
+      return;
+    }
+  
     try {
       const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser); // ✅ Load user từ localStorage
-
+      if (!parsedUser?.id || !parsedUser?.email) {
+        throw new Error("Thông tin user không hợp lệ");
+      }
+  
+      // Tạm gán user từ localStorage
+      setUser(parsedUser);
+  
+      // Gọi API xác thực lại user
       axios
         .get(`${API_BASE_URL}/tai-khoan/user-info`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         })
         .then((response) => {
-          setUser(response.data.data);
-          localStorage.setItem("user-info", JSON.stringify(response.data.data)); // ✅ Cập nhật lại user vào localStorage
+          const userData = response.data.data;
+          setUser(userData);
+          localStorage.setItem("user-info", JSON.stringify(userData));
         })
         .catch((error) => {
           if (error.response?.status === 401) {
-            handleRefreshToken();
+            console.warn("Access Token hết hạn. Đang thực hiện refresh...");
+            handleRefreshToken(); // Gọi hàm xử lý refresh token
+          } else {
+            console.error("Lỗi xác thực người dùng:", error);
+            logout(); // fallback nếu lỗi bất thường
           }
         });
-    } catch (error) {
-      localStorage.removeItem("user-info");
+    } catch (e) {
+      console.warn("Lỗi khi parse user-info. Đăng xuất người dùng.");
+      logout();
     }
   }, []);
 
@@ -182,7 +198,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("accessToken"); // ✅ Xóa accessToken hoàn toàn
     localStorage.removeItem("user-info"); // ✅ Xóa thông tin user
     googleLogout();
-    navigate("/tai-khoan"); // ✅ Chuyển hướng về trang đăng nhập
   };
 
   return (

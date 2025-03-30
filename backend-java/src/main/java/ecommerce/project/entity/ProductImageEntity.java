@@ -1,7 +1,9 @@
 package ecommerce.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -13,9 +15,12 @@ public class ProductImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private ProductEntity product;
+
+    @Column(name = "product_id")
+    private long productId;
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
@@ -30,6 +35,8 @@ public class ProductImageEntity {
     private Integer displayOrder;
 
     @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
+
 
 }

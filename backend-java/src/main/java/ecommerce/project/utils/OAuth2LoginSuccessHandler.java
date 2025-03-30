@@ -1,6 +1,6 @@
 package ecommerce.project.utils;
 
-import ecommerce.project.dto.UserDTO;
+import ecommerce.project.dtorequest.UserDTO;
 import ecommerce.project.service.AuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -44,7 +44,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             String refreshToken = jwtUtil.generateToken(email, 1000 * 60 * 60 * 24 * 15,"USER"); // 7 ngày
             authService.saveRefreshToken(userDTO,refreshToken);
             // có thể khởi tạo không kịp với fileter nên lỗi đây cân sửa tay
-            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
+//            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
+                    response.sendRedirect("http://solartp.com.vn/login-success?accessToken=" + accessToken);
+
 
     }
 }

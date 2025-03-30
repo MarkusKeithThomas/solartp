@@ -76,7 +76,7 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
             }
 
             // Sử dụng UUID để tránh trùng tên file
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String fileName =file.getOriginalFilename();
 
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)

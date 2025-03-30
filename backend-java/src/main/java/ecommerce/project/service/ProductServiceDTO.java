@@ -1,6 +1,6 @@
 package ecommerce.project.service;
 
-import ecommerce.project.dto.ProductDTO;
+import ecommerce.project.dtorequest.ProductDTO;
 import java.util.List;
 import java.util.Optional;
 

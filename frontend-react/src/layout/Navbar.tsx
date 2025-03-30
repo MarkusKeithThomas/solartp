@@ -9,6 +9,8 @@ import "../styles/custom.css"; // Import CSS tùy chỉnh
 import { LoginDropDown } from "../components/LoginDropDown.tsx";
 import { useState, useEffect } from "react";
 import { useShoppingCart } from "../context/ProductContext.tsx";
+
+
 export function Navbar() {
   const { openCart, cartQuantity } = useShoppingCart();
   const [scrolled, setScrolled] = useState(false);

@@ -1,6 +1,6 @@
 package ecommerce.project.service;
 
-import ecommerce.project.dto.CategoryDTO;
+import ecommerce.project.dtorequest.CategoryDTO;
 import ecommerce.project.entity.CategoryEntity;
 import ecommerce.project.exception.CategoryNotFoundException;
 import ecommerce.project.repository.CategoryRepository;

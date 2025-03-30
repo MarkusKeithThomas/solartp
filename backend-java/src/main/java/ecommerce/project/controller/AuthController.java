@@ -2,7 +2,7 @@ package ecommerce.project.controller;
 
 
 import ecommerce.project.baseresponse.BaseResponse;
-import ecommerce.project.dto.UserDTO;
+import ecommerce.project.dtorequest.UserDTO;
 import ecommerce.project.request.RequestUser;
 import ecommerce.project.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;

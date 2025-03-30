@@ -1,6 +1,5 @@
 package ecommerce.project.baseresponse;
 
-import ecommerce.project.dto.ProductDTO;
 import lombok.Data;
 
 @Data

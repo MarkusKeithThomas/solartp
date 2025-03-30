@@ -37,9 +37,9 @@ function App() {
     <HelmetProvider>
     <GoogleOAuthProvider clientId={clientId}>
     <AuthProvider>  
+    <ProductProvider>
       <ProductContext>
       <QueryClientProvider client={queryClient}>
-        <ProductProvider>
           <ArticleProvider>
 
         <Navbar />
@@ -56,7 +56,8 @@ function App() {
             <Route path="/lien-he" element={<Contact />} />
             <Route path="/thanh-toan" element={<Checkout />} />
             <Route path="/thanh-toan/confirm" element={<ConfirmOrder />} />
-            <Route path="/den-nang-luong-mat-troi/:slug/:productId/:idDetail" element={<ProductDetail/>} />
+            <Route path="/den-nang-luong-mat-troi/:slug" element={<ProductDetail/>} />
+            
             <Route path="/tai-khoan" element={<Login />} />
             <Route path="/tai-khoan/sign-up" element={<SignUp/>} />
             <Route path="/tai-khoan/forgot-password" element={<ForgotPassword/>} />
@@ -66,11 +67,12 @@ function App() {
           </Routes>
         </Container>
         </ArticleProvider>
-        </ProductProvider>
         <Footer />
         </QueryClientProvider>
 
       </ProductContext>
+      </ProductProvider>
+
       </AuthProvider>
       </GoogleOAuthProvider>
       </HelmetProvider>

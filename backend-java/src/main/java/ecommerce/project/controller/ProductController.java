@@ -1,11 +1,16 @@
 package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
-import ecommerce.project.dto.ProductDTO;
-import ecommerce.project.service.ProductServiceDTO;
+import ecommerce.project.baseresponse.CustomPageResponse;
+import ecommerce.project.dtorequest.ProductDTO;
+import ecommerce.project.dtoresponse.ProductResponseDTO;
+import ecommerce.project.service.ProductExcelService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -13,40 +18,37 @@ import java.util.List;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
-
-    private final ProductServiceDTO productService;
+    private final ProductExcelService productService;
 
     @PostMapping("/add")
-    public ResponseEntity<BaseResponse> createProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO created = productService.createProduct(productDTO);
+    public ResponseEntity<?> createProduct(@RequestParam("fileProduct") MultipartFile file) {
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".xlsx")) {
+            return ResponseEntity.badRequest().body("Vui lòng tải lên một file Excel hợp lệ.");
+        }
+        List<String> created = productService.createProduct(file);
         BaseResponse response = new BaseResponse(200, "Tạo sản phẩm thành công", created);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BaseResponse> updateProduct(@PathVariable Long id,
+    public ResponseEntity<?> updateProduct(@PathVariable Long id,
                                                       @RequestBody ProductDTO productDTO) {
-        ProductDTO updated = productService.updateProduct(id, productDTO);
-        BaseResponse response = new BaseResponse(200, "Cập nhật sản phẩm thành công", updated);
-        return ResponseEntity.ok(response);
+        ProductResponseDTO updated = productService.updateProduct(id, productDTO);
+        return ResponseEntity.ok(new BaseResponse(200, "Cập nhật sản phẩm thành công", updated));
     }
 
-    @GetMapping("/getproduct/{id}")
-    public ResponseEntity<BaseResponse> getProduct(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .map(product -> ResponseEntity.ok(new BaseResponse(200, "Lấy sản phẩm thành công", product)))
-                .orElse(ResponseEntity.status(404).body(new BaseResponse(404, "Không tìm thấy sản phẩm", null)));
-    }
+@GetMapping("/getAllProduct")
+public ResponseEntity<BaseResponse> getAllProducts(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "4") int size) {
 
-    @GetMapping("/getAllProduct")
-    public ResponseEntity<BaseResponse> getAllProducts() {
-        List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(new BaseResponse(200, "Lấy danh sách sản phẩm thành công", products));
-    }
-
+    Pageable pageable = PageRequest.of(page, size);
+    CustomPageResponse<ProductResponseDTO> products = productService.getAllProducts(pageable);
+    return ResponseEntity.ok(new BaseResponse(200, "Lấy danh sách sản phẩm thành công", products));
+}
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.ok(new BaseResponse(200, "Xoá sản phẩm thành công", null));
+        return ResponseEntity.ok(new BaseResponse(200, "Xoá sản phẩm thành công (xoá mềm)", null));
     }
 }

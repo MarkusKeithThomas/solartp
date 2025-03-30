@@ -1,9 +1,9 @@
-package ecommerce.project.dto;
+package ecommerce.project.dtoresponse;
 
 import lombok.Data;
 
 @Data
-public class ProductImageDTO {
+public class ProductImageResponseDTO {
     private String imageUrl;
     private String altText;
     private Boolean isThumbnail;
