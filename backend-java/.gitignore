@@ -1,6 +1,6 @@
-# Bỏ file build
+# Ignore toàn bộ thư mục build target và tất cả bên trong
 /backend-java/target/
-/backend-java/*.jar
-*.log
+backend-java/target/**
 *.class
-*.zip
+*.log
+*.jar
