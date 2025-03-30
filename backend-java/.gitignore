@@ -1,1 +1,6 @@
-backend-java/target/
+# Bỏ file build
+/backend-java/target/
+/backend-java/*.jar
+*.log
+*.class
+*.zip
