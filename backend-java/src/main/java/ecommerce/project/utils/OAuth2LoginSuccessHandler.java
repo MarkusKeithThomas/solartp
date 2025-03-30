@@ -45,8 +45,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             authService.saveRefreshToken(userDTO,refreshToken);
             // có thể khởi tạo không kịp với fileter nên lỗi đây cân sửa tay
 //            response.sendRedirect("http://localhost:5173/login-success?accessToken=" + accessToken);
-                    response.sendRedirect("http://solartp.com.vn/login-success?accessToken=" + accessToken);
-
+        response.sendRedirect("https://solartp.com.vn/login-success?accessToken=" + accessToken);
 
     }
 }
