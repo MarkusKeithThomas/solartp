@@ -8,27 +8,35 @@ const LoginSuccess = () => {
 
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const accessToken = urlParams.get("accessToken");
+        const fetchUserInfo = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessToken = urlParams.get("accessToken");
 
-        if (accessToken) {
-            localStorage.setItem("accessToken", accessToken);
-            axios
-              .get(`${API_BASE_URL}/tai-khoan/user-info`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
-              })
-              .then((response) => {
-                localStorage.setItem("user-info", JSON.stringify(response.data.data));
+            if (accessToken) {
+                localStorage.setItem("accessToken", accessToken);
+                try {
+                    const response = await axios.get(`${API_BASE_URL}/tai-khoan/user-info`, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                    });
+                    localStorage.setItem("user-info", JSON.stringify(response.data.data));
+                    navigate("/");
+                } catch (err) {
+                    console.error("Lỗi khi lấy thông tin user sau login:", err);
+                    navigate("/login"); // fallback nếu lỗi
+                }
+            } else {
                 navigate("/");
-              })
-              .catch((err) => {
-                console.error("Lỗi khi lấy thông tin user sau login:", err);
-                navigate("/login"); // fallback nếu lỗi
-              });
-          }
+            }
+        };
+
+        fetchUserInfo();
     }, [navigate]);
 
-    return <h2>Đang đăng nhập...</h2>;
-};
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+        <div className="spinner-border" role="status" />
+        <span className="ms-3">Đang đăng nhập...</span>
+      </div>
+    );};
 
 export default LoginSuccess;

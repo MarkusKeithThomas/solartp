@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
     // Nếu không có token hoặc user => Xem như chưa đăng nhập
     if (!accessToken || !savedUser) {
-      logout(); // đảm bảo dọn dẹp nếu cần
+      //logout(); // đảm bảo dọn dẹp nếu cần
       return;
     }
   
@@ -198,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("accessToken"); // ✅ Xóa accessToken hoàn toàn
     localStorage.removeItem("user-info"); // ✅ Xóa thông tin user
     googleLogout();
+    navigate("/");
   };
 
   return (
