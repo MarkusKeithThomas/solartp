@@ -4,13 +4,19 @@ import { Helmet } from "react-helmet-async";
 import { CustomBreadcrumb } from "../../layout/CustomBreadcrumb";
 import { CardGotInfo } from "../../components/CardGotInfo";
 import { TableOfContents } from "../../components/TableOfContents";
-import { PopularArticles } from '../../components/PopularArticles';
+import { PopularArticles } from "../../components/PopularArticles";
 import { useEffect } from "react";
 import { useArticleBySlugWithFallback } from "../../hook/useArticleBySlugWithFallback";
+import { useArticleContext } from "../../context/ArticleProvider";
 
 export function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { article: articlePost, loading, notFound } = useArticleBySlugWithFallback(slug!);
+  const {articles} = useArticleContext();
+  const {
+    article: articlePost,
+    loading,
+    notFound,
+  } = useArticleBySlugWithFallback(slug!);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -23,7 +29,11 @@ export function PostDetail() {
   const WEB_BASE_URL = import.meta.env.VITE_SOLARTP;
 
   if (loading) {
-    return <Container><p>Đang tải bài viết...</p></Container>;
+    return (
+      <Container>
+        <p>Đang tải bài viết...</p>
+      </Container>
+    );
   }
 
   if (notFound || !articlePost) {
@@ -39,23 +49,37 @@ export function PostDetail() {
   const lastModified = new Date().toISOString();
 
   return (
-    <Container className="post-container mx-auto" style={{ maxWidth: "100vw", padding: 0 }}>
+    <Container
+      className="post-container mx-auto"
+      style={{ maxWidth: "100vw", padding: 0 }}
+    >
       <Row className="gx-0 gy-0 p-0">
-        <Col xs={12} md={3} lg={3} className="bg-light text-white text-center d-none d-lg-block">
+        <Col
+          xs={12}
+          md={3}
+          lg={3}
+          className="bg-light text-white text-center d-none d-lg-block"
+        >
           <TableOfContents />
         </Col>
 
         <Col xs={12} md={12} lg={6} className="bg-light p-3">
           <Helmet>
             <title>{articlePost.title} | Solar TP</title>
-            <meta name="description" content={`${articlePost.content11}. Xem ngay để khám phá!`} />
+            <meta
+              name="description"
+              content={`${articlePost.content11}. Xem ngay để khám phá!`}
+            />
             <link rel="canonical" href={`${WEB_BASE_URL}/bai-viet/${slug}`} />
 
             <meta property="og:type" content="article" />
             <meta property="og:title" content={articlePost.title} />
             <meta property="og:description" content={articlePost.content12} />
             <meta property="og:image" content={articlePost.image1Url} />
-            <meta property="og:url" content={`${WEB_BASE_URL}/bai-viet/${slug}`} />
+            <meta
+              property="og:url"
+              content={`${WEB_BASE_URL}/bai-viet/${slug}`}
+            />
             <meta property="og:site_name" content="Solar TP" />
 
             <script
@@ -70,21 +94,21 @@ export function PostDetail() {
                   dateModified: lastModified,
                   author: {
                     "@type": "Person",
-                    name: "Tác giả Solar TP"
+                    name: "Tác giả Solar TP",
                   },
                   publisher: {
                     "@type": "Organization",
                     name: "Solar TP",
                     logo: {
                       "@type": "ImageObject",
-                      url: "https://pub-3df5bcdfa28f404faf4edd278e17bbf5.r2.dev/logo_tpsolar.webp"
-                    }
+                      url: "https://pub-3df5bcdfa28f404faf4edd278e17bbf5.r2.dev/logo_tpsolar.webp",
+                    },
                   },
                   mainEntityOfPage: {
                     "@type": "WebPage",
-                    "@id": `${WEB_BASE_URL}/bai-viet/${slug}`
-                  }
-                })
+                    "@id": `${WEB_BASE_URL}/bai-viet/${slug}`,
+                  },
+                }),
               }}
             />
 
@@ -99,29 +123,32 @@ export function PostDetail() {
                       "@type": "ListItem",
                       position: 1,
                       name: "Trang chủ",
-                      item: `${WEB_BASE_URL}`
+                      item: `${WEB_BASE_URL}`,
                     },
                     {
                       "@type": "ListItem",
                       position: 2,
                       name: "Bài viết",
-                      item: `${WEB_BASE_URL}/bai-viet`
+                      item: `${WEB_BASE_URL}/bai-viet`,
                     },
                     {
                       "@type": "ListItem",
                       position: 3,
                       name: articlePost.title,
-                      item: `${WEB_BASE_URL}/bai-viet/${slug}`
-                    }
-                  ]
-                })
+                      item: `${WEB_BASE_URL}/bai-viet/${slug}`,
+                    },
+                  ],
+                }),
               }}
             />
           </Helmet>
 
           <CustomBreadcrumb hideOnNavbar={true} />
           <h1 className="mt-2 text-center mb-4">{articlePost.title}</h1>
-          <p><strong>Ngày đăng:</strong> {articlePost.dateCreate} | <strong>Cập nhật gần nhất:</strong> {formattedDate}</p>
+          <p>
+            <strong>Ngày đăng:</strong> {articlePost.dateCreate} |{" "}
+            <strong>Cập nhật gần nhất:</strong> {formattedDate}
+          </p>
 
           <div className="mt-3">
             <h2>{articlePost.header1}</h2>
@@ -129,7 +156,12 @@ export function PostDetail() {
             <p>{articlePost.content12}</p>
           </div>
           <div className="d-flex justify-content-center">
-            <img src={articlePost.image1Url} alt={articlePost.altImage1} className="img-fluid" loading="lazy" />
+            <img
+              src={articlePost.image1Url}
+              alt={articlePost.altImage1}
+              className="img-fluid"
+              loading="lazy"
+            />
           </div>
 
           <div className="mt-4">
@@ -145,7 +177,12 @@ export function PostDetail() {
           </div>
 
           <div className="d-flex justify-content-center">
-            <img src={articlePost.image2Url} alt={articlePost.altImage2} className="img-fluid" loading="lazy" />
+            <img
+              src={articlePost.image2Url}
+              alt={articlePost.altImage2}
+              className="img-fluid"
+              loading="lazy"
+            />
           </div>
 
           <div className="mt-4 justify-content-center">
@@ -161,10 +198,15 @@ export function PostDetail() {
           </Row>
         </Col>
 
-        <Col xs={12} md={12} lg={3} className="bg-light text-white text-center">
-          <PopularArticles articles={[]} />
+        <Col xs={12} md={12} lg={3} className="bg-light gx-1 text-white text-center">
+          <PopularArticles articles={articles.slice(0,10)} />
         </Col>
       </Row>
+      <p className="mt-3 text-center">
+        Bạn có thể xem thêm nhiều{" "}
+        <Link to="/bai-viet">bài viết hữu ích khác tại đây</Link> hoặc{" "}
+        <Link to="/">trở về trang chủ</Link>.
+      </p>
     </Container>
   );
 }

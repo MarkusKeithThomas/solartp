@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {useArticleContext } from "../context/ArticleProvider";
 import type { Article } from "../context/ArticleProvider";

@@ -26,17 +26,21 @@ export function PopularArticles({ articles }: PopularArticlesProps) {
       </h4>
       {articles?.map((article) => (
         <Link key={article.id} to={`/bai-viet/${article.slugTitle}`}>
-          <Card className="border-0 gx-1 gy-0 mb-3 popular-card">
-            <Row className="gx-2 gy-2">
-              <Col xs={4}>
+          <Card className="border-0 gx-0 gy-0 mb-3 popular-card me-1">
+            <Row className="gx-1 gy-1">
+              <Col
+                xs={4}
+                className="d-flex justify-content-center align-items-center"
+              >
                 <Card.Img
                   src={article.image2Url}
                   alt={article.altImage2}
-                  className="img-fluid rounded ms-1"
+                  className="img-fluid rounded"
                   style={{
                     width: "100%",
                     height: "80px",
                     objectFit: "contain",
+                    maxWidth: "100px", // thêm nếu muốn không vượt quá
                   }}
                   loading="lazy"
                 />
