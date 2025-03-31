@@ -29,11 +29,13 @@ export type Article = {
   altImage1: string;
   image2Url: string;
   altImage2: string;
-  dateCreate: string; // Hoặc `Date` nếu muốn xử lý dưới dạng đối tượng thời gian
+  dateCreate: string;
 };
+
 interface ArticleContextType {
   articles: Article[];
   getArticleById: (id: number) => Article | undefined;
+  getArticleBySlug: (slug: string) => Article | undefined;
   shortArticles: Article[];
 }
 
@@ -41,11 +43,13 @@ const ArticleContext = createContext<ArticleContextType>({
   articles: [],
   shortArticles: [],
   getArticleById: () => undefined,
+  getArticleBySlug: () => undefined,
 });
 
 export function useArticleContext() {
   return useContext(ArticleContext);
 }
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function ArticleProvider({ children }: { children: ReactNode }) {
@@ -58,11 +62,10 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
   const [lastId, setLastId] = useState(0);
   const observerRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true); // Kiểm soát còn bài để tải hay không
-
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchArticles = async () => {
-    if (loading || !hasMore) return; // Tránh gọi API liên tục khi chưa có dữ liệu mới
+    if (loading || !hasMore) return;
     setLoading(true);
 
     try {
@@ -70,8 +73,6 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
         params: { lastId: lastId, limit: 10 },
       });
       if (res.data.articles?.length > 0) {
-
-        // Kiểm tra xem có dữ liệu mới không, tránh trùng lặp
         const newArticles: Article[] =
           res.data.articles?.filter(
             (newArticle: Article) =>
@@ -80,11 +81,12 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
                 (oldArticle: Article) => oldArticle.id === newArticle.id
               )
           ) || [];
+
         if (newArticles.length === 0) {
-          setHasMore(false); // Không còn bài viết mới
+          setHasMore(false);
         } else {
-          setArticle((prev: Article[]) => [...prev, ...newArticles]); // Gộp dữ liệu đúng cách
-          setLastId(res.data.lastId); // Cập nhật lastId đúng cách
+          setArticle((prev: Article[]) => [...prev, ...newArticles]);
+          setLastId(res.data.lastId);
         }
       }
     } catch (error) {
@@ -93,15 +95,15 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (articles?.length >= 4) {
-      setShortArticles(articles.slice(5, 11)); // Lấy từ bài viết số 5 đến số 10
+      setShortArticles(articles.slice(5, 11));
     }
   }, [articles]);
 
-  // 🟢 Dùng IntersectionObserver để tự động tải thêm bài viết khi cuộn xuống
   useEffect(() => {
-    if (!hasMore) return; // Nếu không còn bài viết mới, không theo dõi nữa
+    if (!hasMore) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -121,12 +123,15 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
     return articles.find((article) => article.id === id);
   }
 
+  function getArticleBySlug(slug: string): Article | undefined {
+    return articles.find((article) => article.slugTitle === slug);
+  }
+
   return (
     <ArticleContext.Provider
-      value={{ articles, getArticleById, shortArticles }}
+      value={{ articles, getArticleById, getArticleBySlug, shortArticles }}
     >
       {children}
-      {/* 🟢 Thêm ref vào cuối danh sách để kích hoạt Load More */}
       <div ref={observerRef} style={{ height: "10px" }}></div>
       {loading && <p className="text-center">Đang tải thêm...</p>}
     </ArticleContext.Provider>

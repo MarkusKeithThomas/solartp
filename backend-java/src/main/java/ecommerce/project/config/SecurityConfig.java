@@ -61,6 +61,7 @@ public class SecurityConfig {
                             "/check-env",
                             "/tai-khoan/**",
                             "/bai-viet/list/**",
+                            "bai-viet/slug/**",
                             "products/getproduct/",
                             "products/getAllProduct",
                             "/robots.txt",
