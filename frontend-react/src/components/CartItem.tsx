@@ -16,10 +16,10 @@ type CartItemProps = {
 export function CartItem({ id, quantity, name, imageUrl, priceNew }: CartItemProps) {
   const { removeItem, increaseItemQuantity,decreaseItemQuantity } = useShoppingCart();
   return (
-    <Stack key={id} direction="horizontal" gap={1} className="d-flex align-items-center">
+    <Stack key={id} direction="horizontal" gap={2} className="d-flex align-items-center">
       <img
         src={imageUrl}
-        style={{ width: "75px", height: "100px", objectFit: "cover" }}
+        style={{ width: "100px", height: "100px", objectFit: "cover" }}
       />
       <div className="d-flex flex-column small-spacing">
         <h6>{formatTitle(name || "")}</h6>

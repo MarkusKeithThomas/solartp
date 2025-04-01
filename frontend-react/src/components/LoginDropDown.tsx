@@ -36,6 +36,7 @@ export function LoginDropDown({ className }: LoginProps) {
             roundedCircle
             width={50}
             height={50}
+            loading="lazy"
           />
           <div className="ms-3">
             <strong className="d-block text-justify">

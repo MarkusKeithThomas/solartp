@@ -40,6 +40,9 @@ export function ProductImageGallery({
             className="main-image border rounded"
             ref={productImageRef} // ✅ ref gắn vào ảnh chính
             alt="Ảnh sản phẩm chính"
+            width={600}
+            height={400}
+            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
           />
         </div>
 
@@ -53,6 +56,9 @@ export function ProductImageGallery({
                 className="thumbnail border rounded cursor-pointer"
                 alt={image.altText}
                 onClick={() => setMainImage(image.imageUrl)}
+                width={600}
+                height={400}
+                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
               />
             </Col>
           ))}
