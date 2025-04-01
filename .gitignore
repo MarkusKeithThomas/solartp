@@ -1,3 +1,7 @@
 .env
 application.properties
 docker-compose.yml
+
+target/
+solartp.git/
+solartp.git.bfg-report/
