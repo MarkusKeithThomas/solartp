@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { ShoppingCart } from "../pages/gio-hang/ShoppingCart";
 import { useCartLocalStorage } from "../hook/useCartLocalStorage";
 
@@ -28,6 +28,8 @@ const ProductCartContext = createContext({} as ProductCartContext);
 export function useShoppingCart() {
   return useContext(ProductCartContext);
 }
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 
 export function ProductContext({ children }:ProductContextProps) {
@@ -37,6 +39,44 @@ export function ProductContext({ children }:ProductContextProps) {
   const cartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
+
+  useEffect(() => {
+    const guestUuid = localStorage.getItem("guest-uuid");
+    if (!guestUuid) return;
+  
+    const syncCartToServer = () => {
+      const rawCartItems = JSON.parse(localStorage.getItem("shopping-cart") || "[]");
+  
+      // Kiểm tra dữ liệu hợp lệ
+      if (!Array.isArray(rawCartItems) || rawCartItems.length === 0) return;
+  
+      // Chuẩn hoá dữ liệu cho backend
+      const formattedCartItems = rawCartItems.map((item: any) => ({
+        id: item.id,
+        quantity: item.quantity,
+      }));
+  
+      fetch(`${API_BASE_URL}/guest/cart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          // can trung ten trong backend uuidToken items
+          uuidToken: guestUuid,
+          items: formattedCartItems,
+        }),
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Server error");
+          return res.json();
+        })
+        .then(() => console.log("✅ Đồng bộ giỏ hàng"))
+        .catch(err => console.error("❌ Đồng bộ thất bại", err));
+    };
+  
+    const intervalId = setInterval(syncCartToServer, 1000 * 60 * 2); // mỗi 2 phút
+  
+    return () => clearInterval(intervalId); // clear nếu component unmount
+  }, []);
 
 
   function getItemQuantity(id: number) {

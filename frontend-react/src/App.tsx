@@ -25,13 +25,23 @@ import { PostDetail } from "./pages/bai-viet/PostDetail";
 import { HelmetProvider } from "react-helmet-async";
 import { CheckLayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
+import { useEffect } from "react";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
-const clientId = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com"; // 🔹 Thay bằng giá trị thực từ Google Cloud
+const clientId = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com";
+
 
 
 function App() {
+  useEffect(() => {
+    const existingUuid = localStorage.getItem("guest-uuid");
+    if (!existingUuid) {
+      const newUuid = crypto.randomUUID();
+      localStorage.setItem("guest-uuid", newUuid);
+      console.log("🔐 Tạo UUID mới cho khách vãng lai:", newUuid);
+    }
+  }, []);
   return (
     <>
     <HelmetProvider>

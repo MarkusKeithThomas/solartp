@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 @Table(name = "cart_item")
 @Data
 public class CartItemEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
     private CartEntity cart;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -34,6 +34,5 @@ public class CartItemEntity {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 }
