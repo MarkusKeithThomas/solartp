@@ -1,6 +1,59 @@
-# Ignore toàn bộ thư mục build target và tất cả bên trong
+# ------------------------
+# Java / Spring Boot
+# ------------------------
+
+# Build output
 /backend-java/target/
 backend-java/target/**
+
+# Compiled class files
 *.class
+
+# Logs
 *.log
+
+# JARs
 *.jar
+*.war
+*.ear
+
+# ------------------------
+# Environment & Secrets
+# ------------------------
+
+# Environment variables
+.env
+*.env
+
+# Application secrets
+backend-java/src/main/resources/application.properties
+
+# ------------------------
+# Node / React Frontend
+# ------------------------
+
+# Node modules
+/frontend-react/node_modules/
+
+/frontend-react/build/
+/frontend-react/dist/
+
+# Vite environment
+frontend-react/.env
+frontend-react/.env.*
+
+# Local storage or IDE settings
+*.DS_Store
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# ------------------------
+# Git-specific
+# ------------------------
+
+# Ignore BFG cleaning reports or temp dirs
+solartp.git.bfg-report/
+solartp.git/
