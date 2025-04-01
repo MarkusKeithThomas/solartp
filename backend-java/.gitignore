@@ -1,62 +1,31 @@
-# ------------------------
-# Java / Spring Boot
-# ------------------------
-
-# Build output (target)
+# --- Java / Spring Boot ---
 backend-java/target/
-
-# Compiled class files
 *.class
-
-# Logs
 *.log
-
-# Java Archive
 *.jar
 *.war
 *.ear
+backend-java/src/main/resources/application.properties
 
-# IDE files
-*.iml
-
-# ------------------------
-# Environment & Secrets
-# ------------------------
-
-# Ignore all env files
+# --- Secrets & env ---
 .env
 *.env
+docker-compose.yml
 
-# Application secrets
-backend-java/src/main/resources/application.properties
-backend-java/docker-compose.yml
-
-# ------------------------
-# Node / React Frontend
-# ------------------------
-
-# Node modules & build
+# --- Node / React Frontend ---
 frontend-react/node_modules/
+frontend-react/.env
+frontend-react/.env.*
 frontend-react/build/
 frontend-react/dist/
 
-# Vite env
-frontend-react/.env
-frontend-react/.env.*
-
-# ------------------------
-# Editor / OS-specific
-# ------------------------
-
-.DS_Store
+# --- IDE / System ---
+*.DS_Store
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# ------------------------
-# Git / BFG cleanup
-# ------------------------
-
+# --- Git Cleaning Tools ---
 solartp.git.bfg-report/
 solartp.git/
