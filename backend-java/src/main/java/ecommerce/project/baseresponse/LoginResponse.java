@@ -1,6 +1,6 @@
 package ecommerce.project.baseresponse;
 
-import ecommerce.project.dto.UserDTO;
+import ecommerce.project.dtorequest.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

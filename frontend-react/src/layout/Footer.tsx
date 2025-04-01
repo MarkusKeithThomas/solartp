@@ -12,14 +12,14 @@ export function Footer() {
             <p>
               Gọi mua:{" "}
               <a href="tel:084972769364" className="text-primary">
-                (+84) 972769365
+                (+84) 972769364
               </a>{" "}
               (8:00 - 18:00)
             </p>
             <p>
               Khiếu nại:{" "}
               <a href="tel:084972769364" className="text-primary">
-                (+84) 972769365
+                (+84) 972769364
               </a>{" "}
               (8:00 - 18:00)
             </p>

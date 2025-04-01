@@ -2,7 +2,6 @@ import { Breadcrumb } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import "../styles/custom.css"; // Import CSS
 import { formatStringViewLink } from '../ultities/formatStringViewLink';
-import { formatTitle } from "../ultities/formatTitle";
 
 export function CustomBreadcrumb({ hideOnNavbar }: { hideOnNavbar?: boolean }) {
   const location = useLocation();

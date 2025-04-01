@@ -1,16 +1,15 @@
 import {
-  Card,
-  Container,
   Nav,
   Navbar as NavbarBs,
   Button,
 } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
 import "../styles/custom.css"; // Import CSS tùy chỉnh
 import { LoginDropDown } from "../components/LoginDropDown.tsx";
 import { useState, useEffect } from "react";
 import { useShoppingCart } from "../context/ProductContext.tsx";
+
+
 export function Navbar() {
   const { openCart, cartQuantity } = useShoppingCart();
   const [scrolled, setScrolled] = useState(false);
@@ -31,7 +30,7 @@ export function Navbar() {
       >
           {/* Logo */}
           <NavbarBs.Brand href="/" className="ms-2">
-            <img src="/imgs/logo_tpsolar.png" alt="Logo" height="60" />
+            <img src="/imgs/logo_tpsolar.webp" alt="Logo" height="60" width="60" />
           </NavbarBs.Brand>
 
           {/* Navigation */}

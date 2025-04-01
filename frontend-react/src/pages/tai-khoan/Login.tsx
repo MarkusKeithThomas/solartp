@@ -1,12 +1,8 @@
 import { Container, Row, Col, Button, Form, Alert } from "react-bootstrap";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"; // ✅ Dùng thư viện mới
 import { useAuthContext } from "../../context/AuthProvider";
 import { useState } from "react";
 import FaGogle from "../../assets/Google.svg";
 
-
-const GOOGLE_CLIENT_ID =
-  "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com"; // 🔹 Thay bằng Client ID của bạn
 
 export function Login() {
   const [email, setEmail] = useState(""); // Lưu email
@@ -20,7 +16,6 @@ export function Login() {
   };
 
   return (
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Container className="d-flex justify-content-center align-items-center">
         <Row className="w-100" style={{ maxWidth: "400px" }}>
           <Col>
@@ -111,7 +106,6 @@ export function Login() {
           </Col>
         </Row>
       </Container>
-    </GoogleOAuthProvider>
   );
 }
 

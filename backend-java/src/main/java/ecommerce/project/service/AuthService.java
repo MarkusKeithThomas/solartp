@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import ecommerce.project.dto.UserDTO;
+import ecommerce.project.dtorequest.UserDTO;
 import ecommerce.project.entity.RoleEntity;
 import ecommerce.project.entity.UserEntity;
 import ecommerce.project.exception.*;

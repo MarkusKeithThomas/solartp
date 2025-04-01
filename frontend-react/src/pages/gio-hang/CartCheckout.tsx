@@ -1,19 +1,20 @@
-import React, { useState } from "react";
-import { Button, Card, Col, Form, ListGroup, Row, Image, Stack } from "react-bootstrap";
-import storeItem from '../../assets/fakedata/dataitem.json';
+import { useState } from "react";
+import {  Card, Form, ListGroup, Image, Stack } from "react-bootstrap";
 import { useShoppingCart } from "../../context/ProductContext";
 import { formatMoney } from "../../ultities/formatMoney";
 import { formatTitle } from '../../ultities/formatTitle';
+import { useProductDetailContext } from "../../context/ProductProvider";
 
 export function CartCheckout() {
   const { cartItems } = useShoppingCart();
+  const {productList} = useProductDetailContext();
   const [selectedPayment, setSelectedPayment] = useState("cod"); // Mặc định chọn Thanh toán khi nhận hàng
 
 
   // Tính tổng tiền
   const totalPrice = cartItems.reduce((sum, cartItem) => {
-    const item = storeItem.find((product) => product.id === cartItem.id);
-    return sum + (item ? item.priceNew * cartItem.quantity : 0);
+    const item = productList.find((product) => product.id === cartItem.id);
+    return sum + (item ? item.newPrice * cartItem.quantity : 0);
   }, 0);
 
   return (
@@ -21,17 +22,17 @@ export function CartCheckout() {
             <h3 className="fw-bold">Giỏ hàng của bạn</h3>
             <ListGroup variant="flush">
               {cartItems.map((cartItem) => {
-                const item = storeItem.find((product) => product.id === cartItem.id);
+                const item = productList.find((product) => product.id === cartItem.id);
                 if (!item) return null;
 
                 return (
                   <ListGroup.Item key={cartItem.id} className="d-flex align-items-center">
-                    <Image src={item.image} alt={item.name} width={75} height={75} className="rounded" />
+                    <Image src={item.images.find(item => item.isThumbnail)?.imageUrl} alt={item.name} width={75} height={75} className="rounded" />
                     <div className="ms-3 flex-grow-1">
                       <h6 className="mb-1">{formatTitle(item.name)}</h6>
-                      <small className="text-muted">{formatMoney(item.priceNew)} 
+                      <small className="text-muted">{formatMoney(item.newPrice)} 
                         × {cartItem.quantity} 
-                        = {formatMoney(item.priceNew*cartItem.quantity)}</small>
+                        = {formatMoney(item.newPrice*cartItem.quantity)}</small>
                     </div>
                   </ListGroup.Item>
                 );

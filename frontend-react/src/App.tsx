@@ -23,9 +23,8 @@ import { ForgotPassword } from "./pages/tai-khoan/ForgotPassword";
 import { ResetPassword } from "./pages/tai-khoan/ResetPassword";
 import { PostDetail } from "./pages/bai-viet/PostDetail";
 import { HelmetProvider } from "react-helmet-async";
-import { CheckLayout, Checklayout } from "./layout/CheckLayout";
+import { CheckLayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
-import { PopularArticles } from "./components/PopularArticles";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -38,9 +37,9 @@ function App() {
     <HelmetProvider>
     <GoogleOAuthProvider clientId={clientId}>
     <AuthProvider>  
+    <ProductProvider>
       <ProductContext>
       <QueryClientProvider client={queryClient}>
-        <ProductProvider>
           <ArticleProvider>
 
         <Navbar />
@@ -57,7 +56,8 @@ function App() {
             <Route path="/lien-he" element={<Contact />} />
             <Route path="/thanh-toan" element={<Checkout />} />
             <Route path="/thanh-toan/confirm" element={<ConfirmOrder />} />
-            <Route path="/den-nang-luong-mat-troi/:slug/:productId/:idDetail" element={<ProductDetail/>} />
+            <Route path="/den-nang-luong-mat-troi/:slug" element={<ProductDetail/>} />
+            
             <Route path="/tai-khoan" element={<Login />} />
             <Route path="/tai-khoan/sign-up" element={<SignUp/>} />
             <Route path="/tai-khoan/forgot-password" element={<ForgotPassword/>} />
@@ -67,11 +67,12 @@ function App() {
           </Routes>
         </Container>
         </ArticleProvider>
-        </ProductProvider>
         <Footer />
         </QueryClientProvider>
 
       </ProductContext>
+      </ProductProvider>
+
       </AuthProvider>
       </GoogleOAuthProvider>
       </HelmetProvider>

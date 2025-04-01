@@ -1,6 +1,7 @@
 package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
+import ecommerce.project.dtoresponse.ArticleResponseDTO;
 import ecommerce.project.service.ArticleService;
 import ecommerce.project.service.ExcelServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,12 @@ public class ArticleController {
                                          @RequestParam(defaultValue = "10") int limit) {
         Map<String, Object> response = articleService.getAllArticle(lastId,limit);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<?> getArticleBySlug(@PathVariable String slug) {
+        ArticleResponseDTO article = articleService.getBySlug(slug);
+        return ResponseEntity.ok(new BaseResponse(200,"Lấy bài viết thành công",article));
     }
 
 }

@@ -1,26 +1,49 @@
 import { Container, Row, Col, Image } from "react-bootstrap";
-import { useState } from "react";
-import imagedeafault from '../components/imgs/image.png'
+import imageDefault from "../components/imgs/image.png";
+import { useEffect, useState } from "react";
 
 type ProductGalleryProps = {
   id: number;
-  nameUrl: string;
-  nameAlt: string;
+  imageUrl: string;
+  altText: string;
+  isThumbnail: boolean;
+  displayOrder: number;
 };
 
 type ProductImageGalleryProps = {
   imageList: ProductGalleryProps[] | null;
+  productImageRef?: React.RefObject<HTMLImageElement | null>; // ✅ sửa tại đây
 };
 
-export function ProductImageGallery({ imageList }: ProductImageGalleryProps) {
-  const [mainImage, setMainImage] = useState(imagedeafault);
+export function ProductImageGallery({
+  imageList,
+  productImageRef,
+}: ProductImageGalleryProps) {
+  const [mainImage, setMainImage] = useState<string>(imageDefault);
+
+  useEffect(() => {
+    if (imageList && imageList.length > 0) {
+      const thumb = imageList.find((img) => img.isThumbnail);
+      setMainImage(thumb?.imageUrl || imageList[0].imageUrl);
+    } else {
+      setMainImage(imageDefault);
+    }
+  }, [imageList]);
 
   return (
     <Container className="bg-light mb-2">
-      {/* Hình ảnh chính */}
       <Col className="d-flex flex-column justify-content-center align-items-center">
         <div className="product-image-container">
-          <Image src={mainImage} fluid className="main-image border rounded" />
+          <Image
+            src={mainImage}
+            fluid
+            className="main-image border rounded"
+            ref={productImageRef} // ✅ ref gắn vào ảnh chính
+            alt="Ảnh sản phẩm chính"
+            width={600}
+            height={400}
+            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+          />
         </div>
 
         {/* Hình ảnh nhỏ bên dưới */}
@@ -28,11 +51,14 @@ export function ProductImageGallery({ imageList }: ProductImageGalleryProps) {
           {imageList?.map((image) => (
             <Col key={image.id} xs={3} sm={2} md={2} className="p-1">
               <Image
-                src={image.nameUrl}
+                src={image.imageUrl}
                 fluid
                 className="thumbnail border rounded cursor-pointer"
-                alt={image.nameAlt}
-                onClick={() => setMainImage(image.nameUrl)} // Khi click đổi ảnh chính
+                alt={image.altText}
+                onClick={() => setMainImage(image.imageUrl)}
+                width={600}
+                height={400}
+                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
               />
             </Col>
           ))}

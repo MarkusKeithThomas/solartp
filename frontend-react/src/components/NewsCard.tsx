@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import '../styles/NewsCard.css'
 import { Link } from "react-router-dom";
@@ -20,13 +20,14 @@ export function NewsCard({ id, title, image, description,slug }: NewsProps) {
 
     
     <Card
-      className={`shadow-sm h-100 d-flex mb-3 border-0 news-card ${isClicked ? "clicked" : ""}`}
+      className={`shadow-sm h-100 d-flex mb-1 border-0 gx-1 ${isClicked ? "clicked" : ""}`}
       onMouseDown={() => setIsClicked(true)}
       onMouseUp={() => setIsClicked(false)}
       onMouseLeave={() => setIsClicked(false)}
+      
     >
 
-      <Row className="d-flex align-items-center">
+      <Row key={id} className="d-flex align-items-center gx-0 p-1">
         {/* 🔥 Image on the left */}
         <Col xs={4} md={6} lg={4}>
           <Card.Img
@@ -45,7 +46,7 @@ export function NewsCard({ id, title, image, description,slug }: NewsProps) {
 
         {/* 🔥 Content on the right */}
         <Col xs={8} md={6} lg={8}>
-        <Card.Body className="d-flex flex-column justify-content-center p-0">
+        <Card.Body className="d-flex flex-column justify-content-center">
             {/* 🔥 Title */}
             <Card.Title className="fw-bold mb-1" style={{ fontSize: "1.1rem" }}>
               {title}
