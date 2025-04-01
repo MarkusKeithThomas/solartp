@@ -4,27 +4,46 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "cart")
 @Data
 public class CartEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    private Integer userId;
 
-    @Column(name = "uuid_token")
+    @Column(name = "uuid_token", unique = true)
     private String uuidToken;
 
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CartStatus status = CartStatus.GUEST;
 
-    @Column(name = "created_at")
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItemEntity> items;
+
+    public enum CartStatus {
+        GUEST,
+        ACTIVE,
+        CHECKED_OUT
+    }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

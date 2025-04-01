@@ -66,7 +66,8 @@ public class SecurityConfig {
                             "products/getAllProduct",
                             "/robots.txt",
                             "categories/get-categories",
-                            "products/getAllProduct"
+                            "products/getAllProduct",
+                            "guest/cart"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("products/add","products/delete/**","products/update/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
