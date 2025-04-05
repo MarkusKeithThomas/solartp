@@ -63,11 +63,16 @@ public class SecurityConfig {
                             "/bai-viet/list/**",
                             "bai-viet/slug/**",
                             "products/getproduct/",
+                            "products/details/**",
                             "products/getAllProduct",
                             "/robots.txt",
                             "categories/get-categories",
                             "products/getAllProduct",
-                            "guest/cart"
+                            "guest/cart/**",
+                            "cart/check-stock",
+                            "ws-chat/**",
+                            "chat/**",
+                            "chat/history/paging/**"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("products/add","products/delete/**","products/update/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");

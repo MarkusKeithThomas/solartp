@@ -5,5 +5,9 @@ export default defineConfig({
   plugins: [react()],
   build: {
     cssCodeSplit: true, // mặc định đã bật
+  },
+  define: {
+    global: 'window' // 👈 Thêm dòng này
   }
+
   });

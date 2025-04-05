@@ -1,6 +1,8 @@
 package ecommerce.project.controller;
 
+import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.dto.CartItemDTO;
+import ecommerce.project.dtorequest.CartItemRequest;
 import ecommerce.project.dtorequest.CartRequest;
 import ecommerce.project.service.GuestCartService;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +19,17 @@ public class GuestCartController {
     private final GuestCartService guestCartService;
 
     @PostMapping
-    public ResponseEntity<String> syncCartToRedis(@RequestBody CartRequest request) {
+    public ResponseEntity<?> syncCartToRedis(@RequestBody CartRequest request) {
         if (request.getUuidToken() == null || request.getItems().isEmpty()) {
             return ResponseEntity.badRequest().body("Missing uuid or cartItems");
         }
-
         guestCartService.saveGuestCart(request.getUuidToken(), request.getItems());
-        return ResponseEntity.ok("Cart saved successfully");
+        return ResponseEntity.ok(new BaseResponse(200,"Lấy dữ liệu từ Redis thành công.",null));
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<List<CartItemDTO>> getCart(@PathVariable String uuid) {
-        List<CartItemDTO> cartItems = guestCartService.getGuestCart(uuid);
+    public ResponseEntity<List<CartItemRequest>> getCart(@PathVariable String uuid) {
+        List<CartItemRequest> cartItems = guestCartService.getGuestCart(uuid);
         return ResponseEntity.ok(cartItems);
     }
 

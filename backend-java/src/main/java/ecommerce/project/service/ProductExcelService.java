@@ -3,6 +3,7 @@ package ecommerce.project.service;
 import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
 import ecommerce.project.dtoresponse.ProductResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,5 +25,5 @@ public interface ProductExcelService {
     CustomPageResponse<ProductResponseDTO> getAllProducts(Pageable pageable);
 
     // Lấy sản phẩm theo ID
-    ProductDTO getProductById(Long id);
+    ProductResponseDTO getProductDetailById(Long id, HttpServletRequest request);
 }

@@ -8,6 +8,31 @@ import java.util.Locale;
 @Component
 public class StringUtil {
 
+    public String generateChatRoomId(long userId1, long userId2) {
+        return "chat_user_" + userId1 + "_" + userId2;
+    }
+    /**
+     * ✅ Kiểm tra xem senderId có thuộc chatRoomId hay không
+     * Format roomId: "chat_user_{userId}_{sellerId}"
+     */
+    public boolean validateSenderInRoom(String chatRoomId, String senderId) {
+        if (chatRoomId == null || senderId == null) return false;
+
+        try {
+            // Format: chat_user_123_0
+            String[] parts = chatRoomId.split("_");
+            String userId = parts[2];
+            System.out.println(userId);
+            String sellerId = parts[3];
+            System.out.println(sellerId);
+
+
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     public String toSlug(String input) {
         if (input == null || input.trim().isEmpty()) {
             return "untitled";

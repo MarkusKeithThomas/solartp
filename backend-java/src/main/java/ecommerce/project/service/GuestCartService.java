@@ -6,7 +6,7 @@ import ecommerce.project.dtorequest.CartItemRequest;
 import java.util.List;
 
 public interface GuestCartService {
-    void saveGuestCart(String uuid, List<CartItemRequest> cartItemRequests);
-    List<CartItemDTO> getGuestCart(String uuid);
+    void saveGuestCart(String uuid, List<CartItemRequest> items);
+    List<CartItemRequest> getGuestCart(String uuid);
     void clearGuestCart(String uuid);
 }

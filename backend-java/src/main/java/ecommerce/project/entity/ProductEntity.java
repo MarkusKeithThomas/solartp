@@ -50,6 +50,8 @@ public class ProductEntity {
 
     @Column(name = "note")
     private String note;
+    @Column(name = "view_count")
+    private Long countView;
 
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp

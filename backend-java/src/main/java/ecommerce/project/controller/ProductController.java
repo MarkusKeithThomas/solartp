@@ -5,6 +5,7 @@ import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
 import ecommerce.project.dtoresponse.ProductResponseDTO;
 import ecommerce.project.service.ProductExcelService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +38,8 @@ public class ProductController {
         return ResponseEntity.ok(new BaseResponse(200, "Cập nhật sản phẩm thành công", updated));
     }
 
-@GetMapping("/getAllProduct")
-public ResponseEntity<BaseResponse> getAllProducts(
+    @GetMapping("/getAllProduct")
+        public ResponseEntity<BaseResponse> getAllProducts(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "4") int size) {
 
@@ -51,4 +52,12 @@ public ResponseEntity<BaseResponse> getAllProducts(
         productService.deleteProduct(id);
         return ResponseEntity.ok(new BaseResponse(200, "Xoá sản phẩm thành công (xoá mềm)", null));
     }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id, HttpServletRequest request) {
+        ProductResponseDTO product = productService.getProductDetailById(id,request);
+
+        return ResponseEntity.ok(new BaseResponse(200,"Đã lấy sản phẩm thành công.",product));
+    }
+
+
 }
