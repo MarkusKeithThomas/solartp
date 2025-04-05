@@ -53,11 +53,6 @@ export const useChatSocket = (
           }
         });
       },
-      (error) => {
-        console.error("❌ Lỗi kết nối WebSocket:", error);
-        setConnected(false);
-        hasConnectedRef.current = false;
-      }
     );
 
     clientRef.current = client;

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ChatPopup } from "./ChatPopup";
 import ChatBox from "./ChatBox";
-import { useAuthContext } from "../context/AuthProvider";
 
 interface userInfo {
   name: string;
@@ -12,7 +11,6 @@ interface userInfo {
 const FixedActionButtons: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const { user } = useAuthContext();
 
   const [userInfo, setUserInfo] = useState<userInfo | null>(() => {
     const saved = localStorage.getItem("user-chat");
