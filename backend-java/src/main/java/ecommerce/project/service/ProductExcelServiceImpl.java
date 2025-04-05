@@ -1,5 +1,6 @@
 package ecommerce.project.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
 import ecommerce.project.dtorequest.ProductImageDTO;
@@ -20,7 +21,9 @@ import ecommerce.project.repository.ProductImageRepository;
 import ecommerce.project.repository.ProductRepository;
 import ecommerce.project.repository.ProductSpecificationRepository;
 import ecommerce.project.utils.ProductMapperUtils;
+import ecommerce.project.utils.RedisKeyPrefix;
 import ecommerce.project.utils.StringUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,31 +31,103 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ProductExcelServiceImpl implements ProductExcelService{
     private final ProductRepository productRepository;
     private final ProductSpecificationRepository productSpecificationRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
-    @Autowired
-    private StringUtil stringUtil;
+    private final ProductViewService productViewService;
+    private final StockRedisService stockRedisService;
+
+
     @Autowired
     private final ProductMapperUtils productMapperUtils;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Qualifier("productRedisTemplate")
+    private final RedisTemplate<String, Object> productRedisTemplate;
+    private final StringUtil stringUtil;
+
+    private static final String PREFIX = "product_detail:";
+
+
+    // ⚠️ Constructor viết tay để dùng @Qualifier
+    public ProductExcelServiceImpl(
+            ProductRepository productRepository,
+            ProductImageRepository productImageRepository,
+            ProductSpecificationRepository productSpecificationRepository,
+            CategoryRepository categoryRepository,
+            ProductMapperUtils productMapperUtils,
+            StringUtil stringUtil,
+            ProductViewService productViewService,
+            StockRedisService stockRedisService,
+            @Qualifier("productRedisTemplate") RedisTemplate<String, Object> productRedisTemplate
+    ) {
+        this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
+        this.productSpecificationRepository = productSpecificationRepository;
+        this.productMapperUtils = productMapperUtils;
+        this.stringUtil = stringUtil;
+        this.productRedisTemplate = productRedisTemplate;
+        this.categoryRepository = categoryRepository;
+        this.productViewService = productViewService;
+        this.stockRedisService = stockRedisService;
+    }
+
+
+
+    @Override
+    public ProductResponseDTO getProductDetailById(Long id, HttpServletRequest request) {
+        String redisKey = PREFIX + id;
+        Optional<ProductEntity> product1 = productRepository.findById(id);
+        if (product1.isPresent()){
+            String ipAddress = request.getRemoteAddr();
+            productViewService.incrementViewIfAllowed(id,ipAddress);
+        }
+
+
+        // ✅ Lấy từ Redis và convert thủ công nếu có
+        Object cached = productRedisTemplate.opsForValue().get(redisKey);
+        if (cached instanceof Map<?, ?> map) {
+            return objectMapper.convertValue(map, ProductResponseDTO.class);
+        }
+
+        // ✅ Nếu chưa có cache, lấy từ DB
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        ProductResponseDTO dto = productMapperUtils.toProductResponseDTO(product);
+
+        dto.setImages(productImageRepository.findByProductIdOrderByDisplayOrderAsc(id)
+                .stream().map(productMapperUtils::toProductImageResponseDTO).toList());
+
+        dto.setSpecificationGroups(
+                productSpecificationRepository.findByProductIdOrderByDisplayOrderAsc(id)
+                        .stream().map(productMapperUtils::toSpecificationResponseDTO)
+                        .collect(Collectors.groupingBy(SpecificationResponseDTO::getSpecGroup))
+        );
+
+        // ✅ Ghi lại Redis
+        productRedisTemplate.opsForValue().set(redisKey, dto, 1, TimeUnit.DAYS);
+
+        return dto;
+    }
 
 
     @Override
@@ -100,6 +175,9 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         }
 
         ProductEntity updatedProduct = productRepository.save(product);
+        // ❌ Xóa cache cũ
+        String redisKey = PREFIX + id;
+        productRedisTemplate.delete(redisKey);
         return productMapperUtils.toProductResponseDTO(updatedProduct);
     }
 
@@ -109,6 +187,13 @@ public class ProductExcelServiceImpl implements ProductExcelService{
                 .orElseThrow(() -> new DeleteProductException("Không tìm thấy sản phẩm với ID: " + id));
         product.setIsActive(false);
         productRepository.save(product);
+        // ❌ Xóa cache cũ
+        String redisKey = PREFIX + id;
+        productRedisTemplate.delete(redisKey);
+        // ✅ Xóa Redis view key
+        String viewKey = "product_view:" + id;
+        productRedisTemplate.delete(viewKey);
+        stockRedisService.deleteStockKey(id);
     }
 
     @Override
@@ -144,11 +229,6 @@ public class ProductExcelServiceImpl implements ProductExcelService{
                 productPage.isFirst(),
                 productPage.isLast()
         );
-    }
-
-    @Override
-    public ProductDTO getProductById(Long id) {
-        return null;
     }
 
     @Transactional(rollbackFor = Exception.class)

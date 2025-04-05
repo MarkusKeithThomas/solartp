@@ -134,6 +134,14 @@ public class CentralException {
     public ResponseEntity<BaseResponse> handleDeleteProductNotFound(Exception ex) {
         return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
     }
+    @ExceptionHandler(StockException.class)
+    public ResponseEntity<BaseResponse> handleStockException(Exception ex) {
+        return ResponseEntity.status(404).body(new BaseResponse(404, ex.getMessage(), null));
+    }
+    @ExceptionHandler(ChattingException.class)
+    public ResponseEntity<BaseResponse> handleChattingException(Exception ex) {
+        return ResponseEntity.status(403).body(new BaseResponse(403, ex.getMessage(), null));
+    }
 
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi

@@ -26,6 +26,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { CheckLayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
 import { useEffect } from "react";
+import FixedActionButtons from "./components/FixedActionButtons";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -82,11 +83,13 @@ function App() {
 
       </ProductContext>
       </ProductProvider>
+      <FixedActionButtons />
 
       </AuthProvider>
       </GoogleOAuthProvider>
       </HelmetProvider>
     </>
+    
   );
 }
 
