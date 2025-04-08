@@ -26,9 +26,6 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
   return (
     <>
-      <Helmet>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
       <Offcanvas
         show={isOpen}
         onHide={closeCart}
