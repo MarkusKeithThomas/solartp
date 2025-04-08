@@ -1,9 +1,10 @@
 User-agent: *
-Disallow: /den-nang-luong-mat-troi
-Disallow: /he-thong-dien-mat-troi
 Disallow: /tai-khoan
 Disallow: /lien-he
 Disallow: /thanh-toan
 Disallow: /tim-kiem
+
+# Giữ nguyên các trang bài viết, sản phẩm, trang chủ, danh mục… cho phép Google index
+Allow: /
 
 Sitemap: https://solartp.com.vn/sitemap.xml

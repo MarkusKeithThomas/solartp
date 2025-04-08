@@ -1,2 +1,6 @@
 User-agent: *
 Disallow: /
+
+Allow: /bai-viet/slug/
+Allow: /products/
+Allow: /products/getAllProduct
