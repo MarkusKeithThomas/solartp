@@ -40,7 +40,6 @@ function App() {
     if (!existingUuid) {
       const newUuid = crypto.randomUUID();
       localStorage.setItem("guest-uuid", newUuid);
-      console.log("🔐 Tạo UUID mới cho khách vãng lai:", newUuid);
     }
   }, []);
   return (

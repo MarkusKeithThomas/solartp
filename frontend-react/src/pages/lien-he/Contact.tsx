@@ -11,9 +11,6 @@ import {
 export function Contact() {
   return (
     <Container className="py-5">
-      <Helmet>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
       {/* Header */}
       <div className="text-center">
         <h1 className="text-primary fw-bold">

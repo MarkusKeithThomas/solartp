@@ -59,9 +59,6 @@ export function Checkout() {
 
   return (
     <Container className="checkout-container">
-      <Helmet>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
       <Row>
         {/* Thông tin giao hàng */}
         <Col lg={7}>
