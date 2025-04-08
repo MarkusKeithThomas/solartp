@@ -3,6 +3,7 @@ import { useShoppingCart } from "../../context/ProductContext";
 import "../../styles/custom.css";
 import { CartItem } from "../../components/CartItem";
 import { useProductDetailContext } from "../../context/ProductProvider";
+import { Helmet } from "react-helmet-async";
 type ShoppingCartProps = {
   isOpen: boolean;
 };
@@ -10,19 +11,24 @@ type ShoppingCartProps = {
 export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const { closeCart, cartItems } = useShoppingCart();
   const { productList } = useProductDetailContext();
-  const productMap = new Map(productList.map(product => [product.id, product]));
-  const enrichedCartItems = cartItems.map(item => {
+  const productMap = new Map(
+    productList.map((product) => [product.id, product])
+  );
+  const enrichedCartItems = cartItems.map((item) => {
     const product = productMap.get(item.id);
     return {
       ...item,
       name: product?.name || "Không tìm thấy",
-      imageUrl: product?.images?.find(img => img.isThumbnail)?.imageUrl || "",
-      priceNew: product?.newPrice
+      imageUrl: product?.images?.find((img) => img.isThumbnail)?.imageUrl || "",
+      priceNew: product?.newPrice,
     };
   });
 
   return (
     <>
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <Offcanvas
         show={isOpen}
         onHide={closeCart}
@@ -37,7 +43,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
             {enrichedCartItems.map((item) => (
               <CartItem {...item} />
             ))}
- 
+
             <h3>
               Total:{" "}
               {cartItems

@@ -1,4 +1,5 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
 import {
   FaPhone,
   FaEnvelope,
@@ -10,6 +11,9 @@ import {
 export function Contact() {
   return (
     <Container className="py-5">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       {/* Header */}
       <div className="text-center">
         <h1 className="text-primary fw-bold">
@@ -45,7 +49,7 @@ export function Contact() {
           ))}
         </Row>
       </section>
-      
+
       {/* Sản phẩm & Dịch vụ */}
       <section className="mt-5">
         <h2 className="text-center text-dark fw-bold">📌 Sản phẩm & Dịch vụ</h2>
@@ -110,18 +114,18 @@ export function Contact() {
         src="src/components/imgs/dien-nang-luong-mat-troi-cho-ho-gia-dinh-e1739460407174.jpg"
         alt="Điện Mặt Trời Hộ Gia Đình"
       />
-            <img
+      <img
         className="img-fluid d-block mx-auto mt-4"
         src="src/components/imgs/Giai-phap-nang-luong-mat-troi-cho-ho-gia-dinh.jpg"
         alt="Điện Mặt Trời Hộ Gia Đình"
       />
-            <img
+      <img
         className="img-fluid d-block mx-auto mt-4"
         src="src/components/imgs/thanh long.jpg"
         alt="Điện Mặt Trời Hộ Gia Đình"
       />
 
-            <img
+      <img
         className="img-fluid d-block mx-auto mt-4"
         src="src/components/imgs/thiet-ke-dien-mat-troi-cho-gia-dinh-nhu-the-nao-cho-hop-ly-hieu-qua.png"
         alt="Điện Mặt Trời Hộ Gia Đình"

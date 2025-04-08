@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import { CartCheckout } from "../gio-hang/CartCheckout";
 import { useAuthContext } from "../../context/AuthProvider";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export function Checkout() {
   const { user } = useAuthContext();
@@ -26,7 +27,7 @@ export function Checkout() {
     if (savedData) {
       setFormData(JSON.parse(savedData)); // ✅ Chuyển chuỗi JSON thành object
     }
-    if(user?.email){
+    if (user?.email) {
       setFormData((prev) => ({ ...prev, email: user.email }));
     }
   }, []);
@@ -54,11 +55,13 @@ export function Checkout() {
     }
     localStorage.setItem("formData", JSON.stringify(formData));
     navigate("/thanh-toan/confirm");
-    
   };
 
   return (
     <Container className="checkout-container">
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <Row>
         {/* Thông tin giao hàng */}
         <Col lg={7}>
@@ -131,7 +134,12 @@ export function Checkout() {
           <CartCheckout />
 
           {/* Đẩy nút "Hoàn tất đặt hàng" xuống cuối */}
-          <Button variant="primary" size="lg" className="w-100 mt-auto" onClick={handleSubmit}>
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-100 mt-auto"
+            onClick={handleSubmit}
+          >
             Hoàn tất đặt hàng
           </Button>
         </Col>
