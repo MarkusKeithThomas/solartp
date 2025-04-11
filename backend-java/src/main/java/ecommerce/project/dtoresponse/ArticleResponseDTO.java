@@ -1,5 +1,6 @@
 package ecommerce.project.dtoresponse;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class ArticleResponseDTO {
         private String image2Url;
         private String altImage2;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDateTime dateCreate;
         private String note;
     }

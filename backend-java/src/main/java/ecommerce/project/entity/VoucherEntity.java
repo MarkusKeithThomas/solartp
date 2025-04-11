@@ -1,57 +1,81 @@
 package ecommerce.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import ecommerce.project.model.DiscountType;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "voucher")
-@Data
-public class VoucherEntity {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class VoucherEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "code")
+    @Column(nullable = false, unique = true, length = 50)
     private String code;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "discount_type")
+    @Column(name = "discount_type", nullable = false)
     private DiscountType discountType;
 
-    @Column(name = "discount_value")
+    @Column(name = "discount_value", nullable = false)
     private BigDecimal discountValue;
 
-    @Column(name = "min_order_value")
-    private BigDecimal minOrderValue;
+    @Column(name = "min_order_value", nullable = false)
+    private BigDecimal minOrderValue = BigDecimal.ZERO;
 
     @Column(name = "max_discount_value")
     private BigDecimal maxDiscountValue;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(nullable = false)
+    private Integer quantity = 1;
 
-    @Column(name = "used")
-    private Integer used;
+    @Column(nullable = false)
+    private Integer used = 0;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "start_at")
     private LocalDateTime startAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "end_at")
     private LocalDateTime endAt;
 
-    @Column(name = "created_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public enum DiscountType {
-        PERCENT, FIXED
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        if (this.used == null) this.used = 0;
+        if (this.isActive == null) this.isActive = true;
+        if (this.quantity == null) this.quantity = 1;
+        if (this.minOrderValue == null) this.minOrderValue = BigDecimal.ZERO;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

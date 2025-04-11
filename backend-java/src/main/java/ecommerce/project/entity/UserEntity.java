@@ -36,4 +36,10 @@ public class UserEntity {
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = true)
     private RoleEntity role; // Tạo sau nếu cần
+
+    public static UserEntity withId(Integer id) {
+        UserEntity user = new UserEntity();
+        user.setId(id);
+        return user;
+    }
 }

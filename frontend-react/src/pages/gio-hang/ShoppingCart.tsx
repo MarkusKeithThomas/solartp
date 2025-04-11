@@ -3,7 +3,6 @@ import { useShoppingCart } from "../../context/ProductContext";
 import "../../styles/custom.css";
 import { CartItem } from "../../components/CartItem";
 import { useProductDetailContext } from "../../context/ProductProvider";
-import { Helmet } from "react-helmet-async";
 type ShoppingCartProps = {
   isOpen: boolean;
 };

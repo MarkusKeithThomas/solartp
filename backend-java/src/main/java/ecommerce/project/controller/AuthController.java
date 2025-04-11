@@ -3,6 +3,8 @@ package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.dtorequest.UserDTO;
+import ecommerce.project.dtoresponse.ResetPasswordDTO;
+import ecommerce.project.producer.ResetPasswordProducer;
 import ecommerce.project.request.RequestUser;
 import ecommerce.project.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,21 +13,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tai-khoan")
 public class AuthController {
 
     private final AuthService authService;
+    private final ResetPasswordProducer resetPasswordProducer;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, ResetPasswordProducer resetPasswordProducer) {
         this.authService = authService;
-    }
-
-
-    @GetMapping("/check")
-    public ResponseEntity<String> checkGoogleConfig() {
-        return ResponseEntity.ok("Hello");
+        this.resetPasswordProducer = resetPasswordProducer;
     }
 
 
@@ -47,6 +46,12 @@ public class AuthController {
             return ResponseEntity.ok(baseResponse);
         }
 
+    }
+    @PostMapping("/reset-request")
+    public ResponseEntity<?> resetPasswordRequest(@RequestBody String email) {
+        String token = UUID.randomUUID().toString(); // giả lập token
+        resetPasswordProducer.sendResetPasswordEmail(new ResetPasswordDTO(email, token));
+        return ResponseEntity.ok("✅ Đã gửi yêu cầu reset mật khẩu vào RabbitMQ");
     }
 
     @PostMapping("/forgot-password")

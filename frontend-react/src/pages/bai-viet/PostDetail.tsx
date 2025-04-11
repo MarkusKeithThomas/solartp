@@ -8,6 +8,7 @@ import { PopularArticles } from "../../components/PopularArticles";
 import { useEffect } from "react";
 import { useArticleBySlugWithFallback } from "../../hook/useArticleBySlugWithFallback";
 import { useArticleContext } from "../../context/ArticleProvider";
+import { formatVietnameseDate } from "../../ultities/fotmatDateTime";
 
 export function PostDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -146,7 +147,7 @@ export function PostDetail() {
           <CustomBreadcrumb hideOnNavbar={true} />
           <h1 className="mt-2 text-center mb-4">{articlePost.title}</h1>
           <p>
-            <strong>Ngày đăng:</strong> {articlePost.dateCreate} |{" "}
+            <strong>Ngày đăng:</strong> {formatVietnameseDate(articlePost.dateCreate)} |{" "}
             <strong>Cập nhật gần nhất:</strong> {formattedDate}
           </p>
 

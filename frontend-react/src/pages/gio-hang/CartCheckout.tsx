@@ -6,16 +6,14 @@ import { formatTitle } from '../../ultities/formatTitle';
 import { useProductDetailContext } from "../../context/ProductProvider";
 
 export function CartCheckout() {
-  const { cartItems } = useShoppingCart();
+  const { cartItems,calculateTotalPrice } = useShoppingCart();
   const {productList} = useProductDetailContext();
   const [selectedPayment, setSelectedPayment] = useState("cod"); // Mặc định chọn Thanh toán khi nhận hàng
+  const {discount} = useShoppingCart();
 
 
   // Tính tổng tiền
-  const totalPrice = cartItems.reduce((sum, cartItem) => {
-    const item = productList.find((product) => product.id === cartItem.id);
-    return sum + (item ? item.newPrice * cartItem.quantity : 0);
-  }, 0);
+  const totalPrice = calculateTotalPrice();
 
   return (
     <div className="container">
@@ -47,7 +45,7 @@ export function CartCheckout() {
         </Stack>
         <Stack direction="horizontal" className="justify-content-between">
           <span className="text-muted">Giảm giá:</span>
-          <span className="fw-bold">{}</span>
+          <span className="fw-bold">{formatMoney(discount)}</span>
         </Stack>
         <Stack direction="horizontal" className="justify-content-between">
           <span className="text-muted">Phí vận chuyển:</span>
@@ -55,7 +53,7 @@ export function CartCheckout() {
         </Stack>
         <Stack direction="horizontal" className="justify-content-between mt-2">
           <span className="fs-6 fw-bold">Tổng thanh toán tạm tính:</span>
-          <span className="fs-6 fw-bold text-primary">{formatMoney(totalPrice)}</span>
+          <span className="fs-6 fw-bold text-primary">{formatMoney(totalPrice-discount)}</span>
         </Stack>
       </div>
 
