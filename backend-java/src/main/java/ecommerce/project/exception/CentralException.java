@@ -143,6 +143,11 @@ public class CentralException {
         return ResponseEntity.status(403).body(new BaseResponse(403, ex.getMessage(), null));
     }
 
+    @ExceptionHandler(VoucherException.class)
+    public ResponseEntity<BaseResponse> handleVoucherException(Exception ex) {
+        return ResponseEntity.status(400).body(new BaseResponse(400, ex.getMessage(), null));
+    }
+
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi
      */

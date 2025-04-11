@@ -6,9 +6,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import ecommerce.project.dtorequest.UserDTO;
+import ecommerce.project.dtoresponse.ResetPasswordDTO;
 import ecommerce.project.entity.RoleEntity;
 import ecommerce.project.entity.UserEntity;
 import ecommerce.project.exception.*;
+import ecommerce.project.producer.ResetPasswordProducer;
 import ecommerce.project.repository.RoleRepository;
 import ecommerce.project.repository.UserRepository;
 import ecommerce.project.utils.JWTUtil;
@@ -32,13 +34,21 @@ public class AuthService {
     private static final String GOOGLE_CLIENT_ID = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com";
     private final EmailService emailService;
 
+    private final ResetPasswordProducer resetPasswordProducer;
 
-    public AuthService(UserRepository userRepository, JWTUtil jwtUtil,RoleRepository roleRepository, EmailService emailService) {
+
+    public AuthService(UserRepository userRepository,
+                       JWTUtil jwtUtil,
+                       RoleRepository roleRepository,
+                       EmailService emailService,
+                       ResetPasswordProducer resetPasswordProducer
+    ) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.roleRepository = roleRepository;
         this.emailService = emailService;
+        this.resetPasswordProducer = resetPasswordProducer;
     }
     public boolean resetPassword(String token,String newPassword){
         String email = jwtUtil.extractEmail(token);
@@ -64,9 +74,12 @@ public class AuthService {
             user1 = user.get();
             // ✅ Tạo mã reset token và gửi email
             String accessToken = jwtUtil.generateAccessToken(email,user1.getRole().getName());
-            user1.setPassword(accessToken);
-            userRepository.save(user1);
-            emailService.sendResetPasswordEmail(email, accessToken);
+            //user1.setPassword(accessToken);
+            //userRepository.save(user1);
+            resetPasswordProducer.sendResetPasswordEmail(
+                    new ResetPasswordDTO(email, accessToken)
+            );
+            //emailService.sendResetPasswordEmail(email, accessToken);
             return "Vui lòng kiểm tra email.";
         }
     }

@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     cssCodeSplit: true, // mặc định đã bật
+    sourcemap: true
   },
   define: {
     global: 'window' // 👈 Thêm dòng này

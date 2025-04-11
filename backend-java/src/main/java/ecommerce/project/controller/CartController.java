@@ -17,7 +17,7 @@ public class CartController {
     @PostMapping("/check-stock")
     public ResponseEntity<?> checkStock(@RequestBody CartItemRequest request) {
         int stock = stockRedisService.hasEnoughStock(request.getProductId(), request.getQuantity());
-        if (stock < request.getQuantity()) {
+        if (stock < 0) {
             return ResponseEntity.ok(new BaseResponse(200,"Không đủ hàng.",stock));
         }
         return ResponseEntity.ok(new BaseResponse(200,"Còn hàng.",stock));

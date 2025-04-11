@@ -23,7 +23,7 @@ public class GuestCartController {
         if (request.getUuidToken() == null || request.getItems().isEmpty()) {
             return ResponseEntity.badRequest().body("Missing uuid or cartItems");
         }
-        guestCartService.saveGuestCart(request.getUuidToken(), request.getItems());
+        guestCartService.saveGuestCartToRedis(request.getUuidToken(), request.getItems());
         return ResponseEntity.ok(new BaseResponse(200,"Lấy dữ liệu từ Redis thành công.",null));
     }
 

@@ -31,7 +31,7 @@ public class CartItemEntity {
     @Column(name = "discount_applied")
     private BigDecimal discountApplied;
 
-    @Column(name = "total_price")
+    @Column(name = "total_price", insertable = false, updatable = false)
     private BigDecimal totalPrice;
 
     private LocalDateTime createdAt;

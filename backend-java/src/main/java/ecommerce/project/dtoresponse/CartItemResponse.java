@@ -13,4 +13,9 @@ public class CartItemResponse {
     private int quantity;
     private BigDecimal discountApplied;
     private BigDecimal totalPrice;
+
+    public CartItemResponse(Long productId, Integer quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 }

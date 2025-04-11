@@ -14,4 +14,8 @@ public class CartItemDTO {
     private BigDecimal discountApplied;
     private BigDecimal totalPrice;
 
+    public CartItemDTO(Long productId, Integer quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 }

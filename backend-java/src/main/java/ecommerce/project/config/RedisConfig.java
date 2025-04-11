@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import ecommerce.project.dtoresponse.CartResponse;
+import ecommerce.project.entity.VoucherEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +35,28 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
     }
+
+
+    @Bean
+    public RedisTemplate<String, VoucherEntity> voucherRedisTemplate(
+            RedisConnectionFactory factory,
+            ObjectMapper objectMapper
+    ) {
+        RedisTemplate<String, VoucherEntity> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+
+        Jackson2JsonRedisSerializer<VoucherEntity> serializer =
+                new Jackson2JsonRedisSerializer<>(objectMapper, VoucherEntity.class); // ✅ dùng constructor mới
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+        template.afterPropertiesSet();
+
+        return template;
+    }
+
 
     // 2️⃣ ObjectMapper dùng chung – không ghi @class vào Redis
     @Bean
@@ -84,6 +109,27 @@ public class RedisConfig {
             ObjectMapper redisObjectMapper
     ) {
         return createRedisTemplate(factory, redisObjectMapper);
+    }
+
+    // 8️⃣ RedisTemplate riêng cho giỏ hàng người dùng đăng nhập (CartResponse)
+    @Bean(name = "userCartRedisTemplate")
+    public RedisTemplate<String, CartResponse> userCartRedisTemplate(
+            RedisConnectionFactory factory,
+            ObjectMapper redisObjectMapper
+    ) {
+        RedisTemplate<String, CartResponse> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+
+        Jackson2JsonRedisSerializer<CartResponse> serializer =
+                new Jackson2JsonRedisSerializer<>(redisObjectMapper, CartResponse.class);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(serializer);
+        template.afterPropertiesSet();
+
+        return template;
     }
 
     // 7️⃣ Redis Cache Manager (cho @Cacheable nếu dùng)

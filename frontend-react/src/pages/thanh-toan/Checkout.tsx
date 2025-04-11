@@ -1,11 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
 import { CartCheckout } from "../gio-hang/CartCheckout";
 import { useAuthContext } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useShoppingCart } from "../../context/ProductContext";
 
 export function Checkout() {
+  const { checkVoucher } = useShoppingCart();
+  const [voucherCode, setVoucherCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) return;
+
+    setLoading(true);
+    setMessage("");
+
+    const success = await checkVoucher(voucherCode);
+    setLoading(false);
+
+    if (success) {
+      setMessage(`✅ Đã áp dụng mã ${voucherCode.toUpperCase()}`);
+    } else {
+      setMessage("❌ Mã giảm giá không hợp lệ hoặc đã hết lượt sử dụng.");
+    }
+  };
+
   const { user } = useAuthContext();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -22,6 +51,7 @@ export function Checkout() {
     address: "",
     email: "",
   });
+
   useEffect(() => {
     const savedData = localStorage.getItem("formData");
     if (savedData) {
@@ -63,9 +93,31 @@ export function Checkout() {
         {/* Thông tin giao hàng */}
         <Col lg={7}>
           <h2 className="fw-bold">Đặt hàng</h2>
-          <Alert variant="info" className="mb-4">
-            Bạn có mã Khuyến mãi? <a href="#">Nhập mã ngay.</a>
-          </Alert>
+          <Form.Label className="fw-bold">Bạn có mã khuyến mãi?</Form.Label>
+          <InputGroup className="mb-3">
+            <Form.Control
+              type="text"
+              placeholder="Nhập mã giảm giá..."
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
+            />
+            <Button
+              variant="primary"
+              onClick={handleApplyVoucher}
+              disabled={loading}
+            >
+              {loading ? <Spinner size="sm" animation="border" /> : "Áp dụng"}
+            </Button>
+          </InputGroup>
+          {message && (
+            <div
+              className={`mt-2 mb-3 ${
+                message.startsWith("✅") ? "text-success" : "text-danger"
+              }`}
+            >
+              {message}
+            </div>
+          )}
           <h4 className="fw-bold">Thông tin giao hàng</h4>
           <Form className="p-4 bg-light rounded shadow-sm">
             <Row className="mb-3">

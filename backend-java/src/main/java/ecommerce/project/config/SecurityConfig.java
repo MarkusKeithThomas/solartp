@@ -52,10 +52,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurer)) // ✅ Bật CORS trong Security
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Không dùng session
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/tai-khoan/login",
+                    auth.requestMatchers(
+                            "test/**",
+                            "/tai-khoan/login",
                             "/tai-khoan/refresh",
                             "/tai-khoan/register",
                             "/tai-khoan/log-out",
+                            "/tai-khoan/reset-request",
                             "/oauth2/**",
                             "/tai-khoan/google",
                             "/check-env",
@@ -72,8 +75,18 @@ public class SecurityConfig {
                             "cart/check-stock",
                             "ws-chat/**",
                             "chat/**",
-                            "chat/history/paging/**"
+                            "chat/history/paging/**",
+                            "vouchers/validate/**",
+                            "orders/add",
+                            "orders/my",
+                            "orders/**",
+                            "orders/*/cancel",
+                            "orders/*/retry-payment",
+                            "orders/*/status",
+                            "orders//confirm"
                     ).permitAll(); // ✅ Cho phép OAuth2
+                    auth.requestMatchers("orders/*/payment-status","orders/*/status","orders/search","orders/recent").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("products/add","products/delete/**","products/update/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
