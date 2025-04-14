@@ -43,11 +43,10 @@ const steps: Step[] = [
   },
 ];
 export interface OrderTrackingProps {
-  orderCode: string;
   status: OrderStatus;
 }
 
-export function OrderTrackingStatus({ orderCode, status }: OrderTrackingProps) {
+export function OrderTrackingStatus({ status }: OrderTrackingProps) {
   const statusIndex = steps.findIndex((s) => s.status === status);
 
   return (
