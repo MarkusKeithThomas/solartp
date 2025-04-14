@@ -58,7 +58,6 @@ export function OrderDetailPage() {
           >
             <h5>Đơn hàng: {order.orderCode}</h5>
             <OrderTrackingStatus
-              orderCode={order.orderCode}
               status={order.status}
             />
 

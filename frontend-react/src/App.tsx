@@ -27,8 +27,6 @@ import { CheckLayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
 import { useEffect } from "react";
 import FixedActionButtons from "./components/FixedActionButtons";
-import path from 'path';
-import { OrderTrackingStatus } from "./pages/trang-thai-hang/OrderTrackingStatus";
 import { OrderDetailPage } from "./pages/trang-thai-hang/OrderDetailPage";
 
 // Tạo Query Client
