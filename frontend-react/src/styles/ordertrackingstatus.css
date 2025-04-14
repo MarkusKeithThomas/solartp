@@ -1,0 +1,17 @@
+.tracking-timeline {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    margin: 2rem 0;
+  }
+  
+  .tracking-timeline::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 5%;
+    right: 5%;
+    height: 4px;
+    background-color: #dee2e6;
+    z-index: 0;
+  }

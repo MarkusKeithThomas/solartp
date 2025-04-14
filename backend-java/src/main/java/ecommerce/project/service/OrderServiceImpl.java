@@ -13,9 +13,11 @@ import ecommerce.project.model.OrderStatus;
 import ecommerce.project.model.PaymentStatus;
 import ecommerce.project.producer.InventoryProducer;
 import ecommerce.project.repository.*;
+import ecommerce.project.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +34,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final VoucherService voucherService;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final VoucherRepository voucherRepository;
     private final OrderFactory orderFactory;
     private final StockRedisService stockRedisService;
     private final InventoryProducer inventoryProducer;
+    private final UserRepository userRepository;
+
 
     @Override
     @Transactional
-    public OrderResponse createOrder(OrderRequest request, int userId) {
+    public OrderResponse createOrder(OrderRequest request) {
+
+ 
+
         // Validate đầu vào
         if (request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Đơn hàng không có sản phẩm");
@@ -59,8 +65,8 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, ProductEntity> productMap = productRepository.findAllById(productIds).stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        boolean success = stockRedisService.decrementMultiProduct(productIds,quantities);
-        if (!success){
+        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
+        if (!success) {
             throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
         }
 
@@ -85,15 +91,17 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 4. Lấy user, cart
-        UserEntity user = userRepository.findById(userId)
-                .orElseGet(() -> {
-                    UserEntity u = new UserEntity();
-                    u.setId(userId);
-                    return u;
-                });
+        UserEntity user = null;
+        String email = request.getShippingAddress().getEmail();
+        if ( email != null) {
+            user = userRepository.findByEmail(email).orElse(null);
+        }
 
-        CartEntity cart = cartRepository.findById(request.getCartId()).orElse(null);
 
+        CartEntity cart = null;
+        if (request.getCartId() != null && !request.getCartId().toString().isBlank()) {
+            cart = cartRepository.findById(request.getCartId()).orElse(null);
+        }
         // 5. Tạo order bằng factory
         OrderEntity order = orderFactory.createOrder(
                 request,
@@ -111,10 +119,28 @@ public class OrderServiceImpl implements OrderService {
                 new InventoryDeductRequestDTO(
                         order.getId(),
                         request.getOrderItems().stream()
-                                .map(i -> new InventoryDeductRequestDTO.ProductQuantity(i.getProductId(),i.getQuantity()))
+                                .map(i -> new InventoryDeductRequestDTO.ProductQuantity(i.getProductId(), i.getQuantity()))
                                 .collect(Collectors.toList())
                 ));
+//        if (cart != null) {
+//            cartRepository.delete(cart);
+//        }
         return OrderMapper.toResponse(order);
+    }
+
+    @Override
+    public List<OrderResponse> getOrderByPhone(String phone) {
+        List<OrderEntity> list = orderRepository.findUnfinishedOrdersByPhone(phone);
+        List<OrderResponse> responseList = new ArrayList<>();
+        for (OrderEntity order:list){
+            OrderResponse orderResponse = OrderMapper.toResponse(order);
+            if (orderResponse != null){
+                responseList.add(orderResponse);
+            }
+        }
+
+
+        return responseList;
     }
 
     @Override
@@ -146,30 +172,4 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse getOrderByCode(String orderCode) {
         return null;
     }
-
-
-    // ==== Helper methods ====
-    private String generateOrderCode() {
-        return "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
-    private BigDecimal calculateTotalAmount(OrderRequest request) {
-        if (request == null || request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
-            throw new IllegalArgumentException("Danh sách sản phẩm không được để trống");
-        }
-
-        return request.getOrderItems().stream()
-                .map(item -> {
-                    if (item.getProductId() == null || item.getQuantity() == null || item.getQuantity() <= 0) {
-                        throw new IllegalArgumentException("Sản phẩm không hợp lệ");
-                    }
-
-                    ProductEntity product = productRepository.findById(item.getProductId())
-                            .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm ID: " + item.getProductId()));
-
-                    return product.getNewPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
 }

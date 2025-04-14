@@ -1,5 +1,6 @@
 package ecommerce.project.controller;
 
+import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.dtorequest.OrderRequest;
 import ecommerce.project.dtoresponse.OrderEmailDTO;
 import ecommerce.project.dtoresponse.OrderResponse;
@@ -28,15 +29,23 @@ public class OrderController {
 
     // Tạo đơn hàng mới
     @PostMapping("/add")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request,
-                                                     @RequestHeader("X-USER-ID") int userId) {
-        OrderResponse response = orderService.createOrder(request,userId);
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request) {
+        OrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmOrder(@RequestBody OrderEmailDTO dto) {
         emailProducer.sendOrderConfirmation(dto);
         return ResponseEntity.ok("✅ Đã gửi message xác nhận đơn hàng vào RabbitMQ");
+    }
+    @GetMapping("/id")
+    public ResponseEntity<?> getOrderByPhone(@RequestParam("phone") String phone) {
+        List<OrderResponse> orderResponse = orderService.getOrderByPhone(phone);
+        if (orderResponse.size() == 0 ){
+            return ResponseEntity.ok(new BaseResponse(200,"Lấy đơn hàng thành công!","Hiện tại bạn không có đơn hàng nào"));
+        } else {
+            return ResponseEntity.ok(new BaseResponse(200, "Lấy đơn hàng thành công", orderResponse));
+        }
     }
 
 

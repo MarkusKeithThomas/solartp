@@ -31,7 +31,7 @@ export function Checkout() {
     if (success) {
       setMessage(`✅ Đã áp dụng mã ${voucherCode.toUpperCase()}`);
     } else {
-      setMessage("❌ Mã giảm giá không hợp lệ hoặc đã hết lượt sử dụng.");
+      setMessage("❌ Mã giảm giá không hợp lệ hoặc không đủ điều kiện áp dụng.");
     }
   };
 

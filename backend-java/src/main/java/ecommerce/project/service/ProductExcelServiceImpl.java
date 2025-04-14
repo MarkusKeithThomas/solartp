@@ -53,6 +53,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
     private final ProductImageRepository productImageRepository;
     private final ProductViewService productViewService;
     private final StockRedisService stockRedisService;
+    private final ProductRedisService productRedisService;
 
 
     @Autowired
@@ -72,7 +73,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
             ProductRepository productRepository,
             ProductImageRepository productImageRepository,
             ProductSpecificationRepository productSpecificationRepository,
-            CategoryRepository categoryRepository,
+            CategoryRepository categoryRepository, ProductRedisService productRedisService,
             ProductMapperUtils productMapperUtils,
             StringUtil stringUtil,
             ProductViewService productViewService,
@@ -82,6 +83,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.productSpecificationRepository = productSpecificationRepository;
+        this.productRedisService = productRedisService;
         this.productMapperUtils = productMapperUtils;
         this.stringUtil = stringUtil;
         this.productRedisTemplate = productRedisTemplate;
@@ -178,7 +180,11 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         // ❌ Xóa cache cũ
         String redisKey = PREFIX + id;
         productRedisTemplate.delete(redisKey);
-        return productMapperUtils.toProductResponseDTO(updatedProduct);
+        ProductResponseDTO productResponseDTO = productMapperUtils.toProductResponseDTO(updatedProduct);
+        if (productResponseDTO != null){
+            productRedisService.syncAllActiveProductsToRedis();
+        }
+        return  productResponseDTO;
     }
 
     @Override
@@ -194,6 +200,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         String viewKey = "product_view:" + id;
         productRedisTemplate.delete(viewKey);
         stockRedisService.deleteStockKey(id);
+        productRedisService.syncAllActiveProductsToRedis();
     }
 
     @Override
@@ -204,6 +211,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
             ProductResponseDTO dto = productMapperUtils.toProductResponseDTO(product);
 
             List<ProductImageEntity> imageEntities = productImageRepository.findByProductIdOrderByDisplayOrderAsc(product.getId());
+
             List<ProductImageResponseDTO> imageDTOs = imageEntities.stream()
                     .map(productMapperUtils::toProductImageResponseDTO)
                     .toList();
@@ -265,6 +273,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
                     }
                 }
             }
+            productRedisService.syncAllActiveProductsToRedis();
             return list;
 
         } catch (IOException e) {

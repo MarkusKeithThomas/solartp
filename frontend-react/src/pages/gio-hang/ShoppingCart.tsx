@@ -9,9 +9,9 @@ type ShoppingCartProps = {
 
 export function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const { closeCart, cartItems } = useShoppingCart();
-  const { productList } = useProductDetailContext();
+  const {productListRedis } = useProductDetailContext();
   const productMap = new Map(
-    productList.map((product) => [product.id, product])
+    productListRedis.map((product) => [product.id, product])
   );
   const enrichedCartItems = cartItems.map((item) => {
     const product = productMap.get(item.id);
@@ -44,7 +44,7 @@ export function ShoppingCart({ isOpen }: ShoppingCartProps) {
               Total:{" "}
               {cartItems
                 .reduce((total, item) => {
-                  const itemData = productList.find(
+                  const itemData = productListRedis.find(
                     (storeItem) => storeItem.id === item.id
                   );
                   return total + (itemData?.newPrice || 0) * item.quantity;

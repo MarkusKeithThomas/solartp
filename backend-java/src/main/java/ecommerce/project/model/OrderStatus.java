@@ -1,8 +1,10 @@
 package ecommerce.project.model;
 
 public enum OrderStatus {
-    PENDING,
-    PAID,
-    CANCELED,
-    SHIPPED
+    PLACED,
+    CONFIRMED,
+    WAITING_FOR_PICKUP,
+    DELIVERING,
+    COMPLETED,
+    CANCELED
 }

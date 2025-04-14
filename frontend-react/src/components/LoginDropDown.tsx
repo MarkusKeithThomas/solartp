@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Dropdown, Image, Form } from "react-bootstrap";
+import { FaClipboardList } from "react-icons/fa";
 import {
   BsPerson,
   BsQuestionCircle,
@@ -52,6 +53,9 @@ export function LoginDropDown({ className }: LoginProps) {
         <Dropdown.Item href="/tai-khoan" className="d-flex align-items-center">
           <BsPerson className="me-2" /> My Account
         </Dropdown.Item>
+        <Dropdown.Item href="/trang-thai-hang" className="d-flex align-items-center">
+  <FaClipboardList className="me-2" /> Check đơn hàng
+</Dropdown.Item>
         <hr />
 
         {/* Chế độ Dark Mode */}

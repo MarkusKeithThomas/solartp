@@ -5,21 +5,31 @@ import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
 import ecommerce.project.dtoresponse.ProductResponseDTO;
 import ecommerce.project.service.ProductExcelService;
+import ecommerce.project.service.ProductRedisService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductExcelService productService;
+    private final ProductRedisService productRedisService;
+
+    @GetMapping("/getAllProductByRedis")
+    public ResponseEntity<?> getAllProductByRedis(){
+        List<ProductResponseDTO> list = productRedisService.getAllProductsFromRedis();
+        return ResponseEntity.ok(new BaseResponse(200,"Lấy toàn bộ danh sách thành công", list));
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> createProduct(@RequestParam("fileProduct") MultipartFile file) {

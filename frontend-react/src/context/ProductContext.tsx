@@ -9,6 +9,7 @@ import { ShoppingCart } from "../pages/gio-hang/ShoppingCart";
 import { useCartLocalStorage } from "../hook/useCartLocalStorage";
 import { useProductDetailContext } from "./ProductProvider";
 import { voucherApi } from "../api/voucherApi";
+import { PaymentMethodEnum } from "../type/order";
 
 type ProductContextProps = {
   children: ReactNode;
@@ -26,6 +27,9 @@ type ProductCartContext = {
   calculateTotalPrice: () => number;
   checkVoucher: (voucherCode: string) => Promise<boolean>;
   discount: number;
+  voucher: string;
+  selectedPayment: PaymentMethodEnum;
+  setSelectedPayment: (paymentMethod: PaymentMethodEnum) => void;
 
 };
 type CartItem = {
@@ -46,8 +50,12 @@ export function ProductContext({ children }: ProductContextProps) {
     []
   );
   const [isOpen, setIsOpen] = useState(false);
-  const { productList } = useProductDetailContext();
+  const { productListRedis } = useProductDetailContext();
   const [discount, setDiscount] = useState(0);
+  const [voucher, setVoucher] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethodEnum>(PaymentMethodEnum.COD); 
+
+  
 
   const cartQuantity = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -102,8 +110,8 @@ export function ProductContext({ children }: ProductContextProps) {
       const orderTotal = calculateTotalPrice();
       const res = await voucherApi.validate(voucherCode, orderTotal);
   
-      setDiscount(res.data.discount); // hoặc set lại cả voucher state nếu cần
-  
+      setDiscount(res.data.data.discount); // hoặc set lại cả voucher state nếu cần
+      setVoucher(voucherCode);
       return true;
     } catch (err: any) {
       setDiscount(0); // reset nếu lỗi
@@ -114,7 +122,7 @@ export function ProductContext({ children }: ProductContextProps) {
   // Tính tổng tiền
   function calculateTotalPrice(): number {
     return cartItems.reduce((sum, cartItem) => {
-      const item = productList.find((product) => product.id === cartItem.id);
+      const item = productListRedis.find((product) => product.id === cartItem.id);
       return sum + (item ? item.newPrice * cartItem.quantity : 0);
     }, 0);
   }
@@ -175,7 +183,10 @@ export function ProductContext({ children }: ProductContextProps) {
           closeCart,
           calculateTotalPrice,
           checkVoucher,
-          discount
+          discount,
+          voucher,
+          selectedPayment,
+          setSelectedPayment
         }}
       >
         {children}
