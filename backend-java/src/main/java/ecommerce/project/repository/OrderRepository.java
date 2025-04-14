@@ -21,6 +21,18 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     Page<OrderEntity> findAllByUserId(Long userId, Pageable pageable);
 
+    @Query("""
+    SELECT o FROM OrderEntity o 
+    WHERE o.shippingAddress.phone = :phone 
+    AND o.status IN (
+        ecommerce.project.model.OrderStatus.PLACED,
+        ecommerce.project.model.OrderStatus.CONFIRMED,
+        ecommerce.project.model.OrderStatus.WAITING_FOR_PICKUP,
+        ecommerce.project.model.OrderStatus.DELIVERING
+    )
+""")
+    List<OrderEntity> findUnfinishedOrdersByPhone(@Param("phone") String phone);
+
     @Query("SELECT o FROM OrderEntity o " +
             "WHERE (:keyword IS NULL OR o.orderCode LIKE %:keyword%) " +
             "AND (:status IS NULL OR o.status = :status) " +

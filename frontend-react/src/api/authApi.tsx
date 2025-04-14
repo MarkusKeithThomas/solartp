@@ -8,6 +8,18 @@ const authAPI = axios.create({
   withCredentials: true, // ✅ Quan trọng nếu dùng HTTP-Only Cookies
 });
 
+authAPI.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // ✅ Interceptor: Tự động thêm `accessToken` vào `headers`
 authAPI.interceptors.response.use(
     (response) => response,
@@ -28,8 +40,8 @@ authAPI.interceptors.response.use(
   
             // ✅ Thử gửi lại request ban đầu với token mới
             error.config.headers.Authorization = `Bearer ${refreshResponse.data.data}`;
-            return axios(error.config);
-          }
+            return authAPI(error.config);     
+               }
         } catch (refreshError) {
           console.error("Lỗi refresh token:", refreshError);
           localStorage.removeItem("accessToken");

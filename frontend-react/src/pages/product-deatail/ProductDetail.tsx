@@ -19,9 +19,9 @@ import { discountProduct } from "../../ultities/discountProduct";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>(); // Lấy slug từ URL
-  const { productList } = useProductDetailContext();
-  const productDetail = productList.find((item) => item.slug === slug);
-  const imageList = productList.find((item) => item.slug === slug)?.images;
+  const { productListRedis } = useProductDetailContext();
+  const productDetail = productListRedis.find((item) => item.slug === slug);
+  const imageList = productListRedis.find((item) => item.slug === slug)?.images;
   const isThumb = productDetail?.images.find((item) => item.isThumbnail);
 
 
@@ -64,7 +64,7 @@ const ProductDetail = () => {
 
             <div className="mb-3">
               <strong>Công Suất:</strong>
-              {productList?.map((item) => (
+              {productListRedis?.map((item) => (
                 <Button
                   key={item.id}
                   variant="outline-primary"

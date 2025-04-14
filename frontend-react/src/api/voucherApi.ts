@@ -1,8 +1,8 @@
-import axiosClient from "./axiosClient";
+import authAPI from "./authApi";
 
 export const voucherApi = {
   validate: (code: string, orderTotal: number) =>
-    axiosClient.get("/vouchers/validate", {
+    authAPI.get("/vouchers/validate", {
       params: { code, orderTotal },
     }),
 };

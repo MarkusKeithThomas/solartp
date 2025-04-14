@@ -7,3 +7,8 @@ export const getPaginatedProducts = async (page: number = 0, size: number = 6) =
     console.log("API da duoc goi getPaginatedProducts")
   return res.data; // trả về { code, message, data }
 };
+
+export const fetchAllProducts = async ()=> {
+  const res = await axios.get(`${API_BASE_URL}/products/getAllProductByRedis`);
+  return res.data;
+};

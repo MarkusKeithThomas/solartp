@@ -68,6 +68,7 @@ public class SecurityConfig {
                             "products/getproduct/",
                             "products/details/**",
                             "products/getAllProduct",
+                            "products/getAllProductByRedis",
                             "/robots.txt",
                             "categories/get-categories",
                             "products/getAllProduct",
@@ -83,7 +84,8 @@ public class SecurityConfig {
                             "orders/*/cancel",
                             "orders/*/retry-payment",
                             "orders/*/status",
-                            "orders//confirm"
+                            "orders//confirm",
+                            "orders/id"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("orders/*/payment-status","orders/*/status","orders/search","orders/recent").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");

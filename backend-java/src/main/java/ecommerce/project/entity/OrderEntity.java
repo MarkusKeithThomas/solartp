@@ -59,9 +59,9 @@ public class OrderEntity {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     // Quan hệ
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity user; // Cho phép null nếu là guest
 
     @OneToOne
     @JoinColumn(name = "cart_id")

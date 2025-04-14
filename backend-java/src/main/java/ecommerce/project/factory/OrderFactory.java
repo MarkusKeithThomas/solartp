@@ -39,7 +39,7 @@ public class OrderFactory {
         order.setFinalAmount(finalAmount);
         order.setPaymentMethod(request.getPaymentMethod());
         order.setPaymentStatus(PaymentStatus.UNPAID);
-        order.setStatus(OrderStatus.PENDING);
+        order.setStatus(OrderStatus.PLACED);
         order.setNote(request.getNote());
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());

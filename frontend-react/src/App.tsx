@@ -27,6 +27,9 @@ import { CheckLayout } from "./layout/CheckLayout";
 import { ArticleProvider } from "./context/ArticleProvider";
 import { useEffect } from "react";
 import FixedActionButtons from "./components/FixedActionButtons";
+import path from 'path';
+import { OrderTrackingStatus } from "./pages/trang-thai-hang/OrderTrackingStatus";
+import { OrderDetailPage } from "./pages/trang-thai-hang/OrderDetailPage";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -73,6 +76,8 @@ function App() {
             <Route path="/tai-khoan/forgot-password" element={<ForgotPassword/>} />
             <Route path="/tai-khoan/reset-password" element={<ResetPassword/>} />
             <Route path="/login-success" element={<LoginSuccess />} />
+
+            <Route path="/trang-thai-hang" element={<OrderDetailPage/>} />
 
           </Routes>
         </Container>

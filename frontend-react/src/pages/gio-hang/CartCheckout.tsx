@@ -1,15 +1,13 @@
-import { useState } from "react";
 import {  Card, Form, ListGroup, Image, Stack } from "react-bootstrap";
 import { useShoppingCart } from "../../context/ProductContext";
 import { formatMoney } from "../../ultities/formatMoney";
 import { formatTitle } from '../../ultities/formatTitle';
 import { useProductDetailContext } from "../../context/ProductProvider";
+import { PaymentMethodEnum } from "../../type/order";
 
 export function CartCheckout() {
-  const { cartItems,calculateTotalPrice } = useShoppingCart();
-  const {productList} = useProductDetailContext();
-  const [selectedPayment, setSelectedPayment] = useState("cod"); // Mặc định chọn Thanh toán khi nhận hàng
-  const {discount} = useShoppingCart();
+  const { discount,cartItems,calculateTotalPrice,setSelectedPayment,selectedPayment } = useShoppingCart();
+  const {productListRedis} = useProductDetailContext();
 
 
   // Tính tổng tiền
@@ -20,7 +18,7 @@ export function CartCheckout() {
             <h3 className="fw-bold">Giỏ hàng của bạn</h3>
             <ListGroup variant="flush">
               {cartItems.map((cartItem) => {
-                const item = productList.find((product) => product.id === cartItem.id);
+                const item = productListRedis.find((product) => product.id === cartItem.id);
                 if (!item) return null;
 
                 return (
@@ -61,28 +59,28 @@ export function CartCheckout() {
       <div className="mt-4">
   <Form>
     {/* Thanh toán khi nhận hàng */}
-    <div className={`payment-option ${selectedPayment === "cod" ? "active" : ""}`} 
-      onClick={() => setSelectedPayment("cod")}>
+    <div className={`payment-option ${selectedPayment === PaymentMethodEnum.COD ? "active" : ""}`} 
+      onClick={() => setSelectedPayment(PaymentMethodEnum.COD)}>
       <Form.Check 
         type="radio" 
         name="payment" 
         id="cod" 
-        checked={selectedPayment === "cod"} 
-        onChange={() => setSelectedPayment("cod")} 
+        checked={selectedPayment === PaymentMethodEnum.COD} 
+        onChange={() => setSelectedPayment(PaymentMethodEnum.COD)} 
         className="me-2"
       />
-      <label htmlFor="cod" className="w-100">Thanh toán khi nhận hàng</label>
+      <label htmlFor="COD" className="w-100">Thanh toán khi nhận hàng</label>
     </div>
 
     {/* Thanh toán tại cửa hàng */}
-    <div className={`payment-option ${selectedPayment === "store" ? "active" : ""}`} 
-      onClick={() => setSelectedPayment("store")}>
+    <div className={`payment-option ${selectedPayment === PaymentMethodEnum.STORE ? "active" : ""}`} 
+      onClick={() => setSelectedPayment(PaymentMethodEnum.STORE)}>
       <Form.Check 
         type="radio" 
         name="payment" 
         id="store" 
-        checked={selectedPayment === "store"} 
-        onChange={() => setSelectedPayment("store")} 
+        checked={selectedPayment ===PaymentMethodEnum.STORE} 
+        onChange={() => setSelectedPayment(PaymentMethodEnum.STORE)} 
         className="me-2"
       />
       <label htmlFor="store" className="w-100">Thanh toán tại cửa hàng</label>

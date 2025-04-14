@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ecommerce.project.dtoresponse.CartResponse;
+import ecommerce.project.dtoresponse.ProductResponseDTO;
 import ecommerce.project.entity.VoucherEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
+import java.util.List;
 
 @Configuration
 public class RedisConfig {
@@ -34,6 +36,25 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
+    }
+
+    @Bean(name = "productAllRedisTemplate")
+    public RedisTemplate<String, List<ProductResponseDTO>> productAllRedisTemplate(
+            RedisConnectionFactory connectionFactory,
+            ObjectMapper redisObjectMapper
+    ) {
+        RedisTemplate<String, List<ProductResponseDTO>> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper);
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
+
+        template.afterPropertiesSet();
+        return template;
     }
 
 

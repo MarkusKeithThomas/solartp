@@ -7,20 +7,19 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class JWTUtil {
-    @Value("${jwt.secret}")
-    private String SECRET_KEY1;
 
-    private static final String SECRET_KEY = "4XKjK9AL/B0qX2msu3FIC4udzH+V2MsGg7TTPKbafbo="; // Thay bằng chuỗi bí mật đủ dài
+    private static final String SECRET_KEY = "U-H7lHDAv3TnFYRP1iZQvBZ7LsZs3xJBT8tX2qfsVTk="; // Thay bằng chuỗi bí mật đủ dài
     private static final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 1 ngay
     private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 15; // 15 ngày
 
     private final Key key;
 
     public JWTUtil() {
-        this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
+        this.key = Keys.hmacShaKeyFor(Base64.getUrlDecoder().decode(SECRET_KEY));
     }
 
     public String generateToken(String email, long expirationTime, String role) {
@@ -41,10 +40,11 @@ public class JWTUtil {
     }
 
     public String extractEmail(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
+        String email = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+        return Objects.requireNonNullElse(email, "lỗi lấy thông tin email từ user.");
     }
 
     public boolean validateToken(String token) {

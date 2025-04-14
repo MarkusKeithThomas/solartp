@@ -6,7 +6,8 @@ import {
   ReactNode,
   useCallback,
 } from "react";
-import { getPaginatedProducts } from "../api/productApi";
+import { fetchAllProducts, getPaginatedProducts } from "../api/productApi";
+import { useLocalStorageRedisSync } from "../hook/useLocalStorageSync";
 
 // ------------------ Kiểu dữ liệu ------------------
 
@@ -51,6 +52,7 @@ interface ProductContextType {
   isMore: boolean;
   superSaleList: Product[]
   isLoading: boolean
+  productListRedis: Product[]
 
 }
 
@@ -60,15 +62,31 @@ const ProductContext = createContext<ProductContextType | null>(null);
 
 export function ProductProvider({ children }: { children: ReactNode }) {
   const [productList, setProductList] = useState<Product[]>([]);
-  const [page, setPage] = useState(0);
+  const [productListRedis, setProductListRedis] = useLocalStorageRedisSync<Product[]>(
+    "product_redis_cache",
+    [],
+    { ttlMinutes: 30 } // ❗ Tự xoá cache sau 30 phút
+  );  
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isMore, setIsMore] = useState(false);
+  const [page, setPage] = useState(0);
 
   // Gọi khi load lần đầu
   useEffect(() => {
     resetProducts();
   }, []);
+
+  const getALlProducts = async () => {
+    if (productListRedis.length > 0) return; // Nếu đã có sản phẩm trong Redis thì không gọi lại
+    try {
+      const response = await fetchAllProducts();
+      const listProducts = response.data;
+      setProductListRedis(listProducts);
+    } catch (err) {
+      console.error("❌ Lỗi khi fetch all products:", err);
+    }
+  }
 
 
   // Hàm gọi API và thêm sản phẩm mới nếu chưa trùng
@@ -109,6 +127,9 @@ export function ProductProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       const response = await getPaginatedProducts(0, 4);
+      if(!productListRedis.length){
+        getALlProducts();
+      } // Nếu đã có sản phẩm trong Redis thì không gọi lại
       setProductList(response.data.content);
       setPage(0);
       setTotalPages(response.data.totalPages);
@@ -125,7 +146,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
     return productList.find((p) => p.id === id) || null;
   }, [productList]);
 
-  const superSaleList = productList.filter((product) => {
+  const superSaleList = productListRedis.filter((product) => {
     if (!product.oldPrice || !product.newPrice || product.oldPrice === 0)
       return false;
     const discount = ((product.oldPrice - product.newPrice) / product.oldPrice) * 100;
@@ -140,7 +161,8 @@ export function ProductProvider({ children }: { children: ReactNode }) {
         nextPage,
         getProductById,
         superSaleList,
-        isLoading
+        isLoading,
+        productListRedis
       }}
     >
       {children}
