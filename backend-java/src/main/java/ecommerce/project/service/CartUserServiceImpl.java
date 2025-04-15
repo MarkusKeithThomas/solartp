@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class CartUserServiceImpl implements CartUserService {
 
     private final CartRepository cartRepository;
@@ -40,6 +39,13 @@ public class CartUserServiceImpl implements CartUserService {
 
     private static final String REDIS_PREFIX = "user_cart:";
     private static final long TTL = 1; // 1 day
+
+    public CartUserServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository, RedisTemplate<String, CartResponse> redisTemplate) {
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.productRepository = productRepository;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public CartResponse getOrCreateCart(Integer userId) {

@@ -1,9 +1,8 @@
-import { Container, Row, Col, Button, Card, Alert } from "react-bootstrap";
+import { Container, Row, Col, Button, Card, Alert, Toast, ToastContainer } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { createOrder } from "../../api/orderApi";
-import { OrderRequest } from "../../type/order";
+import { OrderRequest, PaymentMethodEnum } from "../../type/order"; // điều chỉnh đường dẫn nếu cần
 import { useState, useEffect } from "react";
-import { PaymentMethodEnum } from "../../type/order"; // Adjust the path if necessary
 import { CartCheckout } from "../gio-hang/CartCheckout";
 import { useShoppingCart } from "../../context/ProductContext";
 
@@ -11,11 +10,12 @@ export function ConfirmOrder() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const {voucher,selectedPayment,cartItems, clearCart} = useShoppingCart();
+  const [showToast, setShowToast] = useState(false); // ✅ Thêm state toast
+
+  const { voucher, selectedPayment, cartItems, clearCart } = useShoppingCart();
 
   useEffect(() => {
     const storedFormData = JSON.parse(localStorage.getItem("formData") || "{}");
-
     if (!storedFormData) {
       navigate("/thanh-toan");
     } else {
@@ -48,14 +48,19 @@ export function ConfirmOrder() {
         quantity: item.quantity
       }))
     };
-    console.log(order)
 
     try {
       const response = await createOrder(order);
       console.log("✅ Đặt hàng thành công:", response);
       localStorage.removeItem("shopping-cart");
       clearCart();
-      navigate("/trang-thai-hang");
+
+      // ✅ Hiển thị toast và điều hướng sau 4s
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        navigate("/trang-thai-hang");
+      }, 4000);
     } catch (err: any) {
       console.error("❌ Lỗi đặt hàng:", err);
       if (err.response?.data?.message) {
@@ -98,6 +103,37 @@ export function ConfirmOrder() {
           </Card>
         </Col>
       </Row>
+
+{/* Overlay mờ phía sau */}
+{showToast && (
+  <div
+    className="position-fixed top-0 start-0 w-100 h-100"
+    style={{
+      backgroundColor: "rgba(0, 0, 0, 0.5)", // nền đen mờ
+      zIndex: 9998
+    }}
+  />
+)}
+
+{/* Toast chính giữa, to hơn */}
+<ToastContainer className="position-fixed top-50 start-50 translate-middle" style={{ zIndex: 9999 }}>
+  <Toast
+    show={showToast}
+    onClose={() => setShowToast(false)}
+    delay={4000}
+    autohide
+    animation
+    bg="success"
+    style={{ minWidth: "350px", padding: "1rem" }}
+  >
+    <Toast.Header closeButton={false}>
+      <strong className="me-auto fs-5">🎉 Đặt Hàng Thành Công</strong>
+    </Toast.Header>
+    <Toast.Body className="text-white fs-5">
+      Đơn hàng của bạn đã được tạo. Đang chuyển đến trang trạng thái...
+    </Toast.Body>
+  </Toast>
+</ToastContainer>
     </Container>
   );
 }

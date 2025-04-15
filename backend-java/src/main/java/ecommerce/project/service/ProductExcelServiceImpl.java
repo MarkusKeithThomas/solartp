@@ -181,9 +181,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         String redisKey = PREFIX + id;
         productRedisTemplate.delete(redisKey);
         ProductResponseDTO productResponseDTO = productMapperUtils.toProductResponseDTO(updatedProduct);
-        if (productResponseDTO != null){
-            productRedisService.syncAllActiveProductsToRedis();
-        }
+
         return  productResponseDTO;
     }
 
@@ -200,6 +198,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         String viewKey = "product_view:" + id;
         productRedisTemplate.delete(viewKey);
         stockRedisService.deleteStockKey(id);
+
         productRedisService.syncAllActiveProductsToRedis();
     }
 
@@ -273,6 +272,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
                     }
                 }
             }
+            // co the cai thien toc do bang cach la chi load lai theo dung san pham da duoc them
             productRedisService.syncAllActiveProductsToRedis();
             return list;
 
