@@ -109,6 +109,11 @@ public class GuestCartServiceImpl implements GuestCartService {
 
                     int addedItems = 0;
                     for (CartItemRequest req : items) {
+                        if (req.getProductId() == null || req.getQuantity() <= 0) {
+                            log.warn("⛔ Bỏ qua item có productId null hoặc quantity <= 0 trong cart {}", uuid);
+                            continue;
+                        }
+
                         productRepository.findById(req.getProductId()).ifPresent(product -> {
                             BigDecimal unitPrice = product.getNewPrice();
 
@@ -121,6 +126,7 @@ public class GuestCartServiceImpl implements GuestCartService {
 
                             cartItemRepository.save(cartItem);
                         });
+
                         addedItems++;
                     }
 
@@ -128,6 +134,7 @@ public class GuestCartServiceImpl implements GuestCartService {
                         cartRepository.delete(savedCart);
                         log.warn("🗑️ Cart [{}] không có item hợp lệ, đã bị xóa.", uuid);
                     } else {
+                        guestCartRedisTemplate.delete(key); // ✅ Xóa sau khi lưu thành công
                         log.info("✅ Synced guest cart [{}] with {} items to MySQL", uuid, addedItems);
                     }
                 } else {

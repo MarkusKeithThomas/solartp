@@ -11,6 +11,6 @@ public class RedisKeyPrefix {
     public static final String USER_CART = "user_cart:";
     public static final String VIEW_KEY_PREFIX = "product_views_count:";
     public static final String STOCK_KEY_PREFIX = "product_stock:";
-
+    public static final String REDIS_KEY_GET_ALL_PRODUCT = "product_map";
 
 }
