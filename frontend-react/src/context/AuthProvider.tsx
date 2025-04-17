@@ -28,6 +28,7 @@ interface AuthContextType {
   handleErrorRegister: () => string;
   successMessage: string;
   loginWithGoogle: () => void; // ✅ Thêm phương thức đăng nhập Google
+  logoutAdmin: () => void; // ✅ Thêm phương thức đăng xuất Admin
 }
 
 // Tạo Context
@@ -200,6 +201,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     googleLogout();
     navigate("/");
   };
+  const logoutAdmin = () => {
+    localStorage.removeItem("user-info");
+    localStorage.removeItem("admin-auth");
+    navigate("/admin/login"); // 👉 Không reload trang, chuyển nội bộ
+  };
+
 
   return (
     <AuthContext.Provider
@@ -212,6 +219,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         handleErrorRegister,
         successMessage,
         loginWithGoogle,
+        logoutAdmin
       }}
     >
       {children}
