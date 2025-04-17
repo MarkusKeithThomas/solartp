@@ -1,35 +1,30 @@
 import { Card, Table, Button, Form } from "react-bootstrap";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Category } from "../../type/admin/category";
-import { getAllCategories } from "../../api/admin/categoryApi";
+import { getAllCategories, addCategory } from "../../api/admin/categoryApi";
 
 const initialFormState: Category = {
   name: "",
   description: "",
 };
 
-// const mockCategories: Category[] = [
-//   { id: 1, name: "Đèn năng lượng", slug: "den-nang-luong", description: "Các loại đèn sử dụng NLMT" },
-//   { id: 2, name: "Tấm pin mặt trời", slug: "tam-pin", description: "Tấm pin Mono, Poly" },
-//   { id: 3, name: "Bộ lưu điện", slug: "bo-luu-dien", description: "Lưu trữ điện NLMT cho ban đêm" },
-// ];
-
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [form, setForm] = useState<Category>(initialFormState);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-const loadCategories = async () => {
-  try {
-    const data = await getAllCategories();
-    setCategories(data);
-  } catch (err) {
-    console.error("❌ Không lấy được danh mục:", err);
-  }
-};
-useEffect(() =>{
+  const loadCategories = async () => {
+    try {
+      const data = await getAllCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error("❌ Không lấy được danh mục:", err);
+    }
+  };
+
+  useEffect(() => {
     loadCategories();
-},[]);
+  }, []);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -46,19 +41,24 @@ useEffect(() =>{
     setEditingId(null);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!form.name.trim()) return;
 
     if (editingId) {
+      // cập nhật danh mục nếu cần
       setCategories(prev =>
         prev.map(cat =>
           cat.id === editingId ? { ...cat, ...form } : cat
         )
       );
     } else {
-      const newCategory: Category = { ...form};
-      setCategories(prev => [...prev, newCategory]);
+      try {
+        const newCategory = await addCategory(form);
+        setCategories(prev => [...prev, newCategory]);
+      } catch (err) {
+        console.error("❌ Lỗi khi thêm danh mục:", err);
+      }
     }
 
     handleCancelEdit();
@@ -70,7 +70,7 @@ useEffect(() =>{
       <Card.Body>
         <Form className="mb-4" onSubmit={handleSubmit}>
           <h6 className="mb-3">{editingId ? "Cập nhật danh mục" : "Thêm danh mục mới"}</h6>
-          {['name', 'description'].map((field, idx) => (
+          {["name", "description"].map((field, idx) => (
             <Form.Group key={field} className={idx < 2 ? "mb-2" : "mb-3"}>
               <Form.Control
                 name={field}
