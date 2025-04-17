@@ -34,8 +34,12 @@ public class RedisConfig {
 
     // 1️⃣ Tạo kết nối đến Redis
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
+    public RedisConnectionFactory redisConnectionFactory(
+            @Value("${spring.data.redis.password}") String redisPassword
+    ) {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
+        config.setPassword(redisPassword); // ✅ thêm dòng này
+        return new LettuceConnectionFactory(config);
     }
 
     @Bean(name = "productAllRedisTemplate")

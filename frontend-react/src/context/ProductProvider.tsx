@@ -43,6 +43,7 @@ export type Product = {
   categoryId: number;
   images: Image[];
   specificationGroups: SpecificationGroups;
+  isActive?: boolean;
 };
 
 interface ProductContextType {
