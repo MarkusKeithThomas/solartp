@@ -1,7 +1,7 @@
 import { Card, Table, Button, Form } from "react-bootstrap";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Category } from "../../type/admin/category";
-import { getAllCategories, addCategory } from "../../api/admin/categoryApi";
+import { addCategoryApi, getAllCategoriesApi, updateCategoryApi } from "../../api/admin/categoryApi";
 
 const initialFormState: Category = {
   name: "",
@@ -15,7 +15,7 @@ const CategoriesPage = () => {
 
   const loadCategories = async () => {
     try {
-      const data = await getAllCategories();
+      const data = await getAllCategoriesApi();
       setCategories(data);
     } catch (err) {
       console.error("❌ Không lấy được danh mục:", err);
@@ -24,7 +24,7 @@ const CategoriesPage = () => {
 
   useEffect(() => {
     loadCategories();
-  }, []);
+  }, [categories]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -52,9 +52,15 @@ const CategoriesPage = () => {
           cat.id === editingId ? { ...cat, ...form } : cat
         )
       );
+      try {
+        await updateCategoryApi({ ...form, id: editingId });
+        loadCategories();
+      } catch (err) {
+        console.error("❌ Lỗi khi cập nhật danh mục:", err);
+      }
     } else {
       try {
-        const newCategory = await addCategory(form);
+        const newCategory = await addCategoryApi(form);
         setCategories(prev => [...prev, newCategory]);
       } catch (err) {
         console.error("❌ Lỗi khi thêm danh mục:", err);
@@ -125,7 +131,9 @@ const CategoriesPage = () => {
                   >
                     Sửa
                   </Button>
-                  <Button variant="outline-danger" size="sm">Xoá</Button>
+                  <Button 
+                    disabled
+                  variant="outline-danger" size="sm">Xoá</Button>
                 </td>
               </tr>
             ))}

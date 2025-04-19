@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ProductSpecificationDTO {
-    private long id;
+    private Long id;
     private String sku;
     private String specGroup;
     private String name;

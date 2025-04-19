@@ -9,7 +9,8 @@ import { useProductDetailContext } from "../context/ProductProvider";
 import { useState } from "react";
 
 export function Home() {
-  const { productList, nextPage, isMore ,superSaleList,isLoading} = useProductDetailContext();
+  const { productList, nextPage, isMore, superSaleList, isLoading } =
+    useProductDetailContext();
 
   const { shortArticles } = useArticleContext();
   const [hotGiamProduct, setHotGiamProduct] = useState(4);
@@ -38,12 +39,13 @@ export function Home() {
               </span>
             </div>
             <Row className="mt-2">
-                {superSaleList
+              {superSaleList
                 .slice(0, hotGiamProduct)
+                .filter((product) => product.id !== undefined)
                 .map((product) => (
                   <Col key={product.id} xs={6} md={6} lg={3} className="gx-1">
                     <ProductCard
-                      id={product.id}
+                      id={product.id!}
                       description={product.description}
                       name={product.name}
                       slug={product.slug}
@@ -73,11 +75,12 @@ export function Home() {
       </div>
       <div>
         <Image
-          src="/imgs/discount_solar_tp.webp"
-          alt="Banner_giam_gia_san_pham"
-          fluid
-          className="rounded mt-4" // hoặc rounded-3, rounded-4 tùy độ bo
-        />{" "}
+          src="/imgs/banner-giam-gia-den-nang-luong.webp"
+          alt="Banner giảm giá đèn năng lượng mặt trời - SolarTP"
+          loading="lazy"
+          className="img-fluid rounded-3 mt-4 w-100"
+          style={{ maxWidth: "1000px", height: "auto" }}
+        />
       </div>
 
       <div className="bg-light mt-5">
@@ -88,7 +91,7 @@ export function Home() {
           {productList.map((product) => (
             <Col key={product.id} xs={6} md={6} lg={3} className="gx-1">
               <ProductCard
-                id={product.id}
+                id={product.id ?? 0}
                 description={product.description}
                 name={product.name}
                 slug={product.slug}
@@ -110,8 +113,7 @@ export function Home() {
             onClick={() => nextPage()}
           >
             {isLoading ? "Đang tải thêm" : ""}
-            {isMore ? ("Trang cuối") : "Xem thêm sản phẩm ▼"}
-
+            {isMore ? "Trang cuối" : "Xem thêm sản phẩm ▼"}
           </Button>
         </div>
       </div>

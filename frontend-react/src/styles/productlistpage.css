@@ -1,0 +1,6 @@
+.product-name-cell {
+    max-width: 200px;         /* Giới hạn chiều ngang */
+    white-space: normal;      /* Cho phép xuống dòng */
+    word-break: break-word;   /* Tách từ nếu quá dài */
+    line-height: 1.4;
+  }

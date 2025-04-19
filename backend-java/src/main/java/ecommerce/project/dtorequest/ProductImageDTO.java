@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ProductImageDTO {
-    private long id;
+    private Long id;
     private String imageUrl;
     private String altText;
     private Boolean isThumbnail;

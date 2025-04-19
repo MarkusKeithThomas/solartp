@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User } from '../../type/admin/user';
 import { useUserLocalStorage } from "../../hook/useUserLocalStorage";
+import authAPI from "../../api/authApi";
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState("");
@@ -22,53 +23,36 @@ const AdminLoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
   const login = async (email: string, password: string) => {
-    setErrorMessage(""); // Xóa lỗi cũ
-    setIsLoading(true); // Bắt đầu loading
+    setIsLoading(true);
+    setErrorMessage("");
+  
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/tai-khoan/login`,
+      const response = await authAPI.post(
+        "/tai-khoan/login",
         { email, password },
         { withCredentials: true }
       );
-
-      if (response.data.code !== 200) {
-        throw new Error(response.data.data || "Đăng nhập thất bại!");
-      }
-      // ✅ Lưu Access Token
-      const accessToken = response.data.data;
-
-      // ✅ 2. Gọi API `/user-info` để lấy thông tin user
-      const userResponse = await axios.get<{data:User}>(
-        `${API_BASE_URL}/tai-khoan/user-info`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      // ✅ 3. Lưu user vào `localStorage` và React Context
+      const accessToken  = response.data.data;
+      localStorage.setItem("accessToken", accessToken);
+  
+      const userResponse = await authAPI.get<{ data: User }>("/tai-khoan/user-info");
       const userData = userResponse.data.data;
-      setUser(userData);
 
-      // ✅ Chuyển hướng đến trang chủ
-      setSuccessMessage("🎉 Đăng nhập thành công! Welcome to SolarTP.");
+      setUser(userData);
+      setSuccessMessage("🎉 Đăng nhập thành công!");
       localStorage.setItem("admin-auth", "true");
-      setIsLoading(false); // Kết thúc loading
+  
       setTimeout(() => {
-        navigate("/admin"); // Chuyển hướng sau 3 giây
+        navigate("/admin");
       }, 500);
     } catch (error: any) {
-      setIsLoading(false); // Kết thúc loading
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(
-          error.response?.data?.message || "Vui lòng đăng nhập lại"
-        );
-      } else {
-        setErrorMessage(error.message);
-      }
+      setErrorMessage(error?.message || "Đăng nhập thất bại");
+    } finally {
+      setIsLoading(false);
     }
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {

@@ -2,11 +2,12 @@ import axios from "axios";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
-// ✅ Tạo một instance Axios
+// ✅ Tạo instance axios với baseURL
 const authAPI = axios.create({
   baseURL: `${API_BASE_URL}`,
   withCredentials: true, // ✅ Quan trọng nếu dùng HTTP-Only Cookies
 });
+
 
 authAPI.interceptors.request.use(
   (config) => {
@@ -20,7 +21,7 @@ authAPI.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ Interceptor: Tự động thêm `accessToken` vào `headers`
+// ✅ Interceptor: Tự động refresh token khi hết hạn
 authAPI.interceptors.response.use(
     (response) => response,
     async (error) => {

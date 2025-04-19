@@ -2,6 +2,8 @@ package ecommerce.project.service;
 
 import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
+import ecommerce.project.dtorequest.ProductImageDTO;
+import ecommerce.project.dtorequest.ProductSpecificationDTO;
 import ecommerce.project.dtoresponse.ProductResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductExcelService {
 
@@ -26,4 +29,8 @@ public interface ProductExcelService {
 
     // Lấy sản phẩm theo ID
     ProductResponseDTO getProductDetailById(Long id, HttpServletRequest request);
+
+    ProductResponseDTO updateBasicFields(Long id, Map<String, Object> updates);
+    void updateImages(Long productId, List<ProductImageDTO> images);
+    void updateSpecifications(Long productId, Map<String, List<ProductSpecificationDTO>> specificationGroups);
 }

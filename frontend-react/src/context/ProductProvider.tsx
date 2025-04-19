@@ -11,7 +11,7 @@ import { useLocalStorageRedisSync } from "../hook/useLocalStorageSync";
 
 // ------------------ Kiểu dữ liệu ------------------
 
-type Image = {
+export type Image = {
   id: number;
   imageUrl: string;
   altText: string;
@@ -19,18 +19,20 @@ type Image = {
   displayOrder: number;
 };
 
-type SpecificationItem = {
+export type SpecificationItem = {
+  id?: number; // ✅ Cho phép null để phân biệt item mới và item cũ
+  specGroup?: string; // ✅ Tuỳ chọn để hỗ trợ cập nhật
   name: string;
   value: string;
   displayOrder: number;
 };
 
-type SpecificationGroups = {
+export type SpecificationGroups = {
   [group: string]: SpecificationItem[];
 };
 
 export type Product = {
-  id: number;
+  id?: number;
   skuProduct: string;
   name: string;
   slug: string;
@@ -45,6 +47,7 @@ export type Product = {
   specificationGroups: SpecificationGroups;
   isActive?: boolean;
 };
+
 
 interface ProductContextType {
   productList: Product[];

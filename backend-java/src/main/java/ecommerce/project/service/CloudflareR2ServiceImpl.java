@@ -1,5 +1,6 @@
 package ecommerce.project.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,11 +9,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Object;
+import software.amazon.awssdk.services.s3.model.*;
 
 
 import java.net.URI;
@@ -22,6 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CloudflareR2ServiceImpl implements CloudflareR2Service{
 
@@ -67,6 +65,27 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
                 .map(key -> link_image_get + key)
                 .collect(Collectors.toList());
     }
+    @Override
+    public void deleteFileFromUrl(String imageUrl) {
+        String fileKey = extractKeyFromUrl(imageUrl);
+        deleteFileFromCloudFlare(fileKey);
+    }
+    @Override
+    public void deleteFileFromCloudFlare(String fileKey) {
+        try {
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileKey)
+                    .build();
+
+            s3Client.deleteObject(deleteRequest);
+
+            log.info("✅ Đã xoá file khỏi R2: {}", fileKey);
+        } catch (S3Exception e) {
+            log.error("❌ Không thể xoá file: {}, lỗi: {}", fileKey, e.awsErrorDetails().errorMessage());
+            throw new RuntimeException("Không thể xoá file khỏi Cloudflare R2", e);
+        }
+    }
 
 
     private String uploadFile(MultipartFile file) {
@@ -94,6 +113,12 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
         } catch (Exception e) {
             throw new RuntimeException("Lỗi upload file lên Cloudflare R2", e);
         }
+    }
+    private String extractKeyFromUrl(String url) {
+        if (!url.startsWith(link_image_get)) {
+            throw new IllegalArgumentException("URL không hợp lệ: " + url);
+        }
+        return url.replace(link_image_get, "");
     }
 
 

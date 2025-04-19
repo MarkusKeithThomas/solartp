@@ -42,6 +42,7 @@ public class ProductMapperUtils {
 
     public ProductImageResponseDTO toProductImageResponseDTO(ProductImageEntity entity) {
         ProductImageResponseDTO dto = new ProductImageResponseDTO();
+        dto.setId(entity.getId());
         dto.setImageUrl(entity.getImageUrl());
         dto.setAltText(entity.getAltText());
         dto.setIsThumbnail(entity.getIsThumbnail());
@@ -51,6 +52,7 @@ public class ProductMapperUtils {
 
     public SpecificationResponseDTO toSpecificationResponseDTO(ProductSpecificationEntity entity) {
         SpecificationResponseDTO dto = new SpecificationResponseDTO();
+        dto.setId(entity.getId());
         dto.setSpecGroup(entity.getSpecGroup());
         dto.setName(entity.getName());
         dto.setValue(entity.getValue());

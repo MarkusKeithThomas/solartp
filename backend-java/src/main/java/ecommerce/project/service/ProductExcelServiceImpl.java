@@ -1,5 +1,6 @@
 package ecommerce.project.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecommerce.project.baseresponse.CustomPageResponse;
 import ecommerce.project.dtorequest.ProductDTO;
@@ -12,10 +13,7 @@ import ecommerce.project.entity.CategoryEntity;
 import ecommerce.project.entity.ProductEntity;
 import ecommerce.project.entity.ProductImageEntity;
 import ecommerce.project.entity.ProductSpecificationEntity;
-import ecommerce.project.exception.CategoryNotFoundException;
-import ecommerce.project.exception.DeleteProductException;
-import ecommerce.project.exception.ProductNotFoundException;
-import ecommerce.project.exception.UploadExcelException;
+import ecommerce.project.exception.*;
 import ecommerce.project.repository.CategoryRepository;
 import ecommerce.project.repository.ProductImageRepository;
 import ecommerce.project.repository.ProductRepository;
@@ -24,7 +22,6 @@ import ecommerce.project.utils.ProductMapperUtils;
 import ecommerce.project.utils.RedisKeyPrefix;
 import ecommerce.project.utils.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -37,9 +34,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +72,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
             ProductRepository productRepository,
             ProductImageRepository productImageRepository,
             ProductSpecificationRepository productSpecificationRepository,
-            CategoryRepository categoryRepository, ProductRedisService productRedisService,
+            CategoryRepository categoryRepository, ProductRedisService productRedisService, CloudflareR2Service cloudflareR2Service,
             ProductMapperUtils productMapperUtils,
             StringUtil stringUtil,
             ProductViewService productViewService,
@@ -90,6 +89,74 @@ public class ProductExcelServiceImpl implements ProductExcelService{
         this.categoryRepository = categoryRepository;
         this.productViewService = productViewService;
         this.stockRedisService = stockRedisService;
+    }
+
+    @Override
+    public ProductResponseDTO updateBasicFields(Long id, Map<String, Object> updates) {
+        ProductEntity product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        ObjectMapper mapper = new ObjectMapper();
+        updates.forEach((fieldName, fieldValue) -> {
+            Field field = ReflectionUtils.findField(ProductEntity.class, fieldName);
+            if (field != null) {
+                field.setAccessible(true);
+                Object value = mapper.convertValue(fieldValue, field.getType());
+                ReflectionUtils.setField(field, product, value);
+            }
+        });
+
+        productRepository.save(product);
+        productRedisTemplate.delete(RedisKeyPrefix.PRODUCT_DETAIL + id);
+        productRedisService.syncAllActiveProductsToRedis();
+        return productMapperUtils.toProductResponseDTO(product);
+    }
+
+    @Override
+    public void updateImages(Long productId, List<ProductImageDTO> images) {
+        for (ProductImageDTO dto : images) {
+            ProductImageEntity entity;
+            if (dto.getId() != null) {
+                entity = productImageRepository.findById(dto.getId())
+                        .orElseThrow(() -> new RuntimeException("Ảnh không tồn tại"));
+            } else {
+                entity = new ProductImageEntity();
+                entity.setProductId(productId);
+            }
+
+            entity.setImageUrl(dto.getImageUrl());
+            entity.setAltText(dto.getAltText());
+            entity.setIsThumbnail(dto.getIsThumbnail());
+            entity.setDisplayOrder(dto.getDisplayOrder());
+
+            productImageRepository.save(entity); // ✅ Lưu vào DB
+        }
+    }
+
+    @Override
+    public void updateSpecifications(Long productId, Map<String, List<ProductSpecificationDTO>> specGroups) {
+        for (Map.Entry<String, List<ProductSpecificationDTO>> entry : specGroups.entrySet()) {
+            String group = entry.getKey();
+
+            for (ProductSpecificationDTO dto : entry.getValue()) {
+                Long specId = dto.getId();
+
+                if (specId == null) {
+                    throw new ProductSpecificationException("❌ Thiếu ID cho thông số cần cập nhật!");
+                }
+
+                ProductSpecificationEntity spec = productSpecificationRepository.findById(specId)
+                        .orElseThrow(() -> new ProductSpecificationException("Không tìm thấy thông số ID: " + specId));
+
+                // ✅ Cập nhật các trường
+                spec.setSpecGroup(group);
+                spec.setName(dto.getName());
+                spec.setValue(dto.getValue());
+                spec.setDisplayOrder(dto.getDisplayOrder());
+
+                productSpecificationRepository.save(spec);
+            }
+        }
     }
 
 
@@ -112,7 +179,7 @@ public class ProductExcelServiceImpl implements ProductExcelService{
 
         // ✅ Nếu chưa có cache, lấy từ DB
         ProductEntity product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+                .orElseThrow(() -> new ProductNotFoundException(id));
 
         ProductResponseDTO dto = productMapperUtils.toProductResponseDTO(product);
 
@@ -130,6 +197,9 @@ public class ProductExcelServiceImpl implements ProductExcelService{
 
         return dto;
     }
+
+
+
 
 
     @Override
@@ -184,6 +254,8 @@ public class ProductExcelServiceImpl implements ProductExcelService{
 
         return  productResponseDTO;
     }
+
+
 
     @Override
     public void deleteProduct(Long id) {
@@ -370,4 +442,5 @@ public class ProductExcelServiceImpl implements ProductExcelService{
             default -> 0;
         };
     }
+
 }
