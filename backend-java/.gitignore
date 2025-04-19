@@ -11,6 +11,7 @@ backend-java/src/main/resources/application.properties
 .env
 *.env
 docker-compose.yml
+docker-compose.dev.yml
 
 # --- Node / React Frontend ---
 frontend-react/node_modules/

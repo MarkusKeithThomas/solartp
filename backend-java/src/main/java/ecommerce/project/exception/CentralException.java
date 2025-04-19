@@ -148,6 +148,11 @@ public class CentralException {
         return ResponseEntity.status(400).body(new BaseResponse(400, ex.getMessage(), null));
     }
 
+    @ExceptionHandler(ProductSpecificationException.class)
+    public ResponseEntity<BaseResponse> handleProductSpecificationException(Exception ex) {
+        return ResponseEntity.status(400).body(new BaseResponse(400, ex.getMessage(), null));
+    }
+
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi
      */

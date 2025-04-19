@@ -10,4 +10,6 @@ import java.util.List;
 public interface ProductSpecificationRepository extends JpaRepository<ProductSpecificationEntity, Long> {
     List<ProductSpecificationEntity> findByProductIdOrderByDisplayOrderAsc(Long productId);
     void deleteByProductId(Long productId);
+    List<ProductSpecificationEntity> findByProductId(Long productId);
+
 }

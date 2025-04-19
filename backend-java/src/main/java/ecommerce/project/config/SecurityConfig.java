@@ -89,7 +89,9 @@ public class SecurityConfig {
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("orders/*/payment-status","orders/*/status","orders/search","orders/recent").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("products/add","products/delete/**","products/update/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("products/add","products/delete/**","products/update/**"
+                    ,"products/*/**","products/**"
+                    ).hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
 

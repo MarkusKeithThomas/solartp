@@ -1,85 +1,66 @@
+// ProductListPage.tsx
 import { useEffect } from "react";
-import { Button, Card, Spinner, Table } from "react-bootstrap";
-import { useProductAdmin } from "../../context/admin/ProductAdminProvider";
+import { Table, Card, Spinner, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useProductAdmin } from "../../context/admin/ProductAdminProvider";
 
 const ProductListPage = () => {
   const navigate = useNavigate();
-  const {
-    products,
-    isLoading,
-    removeProduct,
-    reloadProducts,
-  } = useProductAdmin();
+  const { products,reloadProducts, isLoading } = useProductAdmin();
 
   useEffect(() => {
     reloadProducts();
   }, []);
 
-  const handleEdit = (id: number) => {
-    navigate(`/admin/products/edit/${id}`);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (window.confirm("Bạn có chắc muốn xoá sản phẩm này?")) {
-      await removeProduct(id);
-    }
-  };
-
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">📦 Danh sách sản phẩm</h5>
-        <Button variant="success" onClick={() => navigate("/admin/products/add")}>+ Thêm mới</Button>
+        <span>📦 Danh sách sản phẩm</span>
+        <Button variant="success" onClick={() => navigate("/admin/products/add")}>+ Thêm sản phẩm đơn</Button>
+        <Button variant="success" onClick={() => navigate("/admin/products/excel")}>+ Thêm sản phẩm hàng loạt</Button>
       </Card.Header>
       <Card.Body>
         {isLoading ? (
-          <div className="text-center">
+          <div className="text-center py-5">
             <Spinner animation="border" variant="primary" />
           </div>
         ) : (
-          <Table hover responsive>
-            <thead>
+          <Table responsive bordered hover>
+            <thead className="table-light">
               <tr>
+                <th>ID</th>
                 <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
                 <th>SKU</th>
                 <th>Giá mới</th>
                 <th>Giá cũ</th>
                 <th>Tồn kho</th>
-                <th>Thao tác</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
+                  <td>{p.id}</td>
                   <td>
                     <img
-                      src={p.images.find(i => i.isThumbnail)?.imageUrl || "https://via.placeholder.com/50"}
+                      src={p.images.find((i) => i.isThumbnail)?.imageUrl || p.images[0]?.imageUrl}
                       alt={p.name}
-                      style={{ width: 50, height: 50, objectFit: "cover" }}
+                      style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 6 }}
                     />
                   </td>
                   <td>{p.name}</td>
                   <td>{p.skuProduct}</td>
-                  <td>{p.newPrice.toLocaleString()}đ</td>
-                  <td>{p.oldPrice.toLocaleString()}đ</td>
+                  <td>{p.newPrice?.toLocaleString()}đ</td>
+                  <td className="text-decoration-line-through text-muted">{p.oldPrice?.toLocaleString()}đ</td>
                   <td>{p.stockQuantity}</td>
                   <td>
                     <Button
+                      size="sm"
                       variant="outline-primary"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleEdit(p.id)}
+                      onClick={() => navigate(`/admin/products/edit/${p.id}`)}
                     >
-                      Sửa
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleDelete(p.id)}
-                    >
-                      Xoá
+                      ✏️ Sửa
                     </Button>
                   </td>
                 </tr>
