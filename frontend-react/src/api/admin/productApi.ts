@@ -3,7 +3,7 @@ import { Product, Image, SpecificationGroups } from "../../context/ProductProvid
 
 // ✅ Lấy tất cả sản phẩm (Redis cache)
 export const getAdminProducts = async (): Promise<Product[]> => {
-  const res = await authAPI.get("/products/getAllProductByRedis");
+  const res = await authAPI.get("/products/getAllProductByAdmin");
   return res.data.data;
 };
 

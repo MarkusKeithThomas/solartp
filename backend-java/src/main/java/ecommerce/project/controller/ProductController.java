@@ -34,6 +34,11 @@ public class ProductController {
         List<ProductResponseDTO> list = productRedisService.getAllProductsFromRedis();
         return ResponseEntity.ok(new BaseResponse(200,"Lấy toàn bộ danh sách thành công", list));
     }
+    @GetMapping("/getAllProductByAdmin")
+    public ResponseEntity<?> getAllProductByAdmin(){
+        List<ProductResponseDTO> list = productRedisService.getAllProductsFromAdmin();
+        return ResponseEntity.ok(new BaseResponse(200,"Lấy toàn bộ danh sách thành công", list));
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> createProduct(@RequestParam("fileProduct") MultipartFile file) {

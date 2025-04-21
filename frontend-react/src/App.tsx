@@ -32,16 +32,15 @@ import Dashboard from "./pages/admin/Dashboard";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import RequireAdmin from "./components/auth/RequireAdmin";
 import OrdersPage from "./pages/admin/OrdersPage";
-import ProductsPage from "./pages/admin/ProductListPage";
 import CategoriesPage from "./pages/admin/CategoriesPage";
 import { ProductAdminProvider } from "./context/admin/ProductAdminProvider";
-import path from 'path';
 import ProductListPage from "./pages/admin/ProductListPage";
 import ProductFormPage from "./pages/admin/ProductFormTabs";
 import UploadProductExcelPage from "./pages/admin/UploadProductExcelPage";
 import OrderDetailAdminPage from "./pages/admin/OrderDetailAdminPage";
 import UserManagementPage from "./pages/admin/UserManagementPage";
 import AdminReportPage from "./pages/admin/AdminReportPage";
+import AdminImageManager from "./pages/admin/AdminImageManager";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -96,7 +95,13 @@ function App() {
 
                         <Route path="users" element={<UserManagementPage />} />
 
+
                         <Route path="report" element={<AdminReportPage />} />
+                        <Route path="images" element={<AdminImageManager />} />
+
+                        {/* thêm các route admin khác */}
+
+                        <Route path="*" element={<div>404 Not Found</div>} />
 
                         {/* thêm các route admin khác */}
 

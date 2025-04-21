@@ -31,6 +31,7 @@ const ProductListPage = () => {
                 <th>ID</th>
                 <th>Ảnh</th>
                 <th>Tên sản phẩm</th>
+                <th>Trạng thái</th>
                 <th>SKU</th>
                 <th>Giá mới</th>
                 <th>Giá cũ</th>
@@ -50,6 +51,13 @@ const ProductListPage = () => {
                     />
                   </td>
                   <td>{p.name}</td>
+                  <td>
+                    {p.isActive ? (
+                      <span className="text-success">Đang bán</span>
+                    ) : (
+                      <span className="text-danger">Ngừng bán</span>
+                    )}
+                  </td>
                   <td>{p.skuProduct}</td>
                   <td>{p.newPrice?.toLocaleString()}đ</td>
                   <td className="text-decoration-line-through text-muted">{p.oldPrice?.toLocaleString()}đ</td>

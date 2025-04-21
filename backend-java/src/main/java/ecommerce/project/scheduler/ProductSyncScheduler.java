@@ -18,7 +18,7 @@ public class ProductSyncScheduler{
         /**
          * Chạy mỗi 15 phút để sync giỏ hàng guest từ Redis về MySQL
          */
-        @Scheduled(cron = "0 */15 * * * *") // chạy mỗi 30 phút
+        @Scheduled(cron = "0 */5 * * * *") // chạy mỗi 5 phút
         public void syncGuestCarts() {
             log.info("🔄 [Scheduler] Bắt đầu đồng bộ toan bo san pham tu mysql len redis...");
             productRedisService.syncAllActiveProductsToRedis();

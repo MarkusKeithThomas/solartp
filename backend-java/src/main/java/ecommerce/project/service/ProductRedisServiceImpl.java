@@ -49,6 +49,35 @@ public class ProductRedisServiceImpl implements ProductRedisService {
         this.productRedisTemplate = productRedisTemplate;
         this.productMapperUtils = productMapperUtils;
     }
+    @Override
+    public List<ProductResponseDTO> getAllProductsFromAdmin() {
+
+        List<ProductEntity> allProducts = productRepository.findAll(); // Không phân trang
+
+        List<ProductResponseDTO> dtoList = allProducts.stream().map(product -> {
+            ProductResponseDTO dto = productMapperUtils.toProductResponseDTO(product);
+
+            // Ảnh
+            List<ProductImageEntity> imageEntities = productImageRepository.findByProductIdOrderByDisplayOrderAsc(product.getId());
+            List<ProductImageResponseDTO> imageDTOs = imageEntities.stream()
+                    .map(productMapperUtils::toProductImageResponseDTO)
+                    .toList();
+            dto.setImages(imageDTOs);
+
+            // Thông số kỹ thuật
+            List<ProductSpecificationEntity> specs = productSpecificationRepository.findByProductIdOrderByDisplayOrderAsc(product.getId());
+            List<SpecificationResponseDTO> specDTOs = specs.stream()
+                    .map(productMapperUtils::toSpecificationResponseDTO)
+                    .toList();
+            Map<String, List<SpecificationResponseDTO>> groupedSpecs = specDTOs.stream()
+                    .collect(Collectors.groupingBy(SpecificationResponseDTO::getSpecGroup));
+            dto.setSpecificationGroups(groupedSpecs);
+
+            return dto;
+        }).toList();
+
+        return dtoList;
+    }
 
     @Override
     public List<ProductResponseDTO> getAllProductsFromRedis() {

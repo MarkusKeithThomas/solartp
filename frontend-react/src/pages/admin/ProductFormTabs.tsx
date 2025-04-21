@@ -6,7 +6,11 @@ import { Product } from "../../context/ProductProvider";
 import ProductImageForm from "../../components/admin/ProductImageForm";
 import ProductSpecForm from "../../components/admin/ProductSpecForm";
 import { ProductBasicForm } from "../../components/admin/ProductBasicForm";
-import { updateProductFields, updateProductImages, updateProductSpecifications } from "../../api/admin/productApi";
+import {
+  updateProductFields,
+  updateProductImages,
+  updateProductSpecifications,
+} from "../../api/admin/productApi";
 
 const initialProduct: Product = {
   id: 0,
@@ -54,14 +58,14 @@ const ProductFormTabs = () => {
       if (isEdit) {
         setIsEditing(false);
         if (product.id !== undefined) {
-          await updateProductFields(product.id,product);
+          await updateProductFields(product.id, product);
           await updateProductImages(product.id, product.images);
-          await updateProductSpecifications(product.id,product.specificationGroups);
+          await updateProductSpecifications(
+            product.id,
+            product.specificationGroups
+          );
         }
-
-        }
-
-      else await addProduct(product);
+      } else await addProduct(product);
 
       navigate("/admin/products");
     } catch (err) {
@@ -78,8 +82,6 @@ const ProductFormTabs = () => {
     );
   }
 
-
-
   return (
     <Card>
       <Card.Header>
@@ -91,18 +93,19 @@ const ProductFormTabs = () => {
             <ProductBasicForm product={product} setProduct={setProduct} />
           </Tab>
           <Tab eventKey="images" title="Ảnh sản phẩm">
-            <ProductImageForm 
-            productImages={product.images} 
-            setProductImages={(imgs) =>
-              setProduct((prev) => ({ ...prev, images: imgs }))
-            }            
+            <ProductImageForm
+              productImages={product.images}
+              onImagesChange={(newImages) =>
+                setProduct((prev) => ({ ...prev, images: newImages }))
+              }
             />
           </Tab>
           <Tab eventKey="specs" title="Thông số kỹ thuật">
-            <ProductSpecForm 
-            isEditing={isEditing}
-            product={product} 
-            setProduct={setProduct} />
+            <ProductSpecForm
+              isEditing={isEditing}
+              product={product}
+              setProduct={setProduct}
+            />
           </Tab>
         </Tabs>
 

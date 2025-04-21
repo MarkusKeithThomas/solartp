@@ -7,5 +7,7 @@ import java.util.List;
 public interface ProductRedisService {
     void syncAllActiveProductsToRedis();
     List<ProductResponseDTO> getAllProductsFromRedis();
+    List<ProductResponseDTO> getAllProductsFromAdmin();
 
-}
+
+    }
