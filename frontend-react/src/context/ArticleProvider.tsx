@@ -103,6 +103,12 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
   }, [articles]);
 
   useEffect(() => {
+    if (articles.length > 0 && hasMore === false) {
+      setHasMore(true); // reset lại để cho phép fetch tiếp
+    }
+  }, []);
+
+  useEffect(() => {
     if (!hasMore) return;
 
     const observer = new IntersectionObserver(

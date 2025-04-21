@@ -12,35 +12,39 @@ import { Trash } from "react-bootstrap-icons";
 
 interface Props {
   productImages: Image[];
-  setProductImages: (images: Image[]) => void;
+  onImagesChange: (images: Image[]) => void; // truyền props từ cha
 }
 
-const ProductImageForm = ({ productImages, setProductImages }: Props) => {
-
+const ProductImageForm = ({ productImages, onImagesChange }: Props) => {
   const handleAddImage = () => {
     if (productImages.length >= 6) return;
-    setProductImages([
+    const newImages = [
       ...productImages,
       {
-        id: Date.now(),
+        id: Date.now(), // hoặc Math.random()
         imageUrl: "",
         altText: "",
         isThumbnail: false,
         displayOrder: productImages.length + 1,
       },
-    ]);
+    ];
+    onImagesChange(newImages);
   };
 
-  const handleImageChange = (index: number, field: keyof Image, value: any) => {
+  const handleImageChange = (
+    index: number,
+    field: keyof Image,
+    value: any
+  ) => {
     const updated = [...productImages];
     updated[index] = { ...updated[index], [field]: value };
-    setProductImages(updated);
+    onImagesChange(updated);
   };
 
   const handleRemove = (index: number) => {
     const updated = [...productImages];
     updated.splice(index, 1);
-    setProductImages(updated);
+    onImagesChange(updated);
   };
 
   const setAsThumbnail = (index: number) => {
@@ -48,13 +52,13 @@ const ProductImageForm = ({ productImages, setProductImages }: Props) => {
       ...img,
       isThumbnail: i === index,
     }));
-    setProductImages(updated);
+    onImagesChange(updated);
   };
 
   return (
     <Card className="p-3">
       <div className="mb-3">
-        <strong>📸 Hình ảnh sản phẩm (Không được quá 6 ảnh cho 1 mẫu)</strong>
+        <strong>📸 Hình ảnh sản phẩm (Tối đa 6 ảnh)</strong>
       </div>
 
       <Row className="g-3">
@@ -67,7 +71,7 @@ const ProductImageForm = ({ productImages, setProductImages }: Props) => {
                   {img.imageUrl ? (
                     <Card.Img
                       src={img.imageUrl}
-                      alt={img.altText || "/images/logo_tpsolar.webp"}
+                      alt={img.altText || ""}
                       style={{
                         width: "100%",
                         height: "auto",
@@ -121,7 +125,7 @@ const ProductImageForm = ({ productImages, setProductImages }: Props) => {
           </Col>
         ))}
 
-        {productImages.length < 9 && (
+        {productImages.length < 6 && (
           <Col md={3}>
             <Button
               variant="outline-secondary"
@@ -129,7 +133,7 @@ const ProductImageForm = ({ productImages, setProductImages }: Props) => {
               style={{ minHeight: 150 }}
               onClick={handleAddImage}
             >
-              + Thêm hình ảnh ({productImages.length}/9)
+              + Thêm ảnh ({productImages.length}/6)
             </Button>
           </Col>
         )}

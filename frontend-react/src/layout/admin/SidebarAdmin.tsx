@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaBox, FaUsers, FaChartPie, FaTags, FaCreativeCommonsSampling } from "react-icons/fa";
+import { FaTachometerAlt, FaBox, FaUsers, FaChartPie, FaTags, FaCreativeCommonsSampling, FaImage } from "react-icons/fa";
 import "./adminLayout.css";
 
 const SidebarAdmin = () => {
@@ -22,6 +22,9 @@ const SidebarAdmin = () => {
         <NavLink to="/admin/users" className="nav-link text-white">
           <FaUsers className="me-2" /> Người dùng
         </NavLink>
+        <NavLink to="/admin/images" className="nav-link text-white">
+  <FaImage className="me-2" /> Hình Ảnh
+</NavLink>
         <NavLink to="/admin/report" className="nav-link text-white">
           <FaChartPie className="me-2" /> Báo cáo
         </NavLink>

@@ -131,6 +131,8 @@ public class ProductExcelServiceImpl implements ProductExcelService{
 
             productImageRepository.save(entity); // ✅ Lưu vào DB
         }
+        productRedisService.syncAllActiveProductsToRedis();
+
     }
 
     @Override
@@ -157,6 +159,8 @@ public class ProductExcelServiceImpl implements ProductExcelService{
                 productSpecificationRepository.save(spec);
             }
         }
+        productRedisService.syncAllActiveProductsToRedis();
+
     }
 
 

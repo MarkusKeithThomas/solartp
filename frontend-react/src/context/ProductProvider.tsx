@@ -12,7 +12,7 @@ import { useLocalStorageRedisSync } from "../hook/useLocalStorageSync";
 // ------------------ Kiểu dữ liệu ------------------
 
 export type Image = {
-  id: number;
+  id?: number;
   imageUrl: string;
   altText: string;
   isThumbnail: boolean;
