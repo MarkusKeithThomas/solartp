@@ -79,7 +79,7 @@ export function Home() {
           alt="Banner giảm giá đèn năng lượng mặt trời - SolarTP"
           loading="lazy"
           className="img-fluid rounded-3 mt-4 w-100"
-          style={{ maxWidth: "1000px", height: "auto" }}
+          style={{ maxWidth: "2000px", height: "auto" }}
         />
       </div>
 
