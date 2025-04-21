@@ -75,7 +75,7 @@ export function Home() {
       </div>
       <div>
         <Image
-          src="/imgs/banner-giam-gia-den-nang-luong.webp"
+          src="/imgs/discount_solar_tp.webp"
           alt="Banner giảm giá đèn năng lượng mặt trời - SolarTP"
           loading="lazy"
           className="img-fluid rounded-3 mt-4 w-100"

@@ -1,0 +1,32 @@
+[
+    {
+      "id": 1,
+      "email": "admin@solartp.com.vn",
+      "name": "Admin Solar",
+      "role": "ADMIN"
+    },
+    {
+      "id": 2,
+      "email": "staff01@solartp.com.vn",
+      "name": "Nguyễn Văn A",
+      "role": "STAFF"
+    },
+    {
+      "id": 3,
+      "email": "user01@gmail.com",
+      "name": "Trần Thị B",
+      "role": "USER"
+    },
+    {
+      "id": 4,
+      "email": "staff02@solartp.com.vn",
+      "name": "Lê Văn C",
+      "role": "STAFF"
+    },
+    {
+      "id": 5,
+      "email": "user02@gmail.com",
+      "name": "Phạm Thị D",
+      "role": "USER"
+    }
+  ]
