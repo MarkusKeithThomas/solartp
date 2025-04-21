@@ -39,6 +39,9 @@ import path from 'path';
 import ProductListPage from "./pages/admin/ProductListPage";
 import ProductFormPage from "./pages/admin/ProductFormTabs";
 import UploadProductExcelPage from "./pages/admin/UploadProductExcelPage";
+import OrderDetailAdminPage from "./pages/admin/OrderDetailAdminPage";
+import UserManagementPage from "./pages/admin/UserManagementPage";
+import AdminReportPage from "./pages/admin/AdminReportPage";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -83,11 +86,18 @@ function App() {
                       >
                         <Route index element={<Dashboard />} />
                         <Route path="orders" element={<OrdersPage />} />
+                        <Route path="orders/:id" element={<OrderDetailAdminPage />} />
+
                         <Route path="products" element={<ProductListPage />} />
                         <Route path="category" element={<CategoriesPage />} />
                         <Route path="products/edit/:id" element={<ProductFormPage />} />
                         <Route path="products/add" element={<ProductFormPage />} />
                         <Route path="products/excel" element={<UploadProductExcelPage />} />
+
+                        <Route path="users" element={<UserManagementPage />} />
+
+                        <Route path="report" element={<AdminReportPage />} />
+
                         {/* thêm các route admin khác */}
 
 

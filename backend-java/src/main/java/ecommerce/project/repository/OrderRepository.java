@@ -28,7 +28,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
         ecommerce.project.model.OrderStatus.PLACED,
         ecommerce.project.model.OrderStatus.CONFIRMED,
         ecommerce.project.model.OrderStatus.WAITING_FOR_PICKUP,
-        ecommerce.project.model.OrderStatus.DELIVERING
+        ecommerce.project.model.OrderStatus.DELIVERING,
+        ecommerce.project.model.OrderStatus.CANCELED
     )
 """)
     List<OrderEntity> findUnfinishedOrdersByPhone(@Param("phone") String phone);

@@ -1,0 +1,385 @@
+[
+        {
+            "id": 1,
+            "orderCode": "ORD-0BC73A2A",
+            "totalAmount": 2600000.0,
+            "discountAmount": 20000.0,
+            "finalAmount": 2580000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "DELIVERING",
+            "note": "",
+            "createdAt": "2025-04-13T16:20:44",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP60W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 60W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 2,
+                    "price": 1300000.0,
+                    "totalPrice": 2600000.0
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "orderCode": "ORD-67B362CC",
+            "totalAmount": 3980000.0,
+            "discountAmount": 20000.0,
+            "finalAmount": 3960000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-13T18:37:16",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP500W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 500W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 2,
+                    "price": 1990000.0,
+                    "totalPrice": 3980000.0
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "orderCode": "ORD-E3A405C9",
+            "totalAmount": 2430000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 2430000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-13T19:22:11",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP200W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 200W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1290000.0,
+                    "totalPrice": 1290000.0
+                },
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "orderCode": "ORD-056928C7",
+            "totalAmount": 2150000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 2150000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T12:06:55",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP1000W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 1000W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 2150000.0,
+                    "totalPrice": 2150000.0
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "orderCode": "ORD-FBCD9E9C",
+            "totalAmount": 1140000.0,
+            "discountAmount": 20000.0,
+            "finalAmount": 1120000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:01:29",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "orderCode": "ORD-BD8416E0",
+            "totalAmount": 1140000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1140000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:02:32",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "orderCode": "ORD-6AE70DF0",
+            "totalAmount": 1140000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1140000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:03:12",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "orderCode": "ORD-16DCC8E0",
+            "totalAmount": 1490000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1490000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:03:34",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP300W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 300W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1490000.0,
+                    "totalPrice": 1490000.0
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "orderCode": "ORD-60B71F15",
+            "totalAmount": 1290000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1290000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:06:38",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP200W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 200W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1290000.0,
+                    "totalPrice": 1290000.0
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "orderCode": "ORD-FDDB70BA",
+            "totalAmount": 1140000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1140000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-04-14T17:08:10",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "orderCode": "ORD-898A6DA6",
+            "totalAmount": 1140000.0,
+            "discountAmount": 0.0,
+            "finalAmount": 1140000.0,
+            "paymentMethod": "COD",
+            "paymentStatus": "UNPAID",
+            "status": "PLACED",
+            "note": "",
+            "createdAt": "2025-05-14T17:10:40",
+            "shippingAddress": {
+                "fullName": "Nguyen Van B",
+                "email": "hthuongtn2905@gmail.com",
+                "phone": "0956789098",
+                "addressLine": "TPHCM",
+                "province": "",
+                "district": "",
+                "ward": "",
+                "addressNote": "",
+                "type": "HOME"
+            },
+            "items": [
+                {
+                    "productSku": "TP100W",
+                    "productName": "Đèn năng lượng mặt trời chất lượng ISO 100W",
+                    "thumbnailUrl": null,
+                    "unit": null,
+                    "quantity": 1,
+                    "price": 1140000.0,
+                    "totalPrice": 1140000.0
+                }
+            ]
+        }
+    ]
