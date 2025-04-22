@@ -45,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
-        stockRedisService.preloadStockFromDatabase();
         // Validate đầu vào
         if (request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Đơn hàng không có sản phẩm");
@@ -63,10 +62,10 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, ProductEntity> productMap = productRepository.findAllById(productIds).stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
-        if (!success) {
-            throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
-        }
+//        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
+//        if (!success) {
+//            throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
+//        }
 
         // 2. Tính tổng tiền
         BigDecimal totalAmount = request.getOrderItems().stream()
