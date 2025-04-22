@@ -45,9 +45,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
-
- 
-
+        stockRedisService.preloadStockFromDatabase();
         // Validate đầu vào
         if (request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Đơn hàng không có sản phẩm");
