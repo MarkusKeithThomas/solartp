@@ -5,12 +5,14 @@ import ecommerce.project.exception.StockException;
 import ecommerce.project.repository.ProductRepository;
 import ecommerce.project.utils.RedisKeyPrefix;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StockRedisServiceImpl implements StockRedisService {
@@ -107,8 +109,10 @@ public class StockRedisServiceImpl implements StockRedisService {
         List<ProductEntity> products = productRepository.findAll();
         for (ProductEntity product : products) {
             String key = RedisKeyPrefix.STOCK_KEY_PREFIX + product.getId();
-            redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(product.getStockQuantity()));
+            // ✔️ Cập nhật lại luôn, không cần kiểm tra tồn tại nữa
+            redisTemplate.opsForValue().set(key, String.valueOf(product.getStockQuantity()));
         }
+        log.info("✅ Stock đã preload vào Redis: {} sản phẩm", products.size());
     }
 
     @Override
