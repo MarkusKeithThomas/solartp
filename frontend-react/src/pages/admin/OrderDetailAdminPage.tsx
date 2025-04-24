@@ -1,13 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Card, Row, Col, Badge, Table, Button, Form } from "react-bootstrap";
-import orderData from "../../assets/fakedata/order.json";
 import {
   Order,
   OrderStatus,
   PaymentMethodEnum,
   PaymentStatus,
 } from "../../type/order";
+import { fetchOrdersApi } from "../../api/admin/orderApi";
 
 const OrderDetailAdminPage = () => {
   const { id } = useParams();
@@ -16,22 +16,21 @@ const OrderDetailAdminPage = () => {
   const [adminNote, setAdminNote] = useState<string>("");
 
   useEffect(() => {
-    const data = orderData.find((o) => o.id === Number(id));
-    if (data) {
-      setOrder({
-        ...data,
-        status: data.status as OrderStatus,
-        paymentMethod: data.paymentMethod as PaymentMethodEnum,
-        paymentStatus: data.paymentStatus as PaymentStatus,
-      });
-    }
+    fetchOrdersApi().then((res) => {
+      const data = res.find((o) => o.id === Number(id));
+      if (data) {
+        setOrder({
+          ...data,
+          status: data.status as OrderStatus,
+          paymentMethod: data.paymentMethod as PaymentMethodEnum,
+          paymentStatus: data.paymentStatus as PaymentStatus,
+        });
+      }
+    });
   }, [id]);
 
   const handleMarkAsCompleted = (note:string) => {
     if (!adminNote) return;
-    // Gọi API cập nhật trạng thái đơn hàng
-    // await updateOrderStatusApi(order.id, newStatus);
-    // Cập nhật lại trong UI
     setOrder((prevOrder) => {
       if (prevOrder) {
         return {
@@ -77,10 +76,10 @@ const OrderDetailAdminPage = () => {
         <Row className="mb-3">
           <Col md={6}>
             <h6>👤 Người nhận</h6>
-            <p>{order.shippingAddress.fullName}</p>
-            <p>{order.shippingAddress.phone}</p>
-            <p>{order.shippingAddress.email}</p>
-            <p>{order.shippingAddress.addressLine}</p>
+            <p>{order.shippingAddress?.fullName || ""}</p>
+<p>{order.shippingAddress?.phone || ""}</p>
+<p>{order.shippingAddress?.email || ""}</p>
+<p>{order.shippingAddress?.addressLine || ""}</p>
           </Col>
           <Col md={6}>
             <h6>💰 Thông tin thanh toán</h6>
@@ -93,11 +92,12 @@ const OrderDetailAdminPage = () => {
   <Form.Group className="mb-3">
     <Form.Label>🛠 Ghi chú thêm</Form.Label>
     <Form.Control
-      as="textarea"
-      rows={2}
-      placeholder={order.note ||"Ghi chú thêm thông tin cho đơn hàng này"}
-      onChange={(e) => setAdminNote(e.target.value)}
-    />
+  as="textarea"
+  rows={2}
+  placeholder="Ghi chú thêm thông tin cho đơn hàng này"
+  value={adminNote}
+  onChange={(e) => setAdminNote(e.target.value)}
+/>
   </Form.Group>
 
   <Button

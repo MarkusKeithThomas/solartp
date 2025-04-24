@@ -228,7 +228,7 @@ export function SolarLight() {
         {/* Bảng giá cập nhật */}
         <div className="mt-5">
           <h2 className="fw-bold text-danger">
-            III. Bảng Giá Cập Nhật (Tháng 3/2025)
+            III. Bảng Giá Cập Nhật 2025
           </h2>
 
           <ul>

@@ -47,6 +47,22 @@ public class OrderController {
             return ResponseEntity.ok(new BaseResponse(200, "Lấy đơn hàng thành công", orderResponse));
         }
     }
+    @GetMapping("/admin")
+    public ResponseEntity<?> getAllOrders() {
+        List<OrderResponse> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(new BaseResponse(200,"Lấy danh sách đơn hàng thành công", orders));
+    }
+
+    @PatchMapping("/{orderId}/status")
+    public ResponseEntity<?> updateOrderStatus(
+            @PathVariable Long orderId,
+            @RequestParam String newStatus) {
+            orderService.updateOrderStatus(orderId, newStatus);
+        return ResponseEntity.ok(new BaseResponse(200,"Đã cập nhật thành công đơn hàng"+orderId, null));
+    }
+
+
+
 
 
 

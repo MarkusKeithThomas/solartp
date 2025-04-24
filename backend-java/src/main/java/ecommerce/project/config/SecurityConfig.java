@@ -85,13 +85,18 @@ public class SecurityConfig {
                             "orders/*/retry-payment",
                             "orders/*/status",
                             "orders//confirm",
-                            "orders/id"
+                            "orders/id",
+                            "solar-panel/add-user"
                     ).permitAll(); // ✅ Cho phép OAuth2
-                    auth.requestMatchers("orders/*/payment-status","orders/*/status","orders/search","orders/recent").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("orders/*/payment-status","orders/*/status"
+                            ,"orders/search","orders/recent"
+                            ,"orders/*/status"
+                            ,"orders/admin").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("products/add","products/delete/**","products/update/**"
                     ,"products/*/**","products/**","products/getAllProductByAdmin"
                     ).hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("solar-panel").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
 

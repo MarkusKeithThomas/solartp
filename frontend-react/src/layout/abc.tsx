@@ -1,71 +1,64 @@
 import {
-  Nav,
-  Navbar as NavbarBs,
-  Button,
-  Offcanvas,
-} from "react-bootstrap";
-import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
-import "../styles/custom.css"; // Import CSS tùy chỉnh
-import "../styles/navbar.css"; // Import CSS tùy chỉnh
-import { LoginDropDown } from "../components/LoginDropDown.tsx";
-import { useState, useEffect } from "react";
-import { useShoppingCart } from "../context/ProductContext.tsx";
-
-
-export function Navbar() {
-  const { openCart, cartQuantity } = useShoppingCart();
-  const [scrolled, setScrolled] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const handleClose = () => setShowMenu(false);
-  const handleShow = () => setShowMenu(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <>
-      <NavbarBs
-        sticky="top"
-        className={`justify-content-center align-items-center shadow-sm mb-2 navbar-custom ${scrolled ? "scrolled" : ""}`}
-      >
-{/* Nút hamburger – chỉ hiện trên màn hình nhỏ */}
-<Button
-  variant="outline-primary"
-  className="d-block d-lg-none me-2 ms-2"
-  onClick={handleShow}
->
-  <i className="bi bi-list fs-2"></i>
-</Button>
-
-{/* Logo – chỉ hiện trên màn hình lớn */}
-<NavbarBs.Brand href="/" className="d-none d-lg-block ms-2">
-  <img
-    src="/imgs/logo_tpsolar.webp"
-    alt="Logo"
-    height="60"
-    width="60"
-    style={{ objectFit: "contain" }}
-  />
-</NavbarBs.Brand>
-
-          {/* Navigation */}
-          <Nav className="d-flex flex-row justify-content-center align-items-center">
-            {/* Giữ nguyên Home, About, Store, Post trên mobile */}
-            <Nav.Link
-              href="/den-nang-luong-mat-troi"
-              className="text-dark nav-text-hover"
+    Nav,
+    Navbar as NavbarBs,
+    Button,
+    Offcanvas,
+    Container,
+  } from "react-bootstrap";
+  import "bootstrap-icons/font/bootstrap-icons.css";
+  import "../styles/custom.css";
+  import { LoginDropDown } from "../components/LoginDropDown.tsx";
+  import { useState, useEffect } from "react";
+  import { useShoppingCart } from "../context/ProductContext.tsx";
+  
+  export function Navbar() {
+    const { openCart, cartQuantity } = useShoppingCart();
+    const [scrolled, setScrolled] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const handleShow = () => setShowMenu(true);
+    const handleClose = () => setShowMenu(false);
+  
+    useEffect(() => {
+      const handleScroll = () => {
+        setScrolled(window.scrollY > 50);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+  
+    return (
+      <>
+        <NavbarBs
+          sticky="top"
+          className={`justify-content-between align-items-center shadow-sm mb-2 navbar-custom ${scrolled ? "scrolled" : ""}`}
+        >
+          <Container fluid className="d-flex justify-content-between align-items-center">
+            {/* Logo */}
+            <NavbarBs.Brand href="/" className="ms-2">
+              <img src="/imgs/logo_tpsolar.webp" alt="Logo" height="60" width="60" />
+            </NavbarBs.Brand>
+  
+            {/* Nút hamburger cho mobile */}
+            <Button
+              variant="outline-primary"
+              className="d-lg-none ms-auto me-2"
+              onClick={handleShow}
             >
-              <div
-                className="d-flex flex-column align-items-center "
-                style={{ width: "120px" }}
+              <i className="bi bi-list fs-2"></i>
+            </Button>
+  
+            {/* Navigation desktop */}
+            <Nav className="d-none d-lg-flex flex-row justify-content-center align-items-center">
+              {/* === Đèn năng lượng === */}
+              <Nav.Link
+                href="/den-nang-luong-mat-troi"
+                className="text-dark nav-text-hover"
               >
-                {/* SVG Icon */}
-                <svg
+                <div
+                  className="d-flex flex-column align-items-center"
+                  style={{ width: "120px" }}
+                >
+                    <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 45 45"
                   width="45"
@@ -152,19 +145,21 @@ export function Navbar() {
                     strokeWidth="2"
                   />
                 </svg>
-                <p style={{fontSize:"0.9rem"}}>Đèn Năng Lượng</p>
-              </div>
-            </Nav.Link>
-            <Nav.Link
-              href="/he-thong-dien-mat-troi"
-              className="text-dark nav-text-hover"
-            >
-              <div
-                className="d-flex flex-column align-items-center"
-                style={{ width: "110px" }}
+
+                  <p style={{ fontSize: "0.9rem" }}>Đèn Năng Lượng</p>
+                </div>
+              </Nav.Link>
+  
+              {/* === Điện mái nhà === */}
+              <Nav.Link
+                href="/he-thong-dien-mat-troi"
+                className="text-dark nav-text-hover"
               >
-                {/* SVG Icon */}
-                <svg
+                <div
+                  className="d-flex flex-column align-items-center"
+                  style={{ width: "110px" }}
+                >
+                     <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 45 45"
                   width="45"
@@ -246,19 +241,21 @@ export function Navbar() {
                     strokeWidth="2"
                   />
                 </svg>
-                <p style={{fontSize:"0.9rem"}}>Điện Mái Nhà</p>
-              </div>
-            </Nav.Link>
 
-            <Nav.Link
-              href="/bai-viet"
-              className="text-dark text-center d-none d-lg-flex nav-text-hover"
-            >
-              <div
-                className="d-flex flex-column align-items-center"
-                style={{ width: "110px" }}
+                  <p style={{ fontSize: "0.9rem" }}>Điện Mái Nhà</p>
+                </div>
+              </Nav.Link>
+  
+              {/* === Bài viết === */}
+              <Nav.Link
+                href="/bai-viet"
+                className="text-dark text-center d-none d-lg-flex nav-text-hover"
               >
-                {/* SVG Icon */}
+                <div
+                  className="d-flex flex-column align-items-center"
+                  style={{ width: "110px" }}
+                >
+                    {/* SVG Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 45 45"
@@ -360,20 +357,21 @@ export function Navbar() {
                     strokeWidth="2"
                   />
                 </svg>
-                <p style={{fontSize:"0.9rem"}}>Bài Viết</p>
-              </div>
-            </Nav.Link>
 
-            {/* Ẩn các mục này trên màn hình nhỏ (smartphone) */}
-            <Nav.Link
-              href="/lien-he"
-              className="text-dark text-center d-none d-lg-flex nav-text-hover"
-            >
-              <div
-                className="d-flex flex-column align-items-center"
-                style={{ width: "120px" }}
+                  <p style={{ fontSize: "0.9rem" }}>Bài Viết</p>
+                </div>
+              </Nav.Link>
+  
+              {/* === Liên hệ === */}
+              <Nav.Link
+                href="/lien-he"
+                className="text-dark text-center d-none d-lg-flex nav-text-hover"
               >
-                {/* SVG Icon */}
+                <div
+                  className="d-flex flex-column align-items-center"
+                  style={{ width: "120px" }}
+                >
+                    {/* SVG Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -388,91 +386,75 @@ export function Navbar() {
                   {/* Icon Điện Thoại */}
                   <path d="M20 6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3a1 1 0 0 1-.707-.293l-3.707-3.707a1 1 0 0 1 0-1.414l.707-.707a1 1 0 0 1 1.414 0L15 17h3V9h-2a3 3 0 0 1-2.121-.879l-.707-.707A3 3 0 0 1 12.5 6l.707-.707A3 3 0 0 1 15 4h3a2 2 0 0 1 2 2z" />
                 </svg>
-                <p style={{fontSize:"0.9rem"}}>Liên Hệ</p>
+
+                  <p style={{ fontSize: "0.9rem" }}>Liên Hệ</p>
+                </div>
+              </Nav.Link>
+            </Nav>
+  
+            {/* Icons bên phải */}
+            <Nav className="d-none d-lg-flex flex-row">
+              <Nav.Link href="/tim-kiem" className="text-dark ms-5">
+                <i className="bi bi-search fs-4" style={{ color: "#007BFF" }}></i>
+              </Nav.Link>
+              <LoginDropDown className="text-dark ms-5 me-5" />
+              <Button
+                onClick={openCart}
+                style={{ width: "3rem", height: "3rem", position: "relative" }}
+                variant="outline-yellow"
+                className="rounded-circle me-4"
+              >
+                <i className="bi bi-cart fs-4" />
+                {cartQuantity > 0 && (
+                  <div
+                    className="rounded-circle bg-danger d-flex justify-content-center align-items-center"
+                    style={{
+                      color: "white",
+                      width: "1.5rem",
+                      height: "1.5rem",
+                      position: "absolute",
+                      bottom: 0,
+                      right: 0,
+                      transform: "translate(25%, 25%)",
+                    }}
+                  >
+                    {cartQuantity}
+                  </div>
+                )}
+              </Button>
+            </Nav>
+          </Container>
+        </NavbarBs>
+  
+        {/* Offcanvas menu cho mobile */}
+        <Offcanvas show={showMenu} onHide={handleClose} placement="start">
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Menu</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Nav className="flex-column">
+              <Nav.Link href="/den-nang-luong-mat-troi" onClick={handleClose}>Đèn Năng Lượng</Nav.Link>
+              <Nav.Link href="/he-thong-dien-mat-troi" onClick={handleClose}>Điện Mái Nhà</Nav.Link>
+              <Nav.Link href="/bai-viet" onClick={handleClose}>Bài Viết</Nav.Link>
+              <Nav.Link href="/lien-he" onClick={handleClose}>Liên Hệ</Nav.Link>
+              <Nav.Link href="/tim-kiem" onClick={handleClose}>Tìm Kiếm</Nav.Link>
+              <div className="mt-3">
+                <LoginDropDown />
               </div>
-            </Nav.Link>
-          </Nav>
-
-          {/* Icons bên phải */}
-          <Nav className="d-flex flex-row">
-            <Nav.Link href="/tim-kiem" className="text-dark d-none d-lg-flex ms-5">
-              <i className="bi bi-search fs-4" style={{ color: "#007BFF" }}></i>{" "}
-            </Nav.Link>
-            <LoginDropDown className="text-dark d-none d-lg-flex custom-dropdown ms-5 me-5"></LoginDropDown>
-            <Button
-            onClick={openCart}
-            style={{ width: "3rem", height: "3rem", position: "relative" }}
-            variant="outline-yellow"
-            className="rounded-circle me-4 "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 576 512"
-              fill="currentColor"
-            >
-              <path d="M96 0C107.5 0 117.4 8.19 119.6 19.51L121.1 32H541.8C562.1 32 578.3 52.25 572.6 72.66L518.6 264.7C514.7 278.5 502.1 288 487.8 288H170.7L179.9 336H488C501.3 336 512 346.7 512 360C512 373.3 501.3 384 488 384H159.1C148.5 384 138.6 375.8 136.4 364.5L76.14 48H24C10.75 48 0 37.25 0 24C0 10.75 10.75 0 24 0H96zM128 464C128 437.5 149.5 416 176 416C202.5 416 224 437.5 224 464C224 490.5 202.5 512 176 512C149.5 512 128 490.5 128 464zM512 464C512 490.5 490.5 512 464 512C437.5 512 416 490.5 416 464C416 437.5 437.5 416 464 416C490.5 416 512 437.5 512 464z" />
-            </svg>
-
-            <div
-              className="rounded-circle bg-danger d-flex justify-content-center align-items-center me-1"
-              style={{
-                color: "white",
-                width: "1.5rem",
-                height: "1.5rem",
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                transform: "translate(25%, 25%)",
-              }}
-            >
-              {cartQuantity}
-            </div>
-          </Button>
-          </Nav>
-          {/* Offcanvas menu cho mobile */}
-          <Offcanvas show={showMenu} onHide={handleClose} placement="start">
-  <Offcanvas.Header closeButton>
-    <Offcanvas.Title>Menu</Offcanvas.Title>
-  </Offcanvas.Header>
-  <Offcanvas.Body>
-    <Nav className="flex-column">
-      <Nav.Link className="offcanvas-link-ui" href="/den-nang-luong-mat-troi" onClick={handleClose}>
-        Đèn Năng Lượng
-      </Nav.Link>
-      <Nav.Link className="offcanvas-link-ui" href="/he-thong-dien-mat-troi" onClick={handleClose}>
-        Điện Mái Nhà
-      </Nav.Link>
-      <Nav.Link className="offcanvas-link-ui" href="/bai-viet" onClick={handleClose}>
-        Bài Viết
-      </Nav.Link>
-      <Nav.Link className="offcanvas-link-ui" href="/lien-he" onClick={handleClose}>
-        Liên Hệ
-      </Nav.Link>
-      <Nav.Link className="offcanvas-link-ui" href="/tim-kiem" onClick={handleClose}>
-        Tìm Kiếm
-      </Nav.Link>
-
-      <div className="mt-4">
-        <LoginDropDown />
-      </div>
-
-      <div className="mt-3">
-        <Button
-          onClick={() => {
-            openCart();
-            handleClose();
-          }}
-          variant="outline-dark"
-        >
-          Giỏ Hàng ({cartQuantity})
-        </Button>
-      </div>
-    </Nav>
-  </Offcanvas.Body>
-</Offcanvas>
-
-
-      </NavbarBs>
-    </>
-  );
-}
+              <div className="mt-3">
+                <Button
+                  onClick={() => {
+                    openCart();
+                    handleClose();
+                  }}
+                  variant="outline-dark"
+                >
+                  Giỏ Hàng ({cartQuantity})
+                </Button>
+              </div>
+            </Nav>
+          </Offcanvas.Body>
+        </Offcanvas>
+      </>
+    );
+  }

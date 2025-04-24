@@ -1,5 +1,14 @@
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaBox, FaUsers, FaChartPie, FaTags, FaCreativeCommonsSampling, FaImage } from "react-icons/fa";
+import {
+  FaTachometerAlt,
+  FaBox,
+  FaUsers,
+  FaChartPie,
+  FaTags,
+  FaCreativeCommonsSampling,
+  FaImage,
+  FaSolarPanel,
+} from "react-icons/fa";
 import "./adminLayout.css";
 
 const SidebarAdmin = () => {
@@ -23,14 +32,18 @@ const SidebarAdmin = () => {
           <FaUsers className="me-2" /> Người dùng
         </NavLink>
         <NavLink to="/admin/images" className="nav-link text-white">
-  <FaImage className="me-2" /> Hình Ảnh
+          <FaImage className="me-2" /> Hình Ảnh
+        </NavLink>
+        <NavLink to="/admin/don-mai-nha" className="nav-link text-white">
+  <FaSolarPanel className="me-2" /> Đơn Mái Nhà
 </NavLink>
         <NavLink to="/admin/report" className="nav-link text-white">
           <FaChartPie className="me-2" /> Báo cáo
         </NavLink>
-
       </nav>
-      <div className="mt-auto text-center small text-secondary mt-4">© 2025 SolarTP</div>
+      <div className="mt-auto text-center small text-secondary mt-4">
+        © 2025 SolarTP
+      </div>
     </div>
   );
 };

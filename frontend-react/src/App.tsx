@@ -41,6 +41,7 @@ import OrderDetailAdminPage from "./pages/admin/OrderDetailAdminPage";
 import UserManagementPage from "./pages/admin/UserManagementPage";
 import AdminReportPage from "./pages/admin/AdminReportPage";
 import AdminImageManager from "./pages/admin/AdminImageManager";
+import RegisterSolarPanel from "./pages/admin/RegisterSolarPanel";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -98,6 +99,8 @@ function App() {
 
                         <Route path="report" element={<AdminReportPage />} />
                         <Route path="images" element={<AdminImageManager />} />
+                        <Route path="don-mai-nha" element={<RegisterSolarPanel />} />
+
 
                         {/* thêm các route admin khác */}
 

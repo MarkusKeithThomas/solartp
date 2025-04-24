@@ -51,7 +51,7 @@ const FixedActionButtons: React.FC = () => {
         )}
         <div className="d-flex align-items-center gap-2">
           <span className="badge bg-warning text-dark px-3 py-2 shadow-sm fw-semibold shake" style={{ fontSize: "14px", borderRadius: "10px" }}>
-            🎁 Voucher 500K
+            🎁 Voucher 50K
           </span>
           <button onClick={() => setShowChat(true)} className="btn p-0 border-0 bg-transparent">
             <img src="/imgs/logo_tpsolar.webp" alt="Chat với SolarTP" width={50} height={50} className="rounded-circle shadow"

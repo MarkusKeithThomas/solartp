@@ -95,13 +95,15 @@ public class StockRedisServiceImpl implements StockRedisService {
         script.setResultType(Long.class);
 
         Long result = redisTemplate.execute(script, keys, args.toArray());
-        return result != null && result == 1;
+        return result == 1;
     }
 
     @Override
     public void restoreStock(Long productId, int quantity) {
         String key = RedisKeyPrefix.STOCK_KEY_PREFIX + productId;
         redisTemplate.opsForValue().increment(key, quantity);
+        log.info("✅ Stock đã restoreStock vào Redis: {} sản phẩm", key);
+
     }
 
     @Override
@@ -112,11 +114,29 @@ public class StockRedisServiceImpl implements StockRedisService {
             // ✔️ Cập nhật lại luôn, không cần kiểm tra tồn tại nữa
             redisTemplate.opsForValue().set(key, String.valueOf(product.getStockQuantity()));
         }
-        log.info("✅ Stock đã preload vào Redis: {} sản phẩm", products.size());
+        log.info("✅ Stock đã preload vào Redis: {} sản phẩm preloadStockFromDatabase", products.size());
+    }
+    @Override
+    public void syncStockToDatabase() {
+        List<ProductEntity> allProducts = productRepository.findAll();
+
+        for (ProductEntity product : allProducts) {
+            String key = RedisKeyPrefix.STOCK_KEY_PREFIX + product.getId();
+            String quantityStr = redisTemplate.opsForValue().get(key);
+            if (quantityStr != null) {
+                int redisQuantity = Integer.parseInt(quantityStr);
+                if (product.getStockQuantity() != redisQuantity) {
+                    product.setStockQuantity(redisQuantity);
+                    productRepository.save(product); // update nếu khác
+                }
+            }
+        }
     }
 
     @Override
     public void deleteStockKey(Long productId) {
+        log.info("✅ Stock đã deleteStockKey tu Redis: {} sản phẩm co productId", productId );
         redisTemplate.delete(RedisKeyPrefix.STOCK_KEY_PREFIX + productId);
+
     }
 }
