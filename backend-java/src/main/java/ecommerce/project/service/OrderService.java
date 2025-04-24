@@ -16,6 +16,10 @@ public interface OrderService {
     OrderResponse createOrder(OrderRequest request);
 
     List<OrderResponse> getOrderByPhone(String phone);
+    List<OrderResponse> getAllOrders();
+
+    void updateOrderStatus(Long orderId, String newStatus);
+
 
     // 2. Lấy chi tiết đơn hàng theo ID
     OrderResponse getOrderById(Long orderId);

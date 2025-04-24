@@ -13,20 +13,19 @@ import ecommerce.project.model.OrderStatus;
 import ecommerce.project.model.PaymentStatus;
 import ecommerce.project.producer.InventoryProducer;
 import ecommerce.project.repository.*;
-import ecommerce.project.utils.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -45,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
+
         // Validate đầu vào
         if (request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Đơn hàng không có sản phẩm");
@@ -62,10 +62,10 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, ProductEntity> productMap = productRepository.findAllById(productIds).stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-//        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
-//        if (!success) {
-//            throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
-//        }
+        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
+        if (!success) {
+            throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
+        }
 
         // 2. Tính tổng tiền
         BigDecimal totalAmount = request.getOrderItems().stream()
@@ -123,6 +123,26 @@ public class OrderServiceImpl implements OrderService {
 //            cartRepository.delete(cart);
 //        }
         return OrderMapper.toResponse(order);
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderStatus(Long orderId, String newStatus) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Đơn hàng không tồn tại với ID: " + orderId));
+
+        order.setStatus(OrderStatus.valueOf(newStatus));
+        orderRepository.save(order);
+
+        log.info("✅ Đã cập nhật trạng thái đơn hàng {} thành '{}'.", orderId, newStatus);
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrders() {
+        List<OrderEntity> allOrders = orderRepository.findAll();
+        return allOrders.stream()
+                .map(OrderMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override

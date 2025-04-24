@@ -1,32 +1,59 @@
 import { useEffect, useState } from "react";
 import { Table, Card, Button, Spinner, Badge, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import {
-  Order,
-  OrderStatus,
-  PaymentMethodEnum,
-  PaymentStatus,
-} from "../../type/order";
-import orderData from "../../assets/fakedata/order.json"; // file JSON mock data
-import { formatVietnameseDate } from '../../ultities/fotmatDateTime';
+import { Order, OrderStatus } from "../../type/order";
+import { formatVietnameseDate } from "../../ultities/fotmatDateTime";
+import { fetchOrdersApi, updateOrderApi } from "../../api/admin/orderApi";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  
+  const [selectedStatusByOrderId, setSelectedStatusByOrderId] = useState<{
+    [orderId: number]: OrderStatus;
+  }>({});
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    // ✅ Load dữ liệu cứng từ file JSON
-    const transformedOrders = orderData.map((order) => ({
-      ...order,
-      paymentMethod: order.paymentMethod as PaymentMethodEnum,
-      paymentStatus: order.paymentStatus as PaymentStatus,
-      status: order.status as OrderStatus,
-    }));
-    setOrders(transformedOrders);
-    setLoading(false);
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const orderData = await fetchOrdersApi();
+        setOrders(orderData);
+
+        // Khởi tạo trạng thái ban đầu cho từng đơn hàng
+        const statusMap = orderData.reduce((acc: any, order: Order) => {
+          acc[order.id] = order.status;
+          return acc;
+        }, {});
+        setSelectedStatusByOrderId(statusMap);
+      } catch (error) {
+        console.error("Lỗi khi lấy đơn hàng", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, []);
+
+  const handleUpdateOrder = async (orderId: number) => {
+    try {
+      const newStatus = selectedStatusByOrderId[orderId];
+      await updateOrderApi(orderId, newStatus);
+      alert("✅ Đã cập nhật trạng thái đơn hàng!");
+
+      // Cập nhật lại trạng thái trong danh sách
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      console.error("Lỗi khi cập nhật đơn hàng:", error);
+      alert("❌ Có lỗi xảy ra, vui lòng thử lại.");
+    }
+  };
 
   const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
     PLACED: "🕐 Chờ xác nhận",
@@ -37,23 +64,11 @@ const OrdersPage = () => {
     CANCELED: "❌ Đã hủy",
   };
 
-  const handleStatusChange = async (
-    orderId: number,
-    newStatus: OrderStatus
-  ) => {
-    try {
-      // Gọi API cập nhật trạng thái đơn hàng
-      // await updateOrderStatusApi(orderId, newStatus);
-
-      // ✅ Cập nhật lại trong UI
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        )
-      );
-    } catch (err) {
-      console.error("❌ Cập nhật trạng thái thất bại:", err);
-    }
+  const handleStatusChange = (orderId: number, newStatus: OrderStatus) => {
+    setSelectedStatusByOrderId((prev) => ({
+      ...prev,
+      [orderId]: newStatus,
+    }));
   };
 
   if (loading) {
@@ -97,7 +112,7 @@ const OrdersPage = () => {
                 <td>
                   <Form.Select
                     size="sm"
-                    value={order.status}
+                    value={selectedStatusByOrderId[order.id] || order.status}
                     onChange={(e) =>
                       handleStatusChange(
                         order.id,
@@ -112,7 +127,7 @@ const OrdersPage = () => {
                       </option>
                     ))}
                   </Form.Select>
-                </td>{" "}
+                </td>
                 <td>{formatVietnameseDate(order.createdAt)}</td>
                 <td>
                   <Button
@@ -122,7 +137,12 @@ const OrdersPage = () => {
                   >
                     Chi tiết
                   </Button>
-                  <Button size="sm" variant="outline-primary" className="ms-2">
+                  <Button
+                    size="sm"
+                    variant="outline-success"
+                    className="ms-2"
+                    onClick={() => handleUpdateOrder(order.id)}
+                  >
                     Cập nhật
                   </Button>
                 </td>

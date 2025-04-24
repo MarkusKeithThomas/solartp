@@ -3,6 +3,7 @@ package ecommerce.project.mapper;
 import ecommerce.project.dtoresponse.OrderResponse;
 import ecommerce.project.entity.OrderEntity;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
@@ -20,11 +21,17 @@ public class OrderMapper {
                 .note(entity.getNote())
                 .createdAt(entity.getCreatedAt())
                 .shippingAddress(
-                        ShippingAddressMapper.toResponse(entity.getShippingAddress())
+                        Optional.ofNullable(entity.getShippingAddress())
+                                .map(ShippingAddressMapper::toResponse)
+                                .orElse(null)
                 )
-                .items(entity.getItems().stream()
-                        .map(OrderItemMapper::toResponse)
-                        .collect(Collectors.toList()))
+                .items(
+                        Optional.ofNullable(entity.getItems())
+                                .map(list -> list.stream()
+                                        .map(OrderItemMapper::toResponse)
+                                        .collect(Collectors.toList()))
+                                .orElse(null)
+                )
                 .build();
     }
 }

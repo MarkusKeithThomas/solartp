@@ -32,7 +32,7 @@ export type SpecificationGroups = {
 };
 
 export type Product = {
-  id?: number;
+  id: number;
   skuProduct: string;
   name: string;
   slug: string;

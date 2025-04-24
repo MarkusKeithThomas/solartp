@@ -138,12 +138,9 @@ export function Contact() {
           <FaPhone className="me-2" /> 0972 769 364
         </p>
         <p>
-          <FaEnvelope className="me-2" /> vn@solartp.com | cskh@solartp.com
-        </p>
-        <p>
           <FaGlobe className="me-2" />{" "}
-          <a href="https://solartp.vn" className="text-white fw-bold">
-            solartp.vn
+          <a href="https://solartp.com.vn" className="text-white fw-bold">
+            solartp.com.vn
           </a>
         </p>
         <Button
