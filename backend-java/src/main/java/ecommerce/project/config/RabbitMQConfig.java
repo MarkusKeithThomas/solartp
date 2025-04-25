@@ -20,7 +20,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue orderEmailQueue() {
-        return new Queue(QUEUE, true);
+        return new Queue(QUEUE,true);
     }
 
     @Bean

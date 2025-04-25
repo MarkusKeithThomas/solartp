@@ -4,19 +4,13 @@ import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.dtorequest.OrderRequest;
 import ecommerce.project.dtoresponse.OrderEmailDTO;
 import ecommerce.project.dtoresponse.OrderResponse;
-import ecommerce.project.model.OrderStatus;
-import ecommerce.project.model.PaymentStatus;
 import ecommerce.project.producer.EmailProducer;
 import ecommerce.project.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
