@@ -50,7 +50,7 @@ public class AuthController {
     @PostMapping("/reset-request")
     public ResponseEntity<?> resetPasswordRequest(@RequestBody String email) {
         String token = UUID.randomUUID().toString(); // giả lập token
-        resetPasswordProducer.sendResetPasswordEmail(new ResetPasswordDTO(email, token));
+        resetPasswordProducer.sendResetPasswordEmail(new ResetPasswordDTO(email, token));//gia lap
         return ResponseEntity.ok("✅ Đã gửi yêu cầu reset mật khẩu vào RabbitMQ");
     }
 
