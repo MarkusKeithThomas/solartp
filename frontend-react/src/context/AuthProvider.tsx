@@ -199,10 +199,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("accessToken"); // ✅ Xóa accessToken hoàn toàn
     localStorage.removeItem("user-info"); // ✅ Xóa thông tin user
     googleLogout();
-    navigate("/");
+    navigate("/tai-khoan");
   };
   const logoutAdmin = () => {
-    localStorage.removeItem("user-info");
+    localStorage.removeItem("user-info-admin");
     localStorage.removeItem("admin-auth");
     navigate("/admin/login"); // 👉 Không reload trang, chuyển nội bộ
   };

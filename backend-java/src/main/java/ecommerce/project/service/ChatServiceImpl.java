@@ -1,11 +1,17 @@
 package ecommerce.project.service;
 
-import com.google.gson.Gson;
+
 import ecommerce.project.baseresponse.CustomPageResponse;
-import ecommerce.project.dtorequest.ChatRequestDTO;
-import ecommerce.project.dtoresponse.ChatResponseDTO;
-import ecommerce.project.entity.ChatEntity;
-import ecommerce.project.repository.ChatRepository;
+import ecommerce.project.dtorequest.ChatMessageRequest;
+import ecommerce.project.dtoresponse.ChatMessageResponse;
+import ecommerce.project.dtoresponse.ChatRoomResponse;
+import ecommerce.project.dtoresponse.LastMessage;
+import ecommerce.project.entity.ChatMessageEntity;
+import ecommerce.project.entity.ChatRoomEntity;
+import ecommerce.project.exception.SaveChatToDBException;
+import ecommerce.project.repository.ChatMessageRepository;
+import ecommerce.project.repository.ChatRoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +19,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import static ecommerce.project.utils.DateTimeUtils.formatToVietnamTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,134 +26,129 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
-
-    private final ChatRepository chatRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Override
-    public ChatEntity saveMessage(ChatRequestDTO request, String ipAddress) {
-        // ✅ Nếu clientId đã tồn tại → gửi lại tin cũ
-        if (request.getClientId() != null) {
-            Optional<ChatEntity> existed = chatRepository.findByClientId(request.getClientId());
-            if (existed.isPresent()) {
-                ChatEntity oldMessage = existed.get();
-                if (isValidEntity(oldMessage)) {
-                    sendMessageToRoom(oldMessage);
-                    System.out.println("🟡 Đã tồn tại message → gửi lại clientId: " + request.getClientId());
-                } else {
-                    System.err.println("⚠️ Tin nhắn cũ tồn tại nhưng thiếu dữ liệu → KHÔNG gửi lại");
-                }
-                return null;
+    public CustomPageResponse<ChatRoomResponse> getAllGroupChat(Pageable pageable) {
+        Page<ChatRoomEntity> rooms = chatRoomRepository.findAll(pageable);
+
+        List<ChatRoomResponse> chatRoomResponses = rooms.stream().map(chatRoomEntity -> {
+            ChatRoomResponse response = new ChatRoomResponse();
+            response.setChatRoomId(chatRoomEntity.getChatRoomId());
+            response.setUnreadCount(chatRoomEntity.getUnreadCount());
+            response.setPhone(chatRoomEntity.getPhone());
+            response.setCreatedAt(chatRoomEntity.getCreatedAt() != null ? chatRoomEntity.getCreatedAt().toString() : null);
+            response.setUpdatedAt(chatRoomEntity.getUpdatedAt() != null ? chatRoomEntity.getUpdatedAt().toString() : null);
+
+            ChatMessageEntity lastMessage = chatMessageRepository.findTopByChatRoomIdOrderBySentAtDesc(chatRoomEntity.getChatRoomId());
+            if (lastMessage != null) {
+                LastMessage last = new LastMessage();
+                last.setId(lastMessage.getId().intValue());
+                last.setSender(lastMessage.getSender());
+                last.setContent(lastMessage.getContent());
+                last.setTimestamp(lastMessage.getSentAt() != null ? lastMessage.getSentAt().toString() : null);
+                last.setAvatarUrl(lastMessage.getAvatarUrl());
+                response.setLastMessage(last);
             }
-        }
-        // ✅ Tạo message mới
-        ChatEntity entity = new ChatEntity();
-        entity.setChatRoomId(request.getChatRoomId());
-        entity.setSender(request.getSender());
-        entity.setContent(request.getContent());
-        entity.setClientId(request.getClientId());
-        entity.setSenderIp(ipAddress);
-        entity.setTimestamp(Instant.now());
-        entity.setRead(false);
 
-        ChatEntity saved = chatRepository.save(entity);
-
-        // ✅ Gửi realtime
-        sendMessageToRoom(saved);
-        return saved;
-    }
-
-    @Override
-    public void sendMessageToRoom(ChatEntity message) {
-        if (message == null){
-            return;
-        }
-        try {
-            ChatResponseDTO response = toResponseDTO(message);
-
-            // ⚠️ Kiểm tra dữ liệu hợp lệ trước khi gửi WebSocket
-            if (response.getChatRoomId() == null || response.getSender() == null || response.getContent() == null) {
-                return;
-            }
-            System.out.println("📤 Gửi message WebSocket với clientId: " + message.getClientId());
-
-
-            messagingTemplate.convertAndSend(
-                    "/topic/chat/" + message.getChatRoomId(),
-                    response
-            );
-
-        } catch (Exception e) {
-            System.err.println("❌ Lỗi gửi message đến WebSocket: " + e.getMessage());
-        }
-    }
-
-    private boolean isValidEntity(ChatEntity entity) {
-        return entity.getChatRoomId() != null &&
-                entity.getSender() != null &&
-                entity.getContent() != null &&
-                entity.getTimestamp() != null;
-    }
-
-    @Override
-    public List<ChatResponseDTO> getMessagesByRoomId(String chatRoomId) {
-        return chatRepository.findByChatRoomIdOrderByTimestampAsc(chatRoomId)
-                .stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<String> getChatRoomIdsByUser(Long userId) {
-        return chatRepository.findChatRoomIdsByUser(userId);
-    }
-
-    @Override
-    public String createOrGetChatRoom(long buyerId, long sellerId) {
-        return "chat_user_" + buyerId + "_" + sellerId;
-    }
-
-    @Override
-    public void markMessagesAsRead(String chatRoomId, String reader) {
-        List<ChatEntity> unreadMessages = chatRepository.findUnreadMessages(chatRoomId, reader);
-        unreadMessages.forEach(msg -> msg.setRead(true));
-        chatRepository.saveAll(unreadMessages);
-    }
-
-    @Override
-    public int countUnreadMessages(String chatRoomId, String receiver) {
-        return chatRepository.countByChatRoomIdAndSenderNotAndIsReadFalse(chatRoomId, receiver);
-    }
-
-    @Override
-    public ChatResponseDTO toResponseDTO(ChatEntity entity) {
-        ChatResponseDTO chatResponseDTO = new ChatResponseDTO();
-        chatResponseDTO.setId(String.valueOf(entity.getId()));
-        chatResponseDTO.setClientId(entity.getClientId());
-        chatResponseDTO.setChatRoomId(entity.getChatRoomId());
-        chatResponseDTO.setTimestamp(String.valueOf(formatToVietnamTime(entity.getTimestamp())));
-        chatResponseDTO.setContent(entity.getContent());
-        chatResponseDTO.setAvatarUrl("");
-        chatResponseDTO.setSender(entity.getSender());
-        return chatResponseDTO;
-    }
-
-    @Override
-    public CustomPageResponse<ChatResponseDTO> getPagedMessages(String roomId, Pageable pageable) {
-        Page<ChatEntity> page = chatRepository.findByChatRoomId(roomId, pageable);
-        System.out.println("💾 Tổng tin nhắn: " + roomId);
-        List<ChatResponseDTO> data = page.getContent().stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
+            return response;
+        }).toList();
 
         return new CustomPageResponse<>(
-                data,
-                page.getNumber(),          // current page
-                page.getSize(),            // size per page
-                page.getTotalElements(),   // total elements
-                page.getTotalPages(),      // total pages
-                page.isLast(),             // is last page
-                page.isFirst()             // is first page
+                chatRoomResponses,
+                rooms.getNumber(),         // page hiện tại
+                rooms.getSize(),           // size mỗi trang
+                rooms.getTotalElements(),  // tổng số phần tử
+                rooms.getTotalPages(),     // tổng số trang
+                rooms.isLast(),            // có phải trang cuối không
+                rooms.isFirst()            // có phải trang đầu tiên không
         );
+    }
+
+    @Override
+    public CustomPageResponse<ChatMessageResponse> getDetailChat(String chatRoomId, Pageable pageable) {
+        Page<ChatMessageEntity> chats = chatMessageRepository.findByChatRoomIdOrderBySentAtDesc(chatRoomId, pageable);
+        List<ChatMessageResponse> list = chats.stream().map(message -> {
+            ChatMessageResponse chat = new ChatMessageResponse();
+            chat.setId(message.getId());
+            chat.setSender(message.getSender());
+            chat.setContent(message.getContent());
+            chat.setMessageType(message.getMessageType());
+            chat.setSentAt(message.getSentAt());
+            chat.setAvatarUrl(message.getAvatarUrl());
+            chat.setRead(message.getIsRead());
+            return chat;
+        }).toList();
+
+        return new CustomPageResponse<>(
+                list,
+                chats.getNumber(),
+                chats.getSize(),
+                chats.getTotalElements(),
+                chats.getTotalPages(),
+                chats.isLast(),
+                chats.isFirst()
+        );
+    }
+
+    @Override
+    @Transactional
+    public ChatMessageEntity saveChatMessageToDB(ChatMessageRequest request) {
+        if (request.getChatRoomId() == null || request.getContent() == null || request.getSender() == null) {
+            throw new IllegalArgumentException("Thiếu thông tin bắt buộc: chatRoomId, content hoặc sender");
+        }
+
+        // Kiểm tra hoặc tạo mới ChatRoom
+        ChatRoomEntity chatRoom = chatRoomRepository.findByChatRoomId(request.getChatRoomId())
+                .orElseGet(() -> {
+                    ChatRoomEntity newRoom = new ChatRoomEntity();
+                    newRoom.setChatRoomId(request.getChatRoomId());
+                    newRoom.setUnreadCount(0);
+                    newRoom.setPhone(request.getPhone());
+                    newRoom.setSellerId(100);
+                    newRoom.setLastMessageId(null);
+                    return chatRoomRepository.save(newRoom);
+                });
+
+        // Tạo ChatMessageEntity
+        ChatMessageEntity message = new ChatMessageEntity();
+        message.setChatRoomId(chatRoom.getChatRoomId());
+        message.setMessageType("TEXT");
+        message.setContent(request.getContent());
+        message.setSender(request.getSender());
+        message.setClientId(request.getClientId()); // TODO: Cập nhật nếu có IP
+        message.setAvatarUrl(""); // TODO: Nếu có ảnh
+
+        ChatMessageEntity savedMessage = chatMessageRepository.save(message);
+
+        // 🔁 Cập nhật tin nhắn cuối cùng
+        chatRoom.setLastMessageId(savedMessage.getId());
+        chatRoomRepository.save(chatRoom);
+        // Lưu message vào DB
+        return savedMessage;
+    }
+
+    @Override
+    public void broadcastToRoom(ChatMessageRequest message) {
+        if(message == null) return;
+        ChatMessageResponse res = mapToResponse(message);
+        messagingTemplate.convertAndSend(
+                "/topic/chat/"+message.getChatRoomId(),res);
+        System.out.println("📤 Đã gửi về client: " + res.getContent());
+    }
+    private ChatMessageResponse mapToResponse(ChatMessageRequest chatMessage){
+        ChatMessageResponse res = new ChatMessageResponse();
+        res.setChatRoomId(chatMessage.getChatRoomId());
+        res.setContent(chatMessage.getContent());
+        res.setSender(chatMessage.getSender());
+        res.setSentAt(Instant.now());
+        res.setClientId(chatMessage.getClientId());
+        res.setMessageType(chatMessage.getMessageType());
+        res.setStatus("sent");
+        res.setClientId(chatMessage.getClientId());
+
+        return res;
     }
 }

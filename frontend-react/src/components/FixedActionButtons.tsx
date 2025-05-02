@@ -28,7 +28,7 @@ const FixedActionButtons: React.FC = () => {
 
   const memoRoomId = useMemo(() => {
     if (!userInfo) return null;
-    return `chat_user_${userInfo.phone}_0`;
+    return `chat_user_${userInfo.phone}`;
   }, [userInfo]);
 
   useEffect(() => {

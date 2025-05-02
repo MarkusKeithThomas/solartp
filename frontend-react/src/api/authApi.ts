@@ -47,6 +47,7 @@ authAPI.interceptors.response.use(
           console.error("Lỗi refresh token:", refreshError);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("user-info");
+          localStorage.removeItem("user-info-admin");
           window.location.href = "/tai-khoan"; // Chuyển hướng về đăng nhập
         }
       }

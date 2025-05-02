@@ -32,8 +32,8 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private AuthService authService;
-    private JWTUtil jwtUtil;
+    private final AuthService authService;
+    private final JWTUtil jwtUtil;
     private final CorsConfigurationSource corsConfigurer;
 
 
@@ -86,7 +86,8 @@ public class SecurityConfig {
                             "orders/*/status",
                             "orders//confirm",
                             "orders/id",
-                            "solar-panel/add-user"
+                            "solar-panel/add-user",
+                            "chat/detail-chat"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("orders/*/payment-status","orders/*/status"
                             ,"orders/search","orders/recent"

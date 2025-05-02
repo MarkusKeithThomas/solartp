@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { User } from '../../type/admin/user';
 import { useUserLocalStorage } from "../../hook/useUserLocalStorage";
 import authAPI from "../../api/authApi";
@@ -19,10 +18,11 @@ const AdminLoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [user, setUser] = useUserLocalStorage<User | null>("user-info", null); // ✅ Thêm user-info
+  const [user, setUser] = useUserLocalStorage<User | null>("user-info-admin", null); // ✅ Thêm user-info
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -42,6 +42,7 @@ const AdminLoginPage = () => {
       setUser(userData);
       setSuccessMessage("🎉 Đăng nhập thành công!");
       localStorage.setItem("admin-auth", "true");
+      localStorage.setItem("user-info-admin", JSON.stringify(userData));
   
       setTimeout(() => {
         navigate("/admin");
@@ -64,7 +65,7 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <Container className="d-flex align-items-center justify-content-center vh-100">
+    <Container className="d-flex align-items-center justify-content-center">
       <Row className="w-100" style={{ maxWidth: 400 }}>
         <Col>
           <Card>

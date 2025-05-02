@@ -32,3 +32,16 @@ export function formatVietnameseDate(dateString: string | Date | null | undefine
   
     return `${datePart} ${timePart}`;
   }
+  export function formatVietnameseTime(dateString: string | Date | null | undefined): string {
+    if (!dateString) return '';
+  
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+  
+    return new Intl.DateTimeFormat('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Ho_Chi_Minh',
+    }).format(date);
+  }

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import MessageList, { ChatMessage } from "./MessageList";
+import MessageList from "./MessageList";
 import { useChatSocket } from "../hook/useChatSocket";
 import ChatInput from "./ChatInput";
 import { v4 as uuidv4 } from "uuid";
-import { getPaginatedMessages } from "../api/chatApi";
 import { Spinner } from "react-bootstrap";
+import { ChatMessage } from "../type/admin/chat";
+import { chatApi } from "../api/chatApi";
 
 interface ChatBoxProps {
   roomId: string;
@@ -25,6 +26,10 @@ const ChatBox: React.FC<ChatBoxProps> = ({ roomId, senderId, show, onClose }) =>
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
+  const userChat = localStorage.getItem("user-chat");
+  const userChatParsed = userChat ? JSON.parse(userChat) : null;
+  const phone = userChatParsed?.phone || "Ẩn Danh";
+  const sender = userChatParsed?.name || "Ẩn Danh";
 
   const { sendMessage, connected } = useChatSocket(roomId, (incoming) => {
     setMessages((prev) => {
@@ -56,7 +61,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ roomId, senderId, show, onClose }) =>
     loadingRef.current = true;
     setLoading(true);
     try {
-      const res = await getPaginatedMessages(roomId, pageToLoad, PAGE_SIZE);
+      const res = await chatApi.getPaginatedMessagesByPhone(roomId, pageToLoad, PAGE_SIZE);
   
       // 👉 Đảo ngược để tin nhắn cũ hơn ở đầu, mới hơn ở dưới
       const reversed = [...res.content].reverse();
@@ -93,11 +98,14 @@ const ChatBox: React.FC<ChatBoxProps> = ({ roomId, senderId, show, onClose }) =>
     const tempMessage: ChatMessage = {
       chatRoomId: roomId,
       sender: senderId,
-      content,
-      timestamp: new Date().toISOString(),
+      phone:phone,
+      content:content,
+      sentAt: new Date().toISOString(),
       avatarUrl: "/imgs/logo_tpsolar.webp",
       status: "sending",
-      clientId,
+      clientId: clientId,
+      messageType: "text", // Assuming "text" as the default message type
+      read: false, // Assuming the message is unread initially
     };
     setMessages((prev) => [...prev, tempMessage]);
     sendMessage({ ...tempMessage, id: undefined });
@@ -135,7 +143,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({ roomId, senderId, show, onClose }) =>
       </div>
 
       <div className="border-top p-2">
-        <ChatInput onSend={handleSend} disabled={!connected} />
+        <ChatInput 
+        onSend={handleSend} 
+        disabled={!connected} />
       </div>
     </div>
   );

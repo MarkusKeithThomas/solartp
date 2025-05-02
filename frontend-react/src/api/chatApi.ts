@@ -1,5 +1,6 @@
 import axios from "axios";
-import { ChatMessage } from "../components/MessageList";
+import { ChatMessage, ChatMessageDetailGroup, ChatMessageGroup } from "../type/admin/chat";
+import { apiGet } from "./apiClient";
 
 export interface ChatPaginationResponse {
   content: ChatMessage[];
@@ -11,14 +12,21 @@ export interface ChatPaginationResponse {
   first: boolean;
 }
 
-export const getPaginatedMessages = async (
-  roomId: string,
-  page = 0,
-  size = 10
-): Promise<ChatPaginationResponse> => {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-  const res = await axios.get(`${API_BASE_URL}/chat/history/paging`, {
-    params: { roomId, page, size },
-  });
-  return res.data.data;
+
+export const chatApi = {
+  getChatRooms: (): Promise<ChatMessageGroup> => {
+    return apiGet<ChatMessageGroup>("/chat/groups-chat");
+  },
+  getPaginatedMessages: (chatRoomId:string,page:number,size:number): Promise<ChatMessageDetailGroup>=>{
+    return apiGet<ChatMessageDetailGroup>("/chat/detail-chat",{
+      chatRoomId, page, size
+    });
+  },
+  getPaginatedMessagesByPhone:(chatRoomId:string,page:number,size:number):Promise<ChatMessageDetailGroup>=>{
+    return apiGet<ChatMessageDetailGroup>("/chat/detail-chat",{
+      chatRoomId, page, size
+    });
+  }
+
 };
+

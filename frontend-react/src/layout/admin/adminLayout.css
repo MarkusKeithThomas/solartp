@@ -39,12 +39,6 @@
     color: white;
   }
   
-  .admin-main {
-    margin-left: 240px;
-    flex-grow: 1;
-    background: #f8f9fa;
-  }
-  
   .header-admin {
     background-color: #fff;
   }

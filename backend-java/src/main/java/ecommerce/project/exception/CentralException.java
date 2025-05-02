@@ -153,6 +153,11 @@ public class CentralException {
         return ResponseEntity.status(400).body(new BaseResponse(400, ex.getMessage(), null));
     }
 
+    @ExceptionHandler(SaveChatToDBException.class)
+    public ResponseEntity<BaseResponse> handleSaveChatToDBException(Exception ex){
+        return ResponseEntity.status(400).body(new BaseResponse(400, ex.getMessage(), null));
+    }
+
     /**
      * Hàm build BaseResponse chuẩn hóa phản hồi lỗi
      */

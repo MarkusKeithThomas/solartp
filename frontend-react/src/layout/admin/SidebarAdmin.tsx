@@ -8,6 +8,7 @@ import {
   FaCreativeCommonsSampling,
   FaImage,
   FaSolarPanel,
+  FaRegCommentDots,
 } from "react-icons/fa";
 import "./adminLayout.css";
 
@@ -18,6 +19,9 @@ const SidebarAdmin = () => {
       <nav className="d-flex flex-column gap-2">
         <NavLink to="/admin" className="nav-link text-white">
           <FaTachometerAlt className="me-2" /> Dashboard
+        </NavLink>
+        <NavLink to="/admin/chat" className="nav-link text-white">
+          <FaRegCommentDots className="me-2" /> Nhắn tin
         </NavLink>
         <NavLink to="/admin/category" className="nav-link text-white">
           <FaCreativeCommonsSampling className="me-2" /> Category
