@@ -3,7 +3,7 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 
-const API_URL = 'https://api.solartp.com.vn/bai-viet/list?lastId=0&limit=100';
+const API_URL = 'https://api.solartp.com.vn/bai-viet/list?lastId=0&limit=1000';
 const SITE_URL = 'https://solartp.com.vn';
 
 const generateSitemap = async () => {

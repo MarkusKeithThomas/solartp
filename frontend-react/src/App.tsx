@@ -42,6 +42,7 @@ import UserManagementPage from "./pages/admin/UserManagementPage";
 import AdminReportPage from "./pages/admin/AdminReportPage";
 import AdminImageManager from "./pages/admin/AdminImageManager";
 import RegisterSolarPanel from "./pages/admin/RegisterSolarPanel";
+import ChatPage from "./pages/admin/ChatPage";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -73,45 +74,68 @@ function App() {
                   {isAdminRoute ? (
                     // 👉 Route admin không cần Container hay Footer
                     <ProductAdminProvider>
-                    <Routes>
-                      <Route path="/admin/login" element={<AdminLoginPage />} />
-
-                      <Route
-                        path="/admin"
-                        element={
-                          <RequireAdmin>
-                            <AdminLayout />
-                          </RequireAdmin>
-                        }
-                      >
-                        <Route index element={<Dashboard />} />
-                        <Route path="orders" element={<OrdersPage />} />
-                        <Route path="orders/:id" element={<OrderDetailAdminPage />} />
-
-                        <Route path="products" element={<ProductListPage />} />
-                        <Route path="category" element={<CategoriesPage />} />
-                        <Route path="products/edit/:id" element={<ProductFormPage />} />
-                        <Route path="products/add" element={<ProductFormPage />} />
-                        <Route path="products/excel" element={<UploadProductExcelPage />} />
-
-                        <Route path="users" element={<UserManagementPage />} />
+                      <Routes>
 
 
-                        <Route path="report" element={<AdminReportPage />} />
-                        <Route path="images" element={<AdminImageManager />} />
-                        <Route path="don-mai-nha" element={<RegisterSolarPanel />} />
+                        <Route
+                          path="/admin"
+                          element={
+                            <RequireAdmin>
+                              <AdminLayout />
+                            </RequireAdmin>
+                          }
+                        >
+                          <Route path="/admin" element={<Dashboard />} />
+                          <Route path="orders" element={<OrdersPage />} />
+                          <Route
+                            path="orders/:id"
+                            element={<OrderDetailAdminPage />}
+                          />
 
+                          <Route
+                            path="products"
+                            element={<ProductListPage />}
+                          />
+                          <Route path="category" element={<CategoriesPage />} />
+                          <Route
+                            path="products/edit/:id"
+                            element={<ProductFormPage />}
+                          />
+                          <Route
+                            path="products/add"
+                            element={<ProductFormPage />}
+                          />
+                          <Route
+                            path="products/excel"
+                            element={<UploadProductExcelPage />}
+                          />
 
-                        {/* thêm các route admin khác */}
+                          <Route
+                            path="users"
+                            element={<UserManagementPage />}
+                          />
 
-                        <Route path="*" element={<div>404 Not Found</div>} />
+                          <Route path="report" element={<AdminReportPage />} />
+                          <Route
+                            path="images"
+                            element={<AdminImageManager />}
+                          />
+                          <Route
+                            path="don-mai-nha"
+                            element={<RegisterSolarPanel />}
+                          />
 
-                        {/* thêm các route admin khác */}
+                          <Route path="chat" element={<ChatPage />} />
 
+                          {/* thêm các route admin khác */}
 
-                        {/* các route khác */}
-                      </Route>
-                    </Routes>
+                          <Route path="*" element={<div>404 Not Found</div>} />
+
+                          {/* thêm các route admin khác */}
+
+                          {/* các route khác */}
+                        </Route>
+                      </Routes>
                     </ProductAdminProvider>
                   ) : (
                     <>
@@ -162,6 +186,10 @@ function App() {
                             path="/trang-thai-hang"
                             element={<OrderDetailPage />}
                           />
+                                                  <Route
+                          path="/login-admin"
+                          element={<AdminLoginPage />}
+                        />
                         </Routes>
                       </Container>
                       <Footer />

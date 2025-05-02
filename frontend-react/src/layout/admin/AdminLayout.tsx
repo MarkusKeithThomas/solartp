@@ -1,21 +1,21 @@
-import { Outlet } from "react-router-dom";
 import SidebarAdmin from "./SidebarAdmin";
 import HeaderAdmin from "./HeaderAdmin";
-import "./adminLayout.css";
+import '../../styles/admin-layout.css'
+import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   return (
-    <div className="admin-dashboard d-flex">
-      <aside className="admin-sidebar">
-        <SidebarAdmin />
-      </aside>
-      <div className="admin-main flex-grow-1 d-flex flex-column">
-        <HeaderAdmin />
-        <main className="admin-content flex-grow-1 p-4 bg-light">
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    <div className="admin-dashboard">
+  <aside className="admin-sidebar">
+    <SidebarAdmin />
+  </aside>
+  <div className="admin-main d-flex flex-column" style={{ height: '100vh' }}>
+  <HeaderAdmin />
+    <main className="admin-content">
+      <Outlet />
+    </main>
+  </div>
+</div>
   );
 };
 
