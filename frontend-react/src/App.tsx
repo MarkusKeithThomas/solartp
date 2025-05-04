@@ -43,6 +43,8 @@ import AdminReportPage from "./pages/admin/AdminReportPage";
 import AdminImageManager from "./pages/admin/AdminImageManager";
 import RegisterSolarPanel from "./pages/admin/RegisterSolarPanel";
 import ChatPage from "./pages/admin/ChatPage";
+import { ListJob } from "./pages/tuyen-dung/ListJob";
+import JobDetail from "./pages/tuyen-dung/JobDetail";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -75,8 +77,6 @@ function App() {
                     // 👉 Route admin không cần Container hay Footer
                     <ProductAdminProvider>
                       <Routes>
-
-
                         <Route
                           path="/admin"
                           element={
@@ -186,10 +186,14 @@ function App() {
                             path="/trang-thai-hang"
                             element={<OrderDetailPage />}
                           />
-                                                  <Route
-                          path="/login-admin"
-                          element={<AdminLoginPage />}
-                        />
+                          <Route
+                            path="/login-admin"
+                            element={<AdminLoginPage />}
+                          />
+
+                          <Route path="/list-job" element={<ListJob />} />
+                          <Route path="/list-job/:slug" element={<JobDetail/>}/>
+            
                         </Routes>
                       </Container>
                       <Footer />

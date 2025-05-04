@@ -6,6 +6,7 @@ import {
   BsQuestionCircle,
   BsArrowRight,
   BsLightbulb,
+  BsPersonWorkspace,
 } from "react-icons/bs";
 import { useAuthContext } from "../context/AuthProvider";
 interface LoginProps {
@@ -56,6 +57,9 @@ export function LoginDropDown({ className }: LoginProps) {
         <Dropdown.Item href="/trang-thai-hang" className="d-flex align-items-center">
   <FaClipboardList className="me-2" /> Check đơn hàng
 </Dropdown.Item>
+<Dropdown.Item href="/list-job" className="d-flex align-items-center">
+          <BsPersonWorkspace className="me-2" /> Tuyển Dụng
+        </Dropdown.Item>
         <hr />
 
         {/* Chế độ Dark Mode */}

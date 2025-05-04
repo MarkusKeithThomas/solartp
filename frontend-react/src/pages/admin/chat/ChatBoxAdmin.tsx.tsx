@@ -24,14 +24,29 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [totalPage, setTotalPage] = useState<number>(0);
-  const [nameChat, setNameChat] = useState<string>(""); // mo rong khi can doi ten nhom chat
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState<string>(""); // mo rong khi can doi ten nhom chat
 
   const dataSender = localStorage.getItem("user-info-admin");
   const sender = dataSender ? JSON.parse(dataSender) : null;
   const senderEmail = sender?.email; // 👉 lấy tên
+
+  useEffect(() => {
+    const fetchChatMessages = async () => {
+      try {
+        const res = await chatApi.getPaginatedMessages(chatRoomId, 0, size);
+        setTotalPage(res.totalPages);
+        setMessages(res.content.slice().reverse());        
+        setPage(1);
+
+        setTimeout(() => {
+          scrollToBottom();
+        }, 500);
+      } catch (error) {
+        console.error("Error fetching chat messages:", error);
+      }
+    };
+    fetchChatMessages();
+  }, [chatRoomId]);
 
   const { sendMessage, connected } = useChatSocket(chatRoomId, (incoming) => {
     setMessages((prev) => {
@@ -52,14 +67,13 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
       // Thêm tin nhắn mới vào cuối (realtime từ người khác)
       return [...prev, { ...incoming, status: "sent" }];
     });
-    setSending(false);
   });
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const loadMoreMessages = async (page = 0) => {
-    if (page >= totalPage) return;
+  const loadMoreMessages = async () => {
+    if (page >= totalPage || loadingRef.current) return;
     loadingRef.current = true;
     setLoadingMore(true);
     try {
@@ -69,8 +83,7 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
         size
       );
 
-      const reversed = [...res.content].reverse();
-        setMessages((prev) => [...reversed, ...prev]);
+        setMessages((prev) => [...res.content, ...prev]);
         setHasMore(!res.last);
         setPage(page+1);
       
@@ -82,27 +95,12 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
     }
   };
 
-  useEffect(() => {
-    const fetchChatMessages = async () => {
-      try {
-        const res = await chatApi.getPaginatedMessages(chatRoomId, page, size);
-        setTotalPage(res.totalPages);
-        setMessages(res.content);
-
-        setTimeout(() => {
-          scrollToBottom();
-        }, 500);
-      } catch (error) {
-        console.error("Error fetching chat messages:", error);
-      }
-    };
-    fetchChatMessages();
-  }, [chatRoomId, page, size]);
-
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!loadingMore) {
+      scrollToBottom();
+    }
+  }, [messages, loadingMore]);
 
 
   const handleScroll = () => {
@@ -114,8 +112,10 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
   };
   
   const handleSend = () => {
-    setSending(true);
-    if (!newMessage.trim()) return; // Không gửi tin nhắn trống
+    if (!newMessage.trim()) {
+      return; // Không gửi tin nhắn trống
+    }
+
     if (!connected) {
       alert("Không thể gửi tin nhắn, vui lòng kiểm tra lại kết nối");
       return;
@@ -134,7 +134,7 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
       read: false, // Assuming the message is unread initially
     };
 
-    setMessages((prev) => [tempMessage,...prev]); // Thêm tin nhắn tạm thời vào danh sách
+    setMessages((prev) => [...prev,tempMessage]); // Thêm tin nhắn tạm thời vào danh sách
     sendMessage(tempMessage); // Gửi tin nhắn qua socket
     setNewMessage(""); // Clear the input field after sending
   };
@@ -155,12 +155,10 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
         style={{ overflowY: "auto", minWidth: 0 }}
       >
         {messages
-          .slice()
-          .reverse()
-          .map((msg) => (
+          .map((msg,index) => (
             <div
-              key={msg.clientId}
-              className={`d-flex mb-2 ${
+            key={msg.clientId || msg.id || `fallback-${index}`} // 👈 đảm bảo key luôn có
+            className={`d-flex mb-2 ${
                 msg.sender === senderEmail
                   ? "justify-content-end"
                   : "justify-content-start"
@@ -201,7 +199,8 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Nhập tin nhắn..."
           />
-          <Button type="submit" disabled={sending} onClick={handleSend}>
+          <Button type="submit" 
+          onClick={handleSend}>
             Gửi
           </Button>
         </Form>

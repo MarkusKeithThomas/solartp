@@ -1,11 +1,10 @@
 export interface User  {
     id: number;
     email: string;
+    password:string;
     name: string;
-    avatar: string;
+    role: string;
   };
-
-
 
  export interface Role {
     id: number;

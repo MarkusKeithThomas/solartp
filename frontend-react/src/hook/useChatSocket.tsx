@@ -10,8 +10,14 @@ export const useChatSocket = (
   const [connected, setConnected] = useState(false);
   const clientRef = useRef<CompatClient | null>(null);
   const receivedIdsRef = useRef<Set<string>>(new Set());
+  const onMessagesRef = useRef(onMessage);
+
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  useEffect (()=> {
+    onMessagesRef.current = onMessage;
+  },[onMessage]);
 
   useEffect(() => {
     if (!roomId) return;
@@ -19,16 +25,19 @@ export const useChatSocket = (
     const client: CompatClient = Stomp.over(() => new SockJS(`${API_BASE_URL}/ws-chat`));
     client.reconnectDelay = 5000;
 
+
     client.connect({}, () => {
       setConnected(true);
 
       client.subscribe(`/topic/chat/${roomId}`, (message: IMessage) => {
         try {
           const data = JSON.parse(message.body) as ChatMessage;
-          if (!data.id || receivedIdsRef.current.has(data.id)) return;
+          // if (!data.id || receivedIdsRef.current.has(data.id)) return;
 
-          receivedIdsRef.current.add(data.id);
-          onMessage({ ...data, status: "sent" });
+          if (data.clientId) {
+            receivedIdsRef.current.add(data.clientId);
+          }
+          onMessagesRef.current({ ...data, status: "sent" });
         } catch (e) {
           console.error("❌ Parse error:", e);
         }

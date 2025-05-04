@@ -2,8 +2,11 @@ package ecommerce.project.controller;
 
 
 import ecommerce.project.baseresponse.BaseResponse;
+import ecommerce.project.dtorequest.RegisterAdminRequest;
+import ecommerce.project.dtorequest.UpdateUserRoleRequest;
 import ecommerce.project.dtorequest.UserDTO;
 import ecommerce.project.dtoresponse.ResetPasswordDTO;
+import ecommerce.project.dtoresponse.UsersResponse;
 import ecommerce.project.producer.ResetPasswordProducer;
 import ecommerce.project.request.RequestUser;
 import ecommerce.project.service.AuthService;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -139,6 +143,22 @@ public class AuthController {
             baseResponse.setCode(200);
         }
         return ResponseEntity.ok(baseResponse);
+    }
+    @GetMapping("/list-users")
+    public ResponseEntity<?> getListUser(){
+        List<UsersResponse> list = authService.getListUsersRoleStaffAndAdmin();
+        return ResponseEntity.ok(new BaseResponse(200,"Danh sách người dùng",list));
+    }
+    @PostMapping("/update-user-role")
+    public ResponseEntity<?> updateUserRole(@RequestBody UpdateUserRoleRequest update){
+        authService.updateUserRole(update);
+        return ResponseEntity.ok(new BaseResponse(200,"Cập nhật thành công role",null));
+    }
+
+    @PostMapping("/register-admin")
+    public ResponseEntity<?> RegisterUserAdmin(@RequestBody RegisterAdminRequest request){
+        String res = authService.registerAdmin(request);
+        return ResponseEntity.ok(new BaseResponse(200,"Bạn đã tạo tài khoản thành công",null));
     }
 
 }

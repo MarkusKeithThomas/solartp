@@ -131,8 +131,8 @@ export function Contact() {
       <section className="mt-5 bg-primary text-white p-4 rounded text-center">
         <h2 className="fw-bold">📍 Liên hệ ngay</h2>
         <p>
-          <FaMapMarkerAlt className="me-2" /> 320/10 Hà Huy Giáp, P. Thạnh Lộc,
-          Quận 12, TP. HCM
+          <FaMapMarkerAlt className="me-2" /> Địa chỉ: 92 Nam Kỳ Khởi Nghĩa, Bến Nghé , Quận 1, Thành phố Hồ
+          Chí Minh
         </p>
         <p>
           <FaPhone className="me-2" /> 0972 769 364

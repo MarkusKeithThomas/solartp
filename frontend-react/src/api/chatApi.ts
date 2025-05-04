@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ChatMessage, ChatMessageDetailGroup, ChatMessageGroup } from "../type/admin/chat";
 import { apiGet } from "./apiClient";
 
