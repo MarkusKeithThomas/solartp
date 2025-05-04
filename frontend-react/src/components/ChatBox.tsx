@@ -31,7 +31,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ roomId, senderId, show, onClose }) =>
   const phone = userChatParsed?.phone || "Ẩn Danh";
   const sender = userChatParsed?.name || "Ẩn Danh";
 
-  const { sendMessage, connected } = useChatSocket(roomId, (incoming) => {
+  // const { sendMessage, connected } = useChatSocket(roomId, (incoming) => {
+    const { sendMessage, connected } = useChatSocket(roomId, (incoming) => {
     setMessages((prev) => {
       if (incoming.clientId) {
         const index = prev.findIndex((m) => m.clientId === incoming.clientId);

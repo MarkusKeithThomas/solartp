@@ -7,9 +7,6 @@ import ChatBoxAdmin from './chat/ChatBoxAdmin.tsx';
 const ChatPage = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
-  const [senderId, setSenderId] = useState<string | null>(null);
-  const [show, setShow] = useState(false);
-
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -21,7 +18,7 @@ const ChatPage = () => {
       }
     };
     fetchChatRooms();
-  }, []);
+  }, [chatRooms]);
 
   return (
     <div className="d-flex" style={{ width: "100%", height: "100%", overflow: "hidden" }}>

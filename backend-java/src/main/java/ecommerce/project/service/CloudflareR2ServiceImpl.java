@@ -1,5 +1,6 @@
 package ecommerce.project.service;
 
+import ecommerce.project.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 
 
+import java.io.IOException;
 import java.net.URI;
 
 import java.util.List;
@@ -24,19 +26,22 @@ import java.util.stream.Collectors;
 public class CloudflareR2ServiceImpl implements CloudflareR2Service{
 
     private final S3Client s3Client;
+    private final StringUtil stringUtil;
 
     @Value("${cloudflare.bucket-name}")
     private String bucketName;
     @Value("${link_image_get}")
     private String link_image_get;
+    private final String LINK_CV_PDF = "https://pub-e19fe2876a394ac09022a300014e7ffb.r2.dev/";
 
     public CloudflareR2ServiceImpl(
             @Value("${cloudflare.access-key}") String accessKey,
             @Value("${cloudflare.secret-key}") String secretKey,
-            @Value("${cloudflare.endpoint}") String endpoint
+            @Value("${cloudflare.endpoint}") String endpoint, StringUtil stringUtil
     ) {
+        this.stringUtil = stringUtil;
         this.s3Client = S3Client.builder()
-                .region(Region.US_EAST_1)
+                .region(Region.of("auto")) // bắt buộc là 'auto'
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
                 .endpointOverride(URI.create(endpoint))
                 .build();
@@ -70,6 +75,23 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
         String fileKey = extractKeyFromUrl(imageUrl);
         deleteFileFromCloudFlare(fileKey);
     }
+
+    @Override
+    public String uploadFilePdfCVToCloudFlare(MultipartFile file) throws IOException {
+        String nameFile = stringUtil.toSlug(file.getOriginalFilename());
+        String key =  UUID.randomUUID() + "cv_" + nameFile +".pdf";
+
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket("cv-upload")
+                .key(key)
+                .contentType("application/pdf")
+                .build();
+        s3Client.putObject(putObjectRequest,RequestBody.fromBytes(file.getBytes()));
+
+
+        return LINK_CV_PDF+key;
+    }
+
     @Override
     public void deleteFileFromCloudFlare(String fileKey) {
         try {
@@ -120,6 +142,7 @@ public class CloudflareR2ServiceImpl implements CloudflareR2Service{
         }
         return url.replace(link_image_get, "");
     }
+
 
 
 }

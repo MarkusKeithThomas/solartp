@@ -87,12 +87,16 @@ public class SecurityConfig {
                             "orders//confirm",
                             "orders/id",
                             "solar-panel/add-user",
-                            "chat/detail-chat"
+                            "chat/detail-chat",
+                            "job/get-list-job",
+                            "job/**",
+                            "job/ung-tuyen"
                     ).permitAll(); // ✅ Cho phép OAuth2
                     auth.requestMatchers("orders/*/payment-status","orders/*/status"
                             ,"orders/search","orders/recent"
                             ,"orders/*/status"
-                            ,"orders/admin").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                            ,"orders/admin"
+                            ,"chat/groups-chat").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("products/add","products/delete/**","products/update/**"
                     ,"products/*/**","products/**","products/getAllProductByAdmin"
@@ -100,6 +104,10 @@ public class SecurityConfig {
                     auth.requestMatchers("solar-panel").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("job/add-list-job").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+
+
+                    auth.requestMatchers("tai-khoan/update-user-role","tai-khoan/register-admin").hasAnyAuthority("ROLE_ADMIN");
 
                     auth.anyRequest().authenticated();
                 })

@@ -17,3 +17,12 @@ export async function apiPost<T>(url: string, body?: any): Promise<T> {
   const response = await authAPI.post<{ data: T }>(url, body);
   return response.data.data;
 }
+
+export async function apiPostFormData<T>(url: string, formData: FormData): Promise<T> {
+  const response = await authAPI.post<{ data: T }>(url, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
+}

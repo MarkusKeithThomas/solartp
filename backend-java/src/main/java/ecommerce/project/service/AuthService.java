@@ -5,8 +5,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import ecommerce.project.dtorequest.RegisterAdminRequest;
+import ecommerce.project.dtorequest.UpdateUserRoleRequest;
 import ecommerce.project.dtorequest.UserDTO;
 import ecommerce.project.dtoresponse.ResetPasswordDTO;
+import ecommerce.project.dtoresponse.UsersResponse;
 import ecommerce.project.entity.RoleEntity;
 import ecommerce.project.entity.UserEntity;
 import ecommerce.project.exception.*;
@@ -18,11 +21,14 @@ import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleInfoNotFoundException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,7 +38,6 @@ public class AuthService {
     private final JWTUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder;
     private static final String GOOGLE_CLIENT_ID = "707353335287-iqf6miqalqt8d631q468fr2clnqpljc0.apps.googleusercontent.com";
-    private final EmailService emailService;
 
     private final ResetPasswordProducer resetPasswordProducer;
 
@@ -47,9 +52,53 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.roleRepository = roleRepository;
-        this.emailService = emailService;
         this.resetPasswordProducer = resetPasswordProducer;
     }
+
+    public String registerAdmin(RegisterAdminRequest request) {
+        Optional<UserEntity> user = userRepository.findByEmail(request.getEmail());
+        UserEntity user1;
+        if (user.isPresent()) {
+            user1 = user.get();
+            throw new RegisterException("Email đã đăng kí.");
+        } else {
+            user1 = new UserEntity();
+            user1.setEmail(request.getEmail());
+            user1.setName(request.getName());
+            user1.setPassword(passwordEncoder.encode(request.getPassword()));
+            RoleEntity role = roleRepository.findByName(request.getRole())
+                    .orElseThrow(() -> new RegisterException("Role chưa được khởi tạo"));
+            user1.setRole(role);
+            userRepository.save(user1);
+            return "User registered successfully";
+        }
+
+    }
+
+    public void updateUserRole(UpdateUserRoleRequest update) {
+        UserEntity user = userRepository.findById(update.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("Tài khoản không tồn tại (ID: " + update.getUserId() + ")"));
+
+        RoleEntity role = roleRepository.findByName(update.getRole())
+                .orElseThrow(() -> new UsernameNotFoundException("Vai trò không hợp lệ: " + update.getRole()));
+
+        user.setRole(role);
+        userRepository.save(user); // 🔁 Đừng quên save lại nếu không dùng JPA tự flush
+    }
+
+    public List<UsersResponse> getListUsersRoleStaffAndAdmin(){
+        List<UserEntity> users = userRepository.findByRole_NameIn(List.of("ROLE_ADMIN","ROLE_STAFF","ROLE_USER"));
+        List<UsersResponse> list = users.stream().map(item ->{
+            UsersResponse usersResponse = new UsersResponse();
+            usersResponse.setId(item.getId());
+            usersResponse.setRole(item.getRole().getName());
+            usersResponse.setEmail(item.getEmail());
+            usersResponse.setName(item.getName());
+            return usersResponse;
+        }).toList();
+        return list;
+    }
+
     public boolean resetPassword(String token,String newPassword){
         String email = jwtUtil.extractEmail(token);
         Optional<UserEntity> user = userRepository.findByEmail(email);

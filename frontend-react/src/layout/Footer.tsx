@@ -30,7 +30,7 @@ export function Footer() {
             <h5 className="fw-bold">Công ty TNHH MTV SOLAR TP</h5>
             <p>
               <a href="#" className="footer-link">
-                Địa chỉ: 320/10 Hà Huy Giáp, P. Thạnh Lộc, Quận 12, Thành phố Hồ
+                Địa chỉ: 92 Nam Kỳ Khởi Nghĩa, Bến Nghé , Quận 1, Thành phố Hồ
                 Chí Minh
               </a>
             </p>
