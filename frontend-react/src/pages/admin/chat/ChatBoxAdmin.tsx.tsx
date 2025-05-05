@@ -46,7 +46,10 @@ export const ChatBoxAdmin = ({ chatRoomId, phone }: Props) => {
       }
     };
     fetchChatMessages();
-  }, [chatRoomId]);
+    const interval = setInterval(fetchChatMessages,300000); // Mỗi 5 phut goi 1 lan
+
+    return () => clearInterval(interval); // Dọn dẹp khi unmount
+  }, []);
 
   const { sendMessage, connected } = useChatSocket(chatRoomId, (incoming) => {
     setMessages((prev) => {
