@@ -12,8 +12,18 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoucherResponse {
+    private int id;
     private String code;
     private BigDecimal discount;
     private DiscountType discountType;
+    private BigDecimal minOrderValue;
+    private BigDecimal maxOrderValue;
+    private int quantity;
+    private int used;
+    private boolean isActive;
+    private String startAt;
+    private String endAt;
+    private String createdAt;
+    private String updatedAt;
 
 }

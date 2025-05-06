@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/vouchers")
@@ -39,6 +40,19 @@ public class VoucherController {
             @RequestBody VoucherUpdateRequest request) {
         VoucherEntity updated = voucherService.update(id, request);
         return ResponseEntity.ok(new BaseResponse(200,"Cập nhật voucher thành công", updated));
+    }
+
+    @GetMapping("/get-list-voucher")
+    public ResponseEntity<?> getListVoucher(){
+        List<VoucherResponse> list = voucherService.getListVoucher();
+        return ResponseEntity.ok(new BaseResponse(200,"Danh sách voucher",list));
+    }
+
+    @GetMapping("/get-voucher-id")
+    public ResponseEntity<?> getVoucherById(@RequestParam(name = "id") int id){
+        VoucherResponse voucherResponse = voucherService.getVoucherById(id);
+        return ResponseEntity.ok(new BaseResponse(200,"Voucher bạn đã lấy thành công",voucherResponse));
+
     }
 
 }

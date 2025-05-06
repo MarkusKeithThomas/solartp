@@ -45,6 +45,9 @@ import RegisterSolarPanel from "./pages/admin/RegisterSolarPanel";
 import ChatPage from "./pages/admin/ChatPage";
 import { ListJob } from "./pages/tuyen-dung/ListJob";
 import JobDetail from "./pages/tuyen-dung/JobDetail";
+import VoucherPage from "./pages/admin/voucher/VoucherPage";
+import VoucherEditPage from "./pages/admin/voucher/VoucherEditPage";
+import VoucherCreatePage from "./pages/admin/voucher/VoucherCreatePage";
 
 // Tạo Query Client
 const queryClient = new QueryClient();
@@ -126,6 +129,10 @@ function App() {
                           />
 
                           <Route path="chat" element={<ChatPage />} />
+                          <Route path="vouchers" element={<VoucherPage/>}></Route>
+                          <Route path="vouchers/get-voucher-id/:id" element={<VoucherEditPage/>}></Route>
+                          <Route path="vouchers/create-voucher" element={<VoucherCreatePage/>}></Route>
+
 
                           {/* thêm các route admin khác */}
 

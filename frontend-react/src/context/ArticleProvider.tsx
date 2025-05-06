@@ -56,7 +56,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
   const [articles, setArticle] = useArticleLocalStorage<Article[]>(
     "article-save",
     [],
-    1000 * 60 * 10
+    1000 * 60 * 5
   );
   const [shortArticles, setShortArticles] = useState<Article[]>([]);
   const [lastId, setLastId] = useState(0);

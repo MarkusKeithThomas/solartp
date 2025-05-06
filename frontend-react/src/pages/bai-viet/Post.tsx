@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 export function Post() {
   const { articles,shortArticles } = useArticleContext();
 
+
   return (
     <HelmetProvider>
       <Row className="w-75 mx-auto" style={{ minWidth: "100%" }}>
@@ -65,6 +66,7 @@ export function Post() {
               </Col>
             </Row>
           ))}
+          
         </Col>
 
         {/* Cột bài viết phổ biến */}
@@ -75,13 +77,15 @@ export function Post() {
 
       {/* Thêm SEO */}
       {articles?.length > 0 && (
+        articles.map((item) => (
         <Seo
-          title={articles[0].title}
-          description={articles[0].header1}
-          image={articles[0].altImage1}
-          url={articles[0].image1Url}
-          date={articles[0].dateCreate}
+          title={item.title}
+          description={item.header1}
+          image={item.altImage1}
+          url={item.image1Url}
+          date={item.dateCreate}
         />
+        ))
       )}
     </HelmetProvider>
   );

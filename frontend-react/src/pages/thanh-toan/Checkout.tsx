@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useShoppingCart } from "../../context/ProductContext";
 
 export function Checkout() {
-  const { checkVoucher } = useShoppingCart();
+  const { checkVoucher, discount } = useShoppingCart();
   const [voucherCode, setVoucherCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -31,7 +31,7 @@ export function Checkout() {
     if (success) {
       setMessage(`✅ Đã áp dụng mã ${voucherCode.toUpperCase()}`);
     } else {
-      setMessage("❌ Mã giảm giá không hợp lệ hoặc không đủ điều kiện áp dụng.");
+      setMessage("❌ Mã giảm giá không hợp lệ hoặc SL đã hết.");
     }
   };
 

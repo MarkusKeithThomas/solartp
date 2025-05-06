@@ -32,10 +32,13 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.password}")
+    private String redisPassword;
+
+
     // 1️⃣ Tạo kết nối đến Redis
     @Bean
     public RedisConnectionFactory redisConnectionFactory(
-            @Value("${spring.data.redis.password}") String redisPassword
     ) {
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setPassword(redisPassword); // ✅ thêm dòng này
@@ -83,7 +86,7 @@ public class RedisConfig {
     }
 
 
-    // 2️⃣ ObjectMapper dùng chung – không ghi @class vào Redis
+    // 2️⃣ ObjectMapper dùng chung – không ghi @class vào Redis, Tạo ObjectMapper dùng cho việc serialize/deserialize dữ liệu vào Redis
     @Bean
     public ObjectMapper redisObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -93,7 +96,7 @@ public class RedisConfig {
         return mapper;
     }
 
-    // 3️⃣ Hàm tạo RedisTemplate dùng lại được cho nhiều kiểu
+    // 3️⃣ Hàm tạo RedisTemplate dùng lại được cho nhiều kiểu  DRY – tránh lặp lại code tạo RedisTemplate
     public <T> RedisTemplate<String, T> createRedisTemplate(RedisConnectionFactory factory, ObjectMapper mapper) {
         RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
