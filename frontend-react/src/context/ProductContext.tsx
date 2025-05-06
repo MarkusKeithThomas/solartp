@@ -109,10 +109,16 @@ export function ProductContext({ children }: ProductContextProps) {
     try {
       const orderTotal = calculateTotalPrice();
       const res = await voucherApi.validate(voucherCode, orderTotal);
-  
+
       setDiscount(res.data.data.discount); // hoặc set lại cả voucher state nếu cần
       setVoucher(voucherCode);
-      return true;
+      if (res.data.data.discount > 0) {
+        console.log("✅ Voucher hợp lệ:", res.data.data);
+        return false;
+      } else {
+        console.log("❌ Voucher không hợp lệ:", res.data.data);
+        return false;
+      }
     } catch (err: any) {
       setDiscount(0); // reset nếu lỗi
       console.error("❌ Voucher không hợp lệ:", err?.response?.data?.message || err.message);

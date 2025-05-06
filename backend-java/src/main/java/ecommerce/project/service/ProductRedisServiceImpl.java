@@ -84,9 +84,9 @@ public class ProductRedisServiceImpl implements ProductRedisService {
         String redisKey = RedisKeyPrefix.REDIS_KEY_GET_ALL_PRODUCT;
 
         // 1. Thử lấy từ Redis
-        List<ProductResponseDTO> cachedProducts = (List<ProductResponseDTO>) productRedisTemplate.opsForValue().get(redisKey);
+        List<ProductResponseDTO> cachedProducts = productRedisTemplate.opsForValue().get(redisKey);
 
-        if (cachedProducts != null && !cachedProducts.isEmpty()) {
+        if (!cachedProducts.isEmpty()) {
             log.info("✅ Lấy danh sách sản phẩm từ Redis (key: {})", redisKey);
             return cachedProducts;
         }

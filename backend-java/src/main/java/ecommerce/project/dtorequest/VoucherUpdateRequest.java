@@ -8,12 +8,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class VoucherUpdateRequest {
+    private String code;
     private DiscountType discountType;
-    private BigDecimal discountValue;
+    private BigDecimal discount;
     private BigDecimal minOrderValue;
-    private BigDecimal maxDiscountValue;
+    private BigDecimal maxOrderValue;
+    private int used;
     private Integer quantity;
-    private Boolean isActive;
-    private LocalDateTime startAt;
-    private LocalDateTime endAt;
+    private Boolean active;
+    private String startAt;
+    private String endAt;
 }

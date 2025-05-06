@@ -26,3 +26,13 @@ export async function apiPostFormData<T>(url: string, formData: FormData): Promi
   });
   return response.data.data;
 }
+
+export async function apiPut<T>(url: string, data: any): Promise<T> {
+  const response = await authAPI.put<ApiResponse<T>>(url, data);
+
+  if (response.data.code !== 200) {
+    throw new Error(response.data.message || "Đã có lỗi khi cập nhật");
+  }
+
+  return response.data.data;
+}

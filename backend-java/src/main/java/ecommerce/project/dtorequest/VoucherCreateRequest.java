@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class VoucherCreateRequest {
     private String code;
     private DiscountType discountType;
-    private BigDecimal discountValue;
+    private BigDecimal discount;
     private BigDecimal minOrderValue;
     private BigDecimal maxDiscountValue;
     private Integer quantity;

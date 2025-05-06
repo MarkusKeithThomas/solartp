@@ -9,6 +9,7 @@ import {
   FaImage,
   FaSolarPanel,
   FaRegCommentDots,
+  FaApper,
 } from "react-icons/fa";
 import "./adminLayout.css";
 
@@ -43,6 +44,9 @@ const SidebarAdmin = () => {
 </NavLink>
         <NavLink to="/admin/report" className="nav-link text-white">
           <FaChartPie className="me-2" /> Báo cáo
+        </NavLink>
+        <NavLink to="/admin/vouchers" className="nav-link text-white">
+          <FaApper className="me-2" /> Vouchers
         </NavLink>
       </nav>
       <div className="mt-auto text-center small text-secondary mt-4">

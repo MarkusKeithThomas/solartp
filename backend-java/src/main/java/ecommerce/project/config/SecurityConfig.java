@@ -105,6 +105,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("job/add-list-job").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("vouchers/get-list-voucher","vouchers/get-voucher-id").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
 
 
                     auth.requestMatchers("tai-khoan/update-user-role","tai-khoan/register-admin").hasAnyAuthority("ROLE_ADMIN");
