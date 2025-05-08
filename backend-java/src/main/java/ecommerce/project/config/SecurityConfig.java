@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Không dùng session
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
-                            "test/**",
+                            "/test/**",
                             "/tai-khoan/login",
                             "/tai-khoan/refresh",
                             "/tai-khoan/register",
@@ -64,51 +64,51 @@ public class SecurityConfig {
                             "/check-env",
                             "/tai-khoan/**",
                             "/bai-viet/list/**",
-                            "bai-viet/slug/**",
-                            "products/getproduct/",
-                            "products/details/**",
-                            "products/getAllProduct",
-                            "products/getAllProductByRedis",
+                            "/bai-viet/slug/**",
+                            "/products/getproduct",
+                            "/products/details/**",
+                            "/products/getAllProduct",
+                            "/products/getAllProductByRedis",
                             "/robots.txt",
-                            "categories/get-categories",
-                            "products/getAllProduct",
-                            "guest/cart/**",
-                            "cart/check-stock",
-                            "ws-chat/**",
-                            "chat/**",
-                            "chat/history/paging/**",
-                            "vouchers/validate/**",
-                            "orders/add",
-                            "orders/my",
-                            "orders/**",
-                            "orders/*/cancel",
-                            "orders/*/retry-payment",
-                            "orders/*/status",
-                            "orders//confirm",
-                            "orders/id",
-                            "solar-panel/add-user",
-                            "chat/detail-chat",
-                            "job/get-list-job",
-                            "job/**",
-                            "job/ung-tuyen"
+                            "/categories/get-categories",
+                            "/products/getAllProduct",
+                            "/guest/cart/**",
+                            "/cart/check-stock",
+                            "/ws-chat/**",
+                            "/chat/**",
+                            "/chat/history/paging/**",
+                            "/vouchers/validate/**",
+                            "/orders/add",
+                            "/orders/my",
+                            "/orders/**",
+                            "/orders/*/cancel",
+                            "/orders/*/retry-payment",
+                            "/orders/*/status",
+                            "/orders/confirm",
+                            "/orders/id",
+                            "/solar-panel/add-user",
+                            "/chat/detail-chat",
+                            "/job/get-list-job",
+                            "/job/**",
+                            "/job/ung-tuyen"
                     ).permitAll(); // ✅ Cho phép OAuth2
-                    auth.requestMatchers("orders/*/payment-status","orders/*/status"
-                            ,"orders/search","orders/recent"
-                            ,"orders/*/status"
-                            ,"orders/admin"
-                            ,"chat/groups-chat").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("vouchers/add","vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("products/add","products/delete/**","products/update/**"
-                    ,"products/*/**","products/**","products/getAllProductByAdmin"
+                    auth.requestMatchers("/orders/*/payment-status","/orders/*/status"
+                            ,"/orders/search","/orders/recent"
+                            ,"/orders/*/status"
+                            ,"/orders/admin"
+                            ,"/chat/groups-chat").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/vouchers/add","/vouchers/id/**").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/products/add","/products/delete/**","/products/update/**"
+                    ,"/products/*/**","/products/**","/products/getAllProductByAdmin"
                     ).hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("solar-panel").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/solar-panel").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
                     auth.requestMatchers("/bai-viet/upload-excel").hasAuthority("ROLE_ADMIN");
-                    auth.requestMatchers("/categories/add","/categories","/categories/delete/").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("job/add-list-job").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
-                    auth.requestMatchers("vouchers/get-list-voucher","vouchers/get-voucher-id").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/categories/add","/categories","/categories/delete").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/job/add-list-job").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
+                    auth.requestMatchers("/vouchers/get-list-voucher","/vouchers/get-voucher-id").hasAnyAuthority("ROLE_ADMIN","ROLE_STAFF");
 
 
-                    auth.requestMatchers("tai-khoan/update-user-role","tai-khoan/register-admin").hasAnyAuthority("ROLE_ADMIN");
+                    auth.requestMatchers("/tai-khoan/update-user-role","/tai-khoan/register-admin").hasAnyAuthority("ROLE_ADMIN");
 
                     auth.anyRequest().authenticated();
                 })

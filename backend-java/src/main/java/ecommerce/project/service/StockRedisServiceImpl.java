@@ -4,8 +4,8 @@ import ecommerce.project.entity.ProductEntity;
 import ecommerce.project.exception.StockException;
 import ecommerce.project.repository.ProductRepository;
 import ecommerce.project.utils.RedisKeyPrefix;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class StockRedisServiceImpl implements StockRedisService {
 
+    @Qualifier("stockRedisTemplate")
     private final RedisTemplate<String, String> redisTemplate;
+
     private final ProductRepository productRepository;
 
     // 🔹 Lua Script – Kiểm tra và trừ 1 sản phẩm (đang dùng cũ)
@@ -45,6 +46,11 @@ public class StockRedisServiceImpl implements StockRedisService {
         return 1
     """;
 
+    public StockRedisServiceImpl(@Qualifier("stockRedisTemplate") RedisTemplate<String, String> redisTemplate, ProductRepository productRepository) {
+        this.redisTemplate = redisTemplate;
+        this.productRepository = productRepository;
+    }
+
     @Override
     public int hasEnoughStock(Long productId, int quantity) {
         if (productId <= 0 || quantity <= 0) {
@@ -55,7 +61,12 @@ public class StockRedisServiceImpl implements StockRedisService {
         if (stockStr == null) return 0;
 
         try {
-            return Integer.parseInt(stockStr);
+            int numberStock = Integer.parseInt(stockStr);
+            if(quantity > numberStock){
+                return 0;
+            } else {
+                return -1;
+            }
         } catch (NumberFormatException e) {
             return -1;
         }
@@ -117,20 +128,28 @@ public class StockRedisServiceImpl implements StockRedisService {
         log.info("✅ Stock đã preload vào Redis: {} sản phẩm preloadStockFromDatabase", products.size());
     }
     @Override
-    public void syncStockToDatabase() {
+    public void syncStockRedisToDatabase() {
         List<ProductEntity> allProducts = productRepository.findAll();
-
+        int updatedCount = 0;
         for (ProductEntity product : allProducts) {
             String key = RedisKeyPrefix.STOCK_KEY_PREFIX + product.getId();
             String quantityStr = redisTemplate.opsForValue().get(key);
-            if (quantityStr != null) {
-                int redisQuantity = Integer.parseInt(quantityStr);
-                if (product.getStockQuantity() != redisQuantity) {
-                    product.setStockQuantity(redisQuantity);
-                    productRepository.save(product); // update nếu khác
-                }
+            if(quantityStr == null) {
+                log.warn("❗Không tìm thấy Redis key cho product ID {}", product.getId());
+                continue;
             }
+                try {
+                    int redisQuantity = Integer.parseInt(quantityStr);
+                    if (product.getStockQuantity() != redisQuantity) {
+                        product.setStockQuantity(redisQuantity);
+                        productRepository.save(product);
+                        updatedCount++;
+                    }
+                } catch (NumberFormatException e) {
+                    log.error("Giá trị Redis không hợp lệ cho product ID {}: {}", product.getId(), quantityStr);
+                }
         }
+        log.info("✅ Đồng bộ stock từ Redis về DB thành công. Đã cập nhật {} sản phẩm.", updatedCount);
     }
 
     @Override
