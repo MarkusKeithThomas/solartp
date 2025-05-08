@@ -85,6 +85,9 @@ public class OrderServiceImpl implements OrderService {
             VoucherResponse voucherResponse = voucherService.validate(request.getVoucherCode(), totalAmount);
             discountAmount = voucherResponse.getDiscount();
             voucher = voucherRepository.findByCodeIgnoreCase(voucherResponse.getCode()).orElse(null);
+//            assert voucher != null;
+//            voucher.setUsed(voucher.getUsed() - 1);
+            //TODO can thuc hien tru used boi tren redis xong sau do moi dong bo ve mysql
         }
 
         // 4. Lấy user, cart

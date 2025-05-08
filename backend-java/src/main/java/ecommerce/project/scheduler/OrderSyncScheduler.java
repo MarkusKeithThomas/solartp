@@ -16,11 +16,10 @@ public class OrderSyncScheduler {
     /**
      * Đồng bộ tồn kho từ Redis về MySQL mỗi 30 phút
      */
-    @Scheduled(fixedRate = 30 * 60 * 1000) // 30 phút
+    @Scheduled(fixedRate =  30 * 60 * 1000) // 30 phút
     public void syncStockFromRedisToDatabase() {
         try {
-            stockRedisService.syncStockToDatabase();
-            log.info("✅ Đã đồng bộ tồn kho từ Redis về MySQL thành công");
+            stockRedisService.syncStockRedisToDatabase();
         } catch (Exception e) {
             log.error("❌ Lỗi khi đồng bộ tồn kho từ Redis về MySQL", e);
         }

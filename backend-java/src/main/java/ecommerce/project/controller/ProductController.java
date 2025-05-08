@@ -101,7 +101,6 @@ public class ProductController {
     @GetMapping("/details/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id, HttpServletRequest request) {
         ProductResponseDTO product = productService.getProductDetailById(id,request);
-
         return ResponseEntity.ok(new BaseResponse(200,"Đã lấy sản phẩm thành công.",product));
     }
 

@@ -114,7 +114,7 @@ export function ProductContext({ children }: ProductContextProps) {
       setVoucher(voucherCode);
       if (res.data.data.discount > 0) {
         console.log("✅ Voucher hợp lệ:", res.data.data);
-        return false;
+        return true;
       } else {
         console.log("❌ Voucher không hợp lệ:", res.data.data);
         return false;

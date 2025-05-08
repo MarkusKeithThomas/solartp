@@ -5,7 +5,7 @@ import { CustomBreadcrumb } from "../../layout/CustomBreadcrumb";
 import { CardGotInfo } from "../../components/CardGotInfo";
 import { TableOfContents } from "../../components/TableOfContents";
 import { PopularArticles } from "../../components/PopularArticles";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useArticleBySlugWithFallback } from "../../hook/useArticleBySlugWithFallback";
 import { useArticleContext } from "../../context/ArticleProvider";
 import { formatVietnameseDate } from "../../ultities/fotmatDateTime";
@@ -24,14 +24,18 @@ export function PostDetail() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [slug]);
 
-  const [number, setNumber] = useState<number>(1);
   const fifteenDaysAgo = new Date();
   fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
-  const formattedDate = fifteenDaysAgo.toLocaleDateString("vi-VN");
-  const generate = () => {
-    const random = Math.floor(Math.random() * (30 - 5 + 1)) + 5;
-    setNumber(random);
-  };
+
+  function generateStableNumberFromSlug(slug: string, min = 5, max = 30): number {
+    let hash = 0;
+    for (let i = 0; i < slug.length; i++) {
+      hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const result = Math.abs(hash % (max - min + 1)) + min;
+    return result;
+  }
+  const number = generateStableNumberFromSlug(slug!);
 
 
   const WEB_BASE_URL = import.meta.env.VITE_SOLARTP;

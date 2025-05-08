@@ -44,6 +44,20 @@ public class RedisConfig {
         config.setPassword(redisPassword); // ✅ thêm dòng này
         return new LettuceConnectionFactory(config);
     }
+    @Bean(name = "stockRedisTemplate")
+    public RedisTemplate<String,String> stockRedisTemplate(RedisConnectionFactory connectionFactory){
+        RedisTemplate<String,String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+
+        template.setKeySerializer(stringRedisSerializer);
+        template.setValueSerializer(stringRedisSerializer);
+        template.setHashKeySerializer(stringRedisSerializer);
+        template.setHashValueSerializer(stringRedisSerializer);
+        template.afterPropertiesSet();
+        return template;
+    }
 
     @Bean(name = "productAllRedisTemplate")
     public RedisTemplate<String, List<ProductResponseDTO>> productAllRedisTemplate(
