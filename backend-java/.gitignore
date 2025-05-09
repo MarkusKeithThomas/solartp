@@ -6,6 +6,7 @@ backend-java/target/
 *.war
 *.ear
 backend-java/src/main/resources/application.properties
+backend-java/src/main/resources/application-staging.properties
 
 # --- Secrets & env ---
 .env

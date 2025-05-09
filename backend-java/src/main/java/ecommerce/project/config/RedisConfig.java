@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import ecommerce.project.dtoresponse.CartResponse;
 import ecommerce.project.dtoresponse.ProductResponseDTO;
 import ecommerce.project.entity.VoucherEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import org.springframework.data.redis.serializer.*;
 import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
@@ -55,6 +57,9 @@ public class RedisConfig {
         template.setValueSerializer(stringRedisSerializer);
         template.setHashKeySerializer(stringRedisSerializer);
         template.setHashValueSerializer(stringRedisSerializer);
+
+        // Optional: chặn các Object không phải String bằng cách set defaultSerializer là null
+        template.setDefaultSerializer(null);
         template.afterPropertiesSet();
         return template;
     }

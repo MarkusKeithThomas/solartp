@@ -4,7 +4,9 @@ import ecommerce.project.dtoresponse.ArticleResponseDTO;
 import ecommerce.project.entity.ArticleEntity;
 import ecommerce.project.exception.ArticleGetException;
 import ecommerce.project.repository.ArticleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,20 +15,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class ArticleServiceImpl implements ArticleService{
     @Autowired
     private ArticleRepository articleRepository;
 
+
     @Override
     public Map<String, Object> getAllArticle(Long lastId, int  limit) {
         Pageable pageable = PageRequest.of(0, limit);
+        log.info("❗ DB gọi thật sự - lastId={}", lastId);
+
 
 
         List<ArticleEntity> articles;
         if (limit == 0) {
             throw new ArticleGetException("Chỉ số bài viết và giới hạn bài viết không được 0.");
-        } else if (lastId == 0) {
+        } else if (lastId == 0 || lastId == null) {
             articles = articleRepository.findAllByOrderByIdDesc(pageable);
         } else{
             articles = articleRepository.findByIdLessThanOrderByIdDesc(lastId,pageable);
