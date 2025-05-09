@@ -2,6 +2,7 @@ package ecommerce.project.controller;
 
 import ecommerce.project.baseresponse.BaseResponse;
 import ecommerce.project.dtorequest.CartItemRequest;
+import ecommerce.project.model.StockCheckResult;
 import ecommerce.project.service.StockRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,7 @@ public class CartController {
 
     @PostMapping("/check-stock")
     public ResponseEntity<?> checkStock(@RequestBody CartItemRequest request) {
-        int stock = stockRedisService.hasEnoughStock(request.getProductId(), request.getQuantity());
-        if (stock < 0) {
-            return ResponseEntity.ok(new BaseResponse(200,"Không đủ hàng.",stock));
-        }
-        return ResponseEntity.ok(new BaseResponse(200,"Còn hàng.",stock));
+        StockCheckResult mess = stockRedisService.hasEnoughStock(request.getProductId(), request.getQuantity());
+        return ResponseEntity.ok(new BaseResponse(200,"Thông tin kiêm tra đơn hàng thành công",mess));
     }
 }

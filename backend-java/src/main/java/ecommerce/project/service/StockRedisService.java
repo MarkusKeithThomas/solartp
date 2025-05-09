@@ -1,5 +1,7 @@
 package ecommerce.project.service;
 
+import ecommerce.project.model.StockCheckResult;
+
 import java.util.List;
 
 public interface StockRedisService {
@@ -8,6 +10,6 @@ public interface StockRedisService {
     void syncStockRedisToDatabase();
     void preloadStockFromDatabase();
     void deleteStockKey(Long productId);
-    int hasEnoughStock(Long productId, int quantity);
+    StockCheckResult hasEnoughStock(Long productId, int quantity);
     boolean decrementMultiProduct(List<Long> productIds, List<Integer> quantities);
     }

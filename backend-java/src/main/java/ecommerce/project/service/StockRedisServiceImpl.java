@@ -2,19 +2,31 @@ package ecommerce.project.service;
 
 import ecommerce.project.entity.ProductEntity;
 import ecommerce.project.exception.StockException;
+import ecommerce.project.model.ProductStockRedis;
+import ecommerce.project.model.StockCheckResult;
 import ecommerce.project.repository.ProductRepository;
 import ecommerce.project.utils.RedisKeyPrefix;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @Service
 public class StockRedisServiceImpl implements StockRedisService {
+
+    @Value("${value.test}")
+    private String value;
 
     @Qualifier("stockRedisTemplate")
     private final RedisTemplate<String, String> redisTemplate;
@@ -52,23 +64,37 @@ public class StockRedisServiceImpl implements StockRedisService {
     }
 
     @Override
-    public int hasEnoughStock(Long productId, int quantity) {
+    public StockCheckResult hasEnoughStock(Long productId, int quantity) {
         if (productId <= 0 || quantity <= 0) {
             throw new StockException("Kiểm tra lại giá trị productId và quantity ");
         }
         String key = RedisKeyPrefix.STOCK_KEY_PREFIX + productId;
-        String stockStr = redisTemplate.opsForValue().get(key);
-        if (stockStr == null) return 0;
-
         try {
-            int numberStock = Integer.parseInt(stockStr);
-            if(quantity > numberStock){
-                return 0;
-            } else {
-                return -1;
+            String stockStr = redisTemplate.opsForValue().get(key);
+            if(stockStr == null){
+                log.warn("⚠️ Không tìm thấy key trong Redis: {}", key);
+                return productRepository.findById(productId)
+                        .map(p -> {
+                            int stock = p.getStockQuantity();
+                            redisTemplate.opsForValue().set(key,String.valueOf(stock), Duration.ofHours(1));
+                            log.info("📦 Thực hiện lưu key lên redis sau khi tìm ở mysql với số lượng {} va productId {}",stock,productId);
+                            return (stock >= quantity) ? StockCheckResult.ENOUGH : StockCheckResult.NOT_ENOUGH;
+                        })
+                        .orElse(StockCheckResult.NOT_ENOUGH);
             }
-        } catch (NumberFormatException e) {
-            return -1;
+            int stock = Integer.parseInt(stockStr);
+            log.info("📦 Kiểm tra tồn kho productId={}, quantity={}, stockInRedis={}", productId, quantity, stock);
+            return (stock >= quantity) ? StockCheckResult.ENOUGH : StockCheckResult.NOT_ENOUGH;
+
+        } catch (NumberFormatException e){
+            log.error("❗ Stock Redis không hợp lệ: {}", e.getMessage());
+            return StockCheckResult.NOT_ENOUGH;
+        } catch (RedisConnectionFailureException e){
+            log.warn("❌ Redis lỗi, fallback check DB.");
+            return productRepository.findById(productId)
+                    .filter(p -> p.getStockQuantity() >= quantity)
+                    .map(p -> StockCheckResult.ENOUGH)
+                    .orElse(StockCheckResult.NOT_ENOUGH);
         }
     }
 
@@ -119,14 +145,28 @@ public class StockRedisServiceImpl implements StockRedisService {
 
     @Override
     public void preloadStockFromDatabase() {
-        List<ProductEntity> products = productRepository.findAll();
-        for (ProductEntity product : products) {
-            String key = RedisKeyPrefix.STOCK_KEY_PREFIX + product.getId();
-            // ✔️ Cập nhật lại luôn, không cần kiểm tra tồn tại nữa
-            redisTemplate.opsForValue().set(key, String.valueOf(product.getStockQuantity()));
-        }
-        log.info("✅ Stock đã preload vào Redis: {} sản phẩm preloadStockFromDatabase", products.size());
+        List<ProductStockRedis> productList = productRepository.findAllProductStockOnly();
+        long start = System.currentTimeMillis();
+        log.info("📦 Kiểm tra gia tri straging preloadStockFromDatabase" + value);
+
+
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            for (ProductStockRedis product : productList) {
+                String key = RedisKeyPrefix.STOCK_KEY_PREFIX + product.getId();
+                String value = String.valueOf(product.getStockQuantity());
+                connection.stringCommands().set(
+                        key.getBytes(StandardCharsets.UTF_8),
+                        value.getBytes(StandardCharsets.UTF_8)
+                );
+            }
+
+            return null;
+        });
+
+        long duration = System.currentTimeMillis() - start;
+        log.info("🚀 Preload {} sản phẩm lên Redis mất {} ms (pipeline)", productList.size(), duration);
     }
+
     @Override
     public void syncStockRedisToDatabase() {
         List<ProductEntity> allProducts = productRepository.findAll();
