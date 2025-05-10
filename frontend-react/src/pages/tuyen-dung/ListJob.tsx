@@ -8,6 +8,8 @@ export function ListJob() {
     const [jobList, setJobList] = useState<JobList[]>();
     const [loading, setLoading] = useState(false);
 
+
+
     useEffect(() => {
         const fetchJobs = async () => {
             try {

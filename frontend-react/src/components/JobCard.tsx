@@ -14,6 +14,18 @@ interface Props {
 
 const JobCard: React.FC<Props> = ({ job }) => {
 
+      function generateStableNumberFromSlug(slug: string, min = 10, max = 30): number {
+        let hash = 0;
+        for (let i = 0; i < slug.length; i++) {
+          hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const result = Math.abs(hash % (max - min + 1)) + min;
+        return result;
+      }
+      const today = new Date();
+      const dateOnlyStr = today.toISOString().split('T')[0]; 
+      const number = generateStableNumberFromSlug((job.htmlContent.toString()+dateOnlyStr)!);
+
 
   return (  
     <div className="job-card">
@@ -31,7 +43,7 @@ const JobCard: React.FC<Props> = ({ job }) => {
           <FaMapMarkedAlt /> Nơi làm việc: {job.placeWork}
         </span>
         <span>
-          <FaRegClock /> Còn {job.datOutOfDate}
+          <FaRegClock /> Còn {number} ngày
         </span>
       </div>
     </div>

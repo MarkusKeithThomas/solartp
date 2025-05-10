@@ -35,7 +35,9 @@ export function PostDetail() {
     const result = Math.abs(hash % (max - min + 1)) + min;
     return result;
   }
-  const number = generateStableNumberFromSlug(slug!);
+  const today = new Date();
+  const dateOnlyStr = today.toISOString().split('T')[0]; 
+  const number = generateStableNumberFromSlug((slug!+dateOnlyStr));
 
 
   const WEB_BASE_URL = import.meta.env.VITE_SOLARTP;
