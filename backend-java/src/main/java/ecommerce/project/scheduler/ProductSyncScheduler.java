@@ -17,7 +17,7 @@ public class ProductSyncScheduler {
 
     @Scheduled(cron = "0 */5 * * * *") // chạy mỗi 5 phút
     public void syncGuestCarts() {
-        log.info("🔄 [Scheduler] Bắt đầu đồng bộ toàn bộ sản phẩm từ MySQL lên Redis...");
+        log.info("🔄 [Scheduler] Bắt đầu đồng bộ toàn bộ sản phẩm từ MySQL lên Redis... key product_map");
 
         int attempt = 0;
         boolean success = false;

@@ -27,17 +27,20 @@ export function PostDetail() {
   const fifteenDaysAgo = new Date();
   fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
 
-  function generateStableNumberFromSlug(slug: string, min = 5, max = 30): number {
-    let hash = 0;
-    for (let i = 0; i < slug.length; i++) {
-      hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const result = Math.abs(hash % (max - min + 1)) + min;
-    return result;
-  }
-  const today = new Date();
-  const dateOnlyStr = today.toISOString().split('T')[0]; 
-  const number = generateStableNumberFromSlug((slug!+dateOnlyStr));
+  // function generateStableNumberFromSlug(slug: string, min = 5, max = 30): number {
+  //   let hash = 0;
+  //   for (let i = 0; i < slug.length; i++) {
+  //     hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  //   }
+  //   const result = Math.abs(hash % (max - min + 1)) + min;
+  //   return result;
+  // }
+  // const today = new Date();
+  // const dateOnlyStr = today.toISOString().split('T')[0]; 
+  // const number = generateStableNumberFromSlug((slug!+dateOnlyStr));
+
+  //            <strong>Cập nhật gần nhất:</strong> {number} ngày trước | {" "}
+
 
 
   const WEB_BASE_URL = import.meta.env.VITE_SOLARTP;
@@ -161,8 +164,8 @@ export function PostDetail() {
           <h1 className="mt-2 text-center mb-4">{articlePost.title}</h1>
           <p>
             <strong>Ngày đăng:</strong> {formatVietnameseDate(articlePost.dateCreate)} |{" "}
-            <strong>Cập nhật gần nhất:</strong> {number} ngày trước | {" "}
           </p>
+          
 
           <div className="mt-3">
             <h2>{articlePost.header1}</h2>

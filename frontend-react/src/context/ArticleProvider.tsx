@@ -70,7 +70,7 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
 
     try {
       const res = await axios.get(`${API_BASE_URL}/bai-viet/list`, {
-        params: { lastId: lastId, limit: 10 },
+        params: { lastId: lastId, limit: 30 },
       });
       if (res.data.articles?.length > 0) {
         const newArticles: Article[] =

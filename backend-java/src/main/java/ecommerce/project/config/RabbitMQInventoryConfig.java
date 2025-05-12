@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQInventoryConfig {
 
-    public static final String EXCHANGE = "inventory.exchange";
+    public static final String EXCHANGE = "inventory.deduct.exchange";
     public static final String QUEUE = "inventory.queue.deduct";
     public static final String ROUTING_KEY = "inventory.deduct";
 
