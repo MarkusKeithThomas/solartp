@@ -12,6 +12,7 @@ import ecommerce.project.mapper.OrderMapper;
 import ecommerce.project.model.OrderStatus;
 import ecommerce.project.model.PaymentStatus;
 import ecommerce.project.producer.InventoryProducer;
+import ecommerce.project.producer.OrderEventPublisher;
 import ecommerce.project.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -37,37 +39,48 @@ public class OrderServiceImpl implements OrderService {
     private final VoucherRepository voucherRepository;
     private final OrderFactory orderFactory;
     private final StockRedisService stockRedisService;
-    private final InventoryProducer inventoryProducer;
     private final UserRepository userRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
 
     @Override
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
-
-        // Validate đầu vào
+        // 1. Validate
         if (request.getOrderItems() == null || request.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Đơn hàng không có sản phẩm");
         }
 
-        // 1. Lấy danh sách sản phẩm từ productId
+        // 2. Chuẩn bị dữ liệu sản phẩm
         List<Long> productIds = request.getOrderItems().stream()
                 .map(OrderItemRequest::getProductId)
                 .distinct()
                 .toList();
+
         List<Integer> quantities = request.getOrderItems().stream()
                 .map(OrderItemRequest::getQuantity)
                 .toList();
 
+        Map<Long, Integer> productQuantityMap = request.getOrderItems().stream()
+                .collect(Collectors.toMap(OrderItemRequest::getProductId, OrderItemRequest::getQuantity, Integer::sum));
+
         Map<Long, ProductEntity> productMap = productRepository.findAllById(productIds).stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
+
+        boolean success = stockRedisService.decrementMultiProduct(
+                new ArrayList<>(productQuantityMap.keySet()),
+                new ArrayList<>(productQuantityMap.values())
+        );
+
         if (!success) {
-            throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
+            log.warn("❌ Trừ kho thất bại cho request {}", request.getShippingAddress().getPhone());
+            // Có thể gửi về DLQ hoặc update status đơn hàng (manual handling)
+        } else {
+            log.info("✅ Trừ kho thành công cho orderId {}", request.getShippingAddress().getPhone());
         }
 
-        // 2. Tính tổng tiền
+        // 3. Tính tổng tiền
         BigDecimal totalAmount = request.getOrderItems().stream()
                 .map(item -> {
                     ProductEntity product = productMap.get(item.getProductId());
@@ -78,53 +91,31 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 3. Áp dụng voucher nếu có
+        // 4. Xử lý voucher nếu có
         BigDecimal discountAmount = BigDecimal.ZERO;
         VoucherEntity voucher = null;
-        if (request.getVoucherCode() != null && !request.getVoucherCode().isBlank()) {
+        if (StringUtils.hasText(request.getVoucherCode())) {
             VoucherResponse voucherResponse = voucherService.validate(request.getVoucherCode(), totalAmount);
             discountAmount = voucherResponse.getDiscount();
             voucher = voucherRepository.findByCodeIgnoreCase(voucherResponse.getCode()).orElse(null);
-//            assert voucher != null;
-//            voucher.setUsed(voucher.getUsed() - 1);
-            //TODO can thuc hien tru used boi tren redis xong sau do moi dong bo ve mysql
         }
 
-        // 4. Lấy user, cart
-        UserEntity user = null;
-        String email = request.getShippingAddress().getEmail();
-        if ( email != null) {
-            user = userRepository.findByEmail(email).orElse(null);
-        }
+        // 5. Lấy user/cart nếu có
+        UserEntity user = Optional.ofNullable(request.getShippingAddress().getEmail())
+                .flatMap(userRepository::findByEmail)
+                .orElse(null);
 
+        CartEntity cart = Optional.ofNullable(request.getCartId())
+                .flatMap(cartRepository::findById)
+                .orElse(null);
 
-        CartEntity cart = null;
-        if (request.getCartId() != null && !request.getCartId().toString().isBlank()) {
-            cart = cartRepository.findById(request.getCartId()).orElse(null);
-        }
-        // 5. Tạo order bằng factory
-        OrderEntity order = orderFactory.createOrder(
-                request,
-                totalAmount,
-                discountAmount,
-                productMap,
-                user,
-                cart,
-                voucher
-        );
+        // 6. Tạo và lưu order
+        OrderEntity order = orderFactory.createOrder(request, totalAmount, discountAmount, productMap, user, cart, voucher);
+        orderRepository.save(order); // ✅ chỉ lưu DB, chưa trừ kho
 
-        // 6. Lưu DB
-        orderRepository.save(order);
-        inventoryProducer.sendInventoryDeductRequest(
-                new InventoryDeductRequestDTO(
-                        order.getId(),
-                        request.getOrderItems().stream()
-                                .map(i -> new InventoryDeductRequestDTO.ProductQuantity(i.getProductId(), i.getQuantity()))
-                                .collect(Collectors.toList())
-                ));
-//        if (cart != null) {
-//            cartRepository.delete(cart);
-//        }
+        // 7. Đăng sự kiện trừ kho qua RabbitMQ
+        orderEventPublisher.publishOrderCreatedEvent(order.getId(), productQuantityMap);
+
         return OrderMapper.toResponse(order);
     }
 
@@ -191,5 +182,22 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse getOrderByCode(String orderCode) {
         return null;
+    }
+
+    public boolean checkQuantityFromDatabase(Map<Long, Integer> productMap) {
+        // Lấy toàn bộ sản phẩm từ DB theo danh sách productId
+        List<ProductEntity> products = productRepository.findAllById(productMap.keySet());
+
+        // Kiểm tra từng sản phẩm có đủ số lượng không
+        for (ProductEntity product : products) {
+            Long productId = product.getId();
+            int requiredQuantity = productMap.get(productId);
+            if (product.getStockQuantity() < requiredQuantity) {
+                return false; // Thiếu hàng
+            }
+        }
+
+        // Nếu không thiếu cái nào
+        return true;
     }
 }

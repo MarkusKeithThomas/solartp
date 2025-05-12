@@ -23,8 +23,16 @@ public class InventoryServiceImpl implements InventoryService {
             // ✅ CHỈ trừ trong MySQL
             int rows = productRepository.decreaseStock(item.getProductId(), item.getQuantity());
 
-            if (rows == 0) {
-                // ❌ Nếu MySQL lỗi, rollback Redis lại số lượng
+
+            if (rows ==  0) {
+                // ❌ Nếu MySQL lỗi, rollback Redis lại số lượng vì đã bị trừ trong phương thức sau
+                /**
+                 *      boolean success = stockRedisService.decrementMultiProduct(productIds, quantities);
+                 *         if (!success) {
+                 *             throw new StockException("Một số sản phẩm trong kho không đủ hàng.");
+                 *         }
+                 *         trong phần method    OrderResponse createOrder(OrderRequest request); */
+
                 stockRedisService.restoreStock(item.getProductId(), item.getQuantity());
                 log.error("❌ Không trừ được kho MySQL cho sản phẩm {}", item.getProductId());
                 throw new StockException("Stock: Trừ kho thất bại!");
