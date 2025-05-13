@@ -57,9 +57,9 @@ public class OrderServiceImpl implements OrderService {
                 .distinct()
                 .toList();
 
-        List<Integer> quantities = request.getOrderItems().stream()
-                .map(OrderItemRequest::getQuantity)
-                .toList();
+//        List<Integer> quantities = request.getOrderItems().stream()
+//                .map(OrderItemRequest::getQuantity)
+//                .toList();
 
         Map<Long, Integer> productQuantityMap = request.getOrderItems().stream()
                 .collect(Collectors.toMap(OrderItemRequest::getProductId, OrderItemRequest::getQuantity, Integer::sum));
@@ -74,10 +74,15 @@ public class OrderServiceImpl implements OrderService {
         );
 
         if (!success) {
-            log.warn("❌ Trừ kho thất bại cho request {}", request.getShippingAddress().getPhone());
+            log.warn("❌ Trừ kho thất bại cho request {} ở Redis", request.getShippingAddress().getPhone());
             // Có thể gửi về DLQ hoặc update status đơn hàng (manual handling)
+            // Dong bo du lieu mysql len redis
+            stockRedisService.preloadStockFromDatabase();
+            log.info("✅ Hoàn tất đồng bộ stock từ mysql lên redis ở Queue InventoryDeductConsumer thành công vì key có thể bị mất lúc check.");
+
         } else {
             log.info("✅ Trừ kho thành công cho orderId {}", request.getShippingAddress().getPhone());
+
         }
 
         // 3. Tính tổng tiền

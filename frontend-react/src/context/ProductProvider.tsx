@@ -8,6 +8,7 @@ import {
 } from "react";
 import { fetchAllProducts, getPaginatedProducts } from "../api/productApi";
 import { useLocalStorageRedisSync } from "../hook/useLocalStorageSync";
+import { get } from "react-scroll/modules/mixins/scroller";
 
 // ------------------ Kiểu dữ liệu ------------------
 
@@ -79,6 +80,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   // Gọi khi load lần đầu
   useEffect(() => {
     resetProducts();
+    getALlProducts();
   }, []);
 
   const getALlProducts = async () => {

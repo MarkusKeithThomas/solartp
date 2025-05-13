@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InventoryDeductConsumer {
 
-    private final StockRedisService stockRedisService;
-    private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     @RabbitListener(queues = RabbitMQInventoryConfig.QUEUE)
@@ -43,6 +41,7 @@ public class InventoryDeductConsumer {
                 });
 
             }
+
             // TODO: lưu log vào bảng `stock_delta_log`
         } catch (Exception e){
             log.error("❌ Lỗi khi trừ kho từ DB: {}", e.getMessage(), e);
