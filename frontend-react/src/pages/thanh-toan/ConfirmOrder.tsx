@@ -77,7 +77,6 @@ export function ConfirmOrder() {
       <Row className="justify-content-center">
         <Col md={6}>
           <Card className="p-4 shadow">
-            {error && <Alert variant="danger">{error}</Alert>}
 
             <h3 className="mb-4">Thông Tin Giao Hàng</h3>
             {formData && (
@@ -91,6 +90,9 @@ export function ConfirmOrder() {
             )}
 
             <CartCheckout />
+            
+            {error && <Alert variant="danger">{error}</Alert>}
+
 
             <div className="d-flex justify-content-between mt-4">
               <Button variant="secondary" onClick={() => navigate("/thanh-toan")}>

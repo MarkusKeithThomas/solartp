@@ -27,22 +27,6 @@ export function PostDetail() {
   const fifteenDaysAgo = new Date();
   fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
 
-  // function generateStableNumberFromSlug(slug: string, min = 5, max = 30): number {
-  //   let hash = 0;
-  //   for (let i = 0; i < slug.length; i++) {
-  //     hash = slug.charCodeAt(i) + ((hash << 5) - hash);
-  //   }
-  //   const result = Math.abs(hash % (max - min + 1)) + min;
-  //   return result;
-  // }
-  // const today = new Date();
-  // const dateOnlyStr = today.toISOString().split('T')[0]; 
-  // const number = generateStableNumberFromSlug((slug!+dateOnlyStr));
-
-  //            <strong>Cập nhật gần nhất:</strong> {number} ngày trước | {" "}
-
-
-
   const WEB_BASE_URL = import.meta.env.VITE_SOLARTP;
 
   if (loading) {
@@ -108,7 +92,7 @@ export function PostDetail() {
                   headline: articlePost.title,
                   image: [articlePost.image1Url],
                   datePublished: articlePost.dateCreate,
-                  dateModified: articlePost.dateCreate,
+                  dateModified: "",
                   author: {
                     "@type": "Person",
                     name: "Tác giả Solar TP",
