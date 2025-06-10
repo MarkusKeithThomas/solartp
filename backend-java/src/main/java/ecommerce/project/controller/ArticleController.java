@@ -51,6 +51,12 @@ public class ArticleController {
         Map<String, Object> response = articleCacheService.getArticlesFromCache(lastId,limit);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/all-list")
+    public ResponseEntity<?> getAllArticles(@RequestParam(required = false) Long lastId,
+                                         @RequestParam(defaultValue = "10") int limit) {
+        Map<String, Object> response = articleService.getAllArticleNoCache(lastId,limit);
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/slug/{slug}")
     public ResponseEntity<?> getArticleBySlug(@PathVariable String slug) {
