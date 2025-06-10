@@ -8,7 +8,6 @@ import {
 } from "react";
 import { fetchAllProducts, getPaginatedProducts } from "../api/productApi";
 import { useLocalStorageRedisSync } from "../hook/useLocalStorageSync";
-import { get } from "react-scroll/modules/mixins/scroller";
 
 // ------------------ Kiểu dữ liệu ------------------
 

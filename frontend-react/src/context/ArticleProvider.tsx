@@ -30,6 +30,7 @@ export type Article = {
   image2Url: string;
   altImage2: string;
   dateCreate: string;
+  note?:string;
 };
 
 interface ArticleContextType {
@@ -135,7 +136,11 @@ export function ArticleProvider({ children }: { children: ReactNode }) {
 
   return (
     <ArticleContext.Provider
-      value={{ articles, getArticleById, getArticleBySlug, shortArticles }}
+      value={{ 
+        articles, 
+        getArticleById, 
+        getArticleBySlug, 
+        shortArticles }}
     >
       {children}
       <div ref={observerRef} style={{ height: "10px" }}></div>

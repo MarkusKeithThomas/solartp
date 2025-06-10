@@ -75,6 +75,7 @@ public class ArticleServiceImpl implements ArticleService{
         dto.setImage2Url(entity.getImage2Url());
         dto.setAltImage2(entity.getAltImage2());
         dto.setDateCreate(entity.getDateCreate());
+        dto.setNote(entity.getNote());
         return dto;
     }
 }
