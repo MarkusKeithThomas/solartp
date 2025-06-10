@@ -53,6 +53,26 @@ public class ArticleServiceImpl implements ArticleService{
         return mapToDTO(entity);
     }
 
+    @Override
+    public Map<String, Object> getAllArticleNoCache(Long lastId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        log.info("❗ DB gọi thật sự - lastId={}", lastId);
+
+        List<ArticleEntity> articles;
+        if (lastId == 0 || lastId == null) {
+            articles = articleRepository.findAllByOrderByIdDesc(pageable);
+        } else{
+            articles = articleRepository.findByIdLessThanOrderByIdDesc(lastId,pageable);
+        }
+        // Lấy ID đầu tiên của danh sách để làm lastId cho lần load tiếp theo
+        Long newLastId = articles.isEmpty() ? null : (long) articles.get(articles.size() - 1).getId();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("articles", articles);
+        response.put("lastId", newLastId);
+        return response;
+    }
+
     private ArticleResponseDTO mapToDTO(ArticleEntity entity) {
         ArticleResponseDTO dto = new ArticleResponseDTO();
         dto.setId((long) entity.getId());
