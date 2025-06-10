@@ -69,7 +69,7 @@ export function PostDetail() {
             <title>{articlePost.title} | Solar TP</title>
             <meta
               name="description"
-              content={`${articlePost.content11}. Xem ngay để khám phá!`}
+              content={`${articlePost.note}. Xem ngay để khám phá!`}
             />
             <link rel="canonical" href={`${WEB_BASE_URL}/bai-viet/${slug}`} />
 
@@ -92,7 +92,7 @@ export function PostDetail() {
                   headline: articlePost.title,
                   image: [articlePost.image1Url],
                   datePublished: articlePost.dateCreate,
-                  dateModified: "",
+                  dateModified: articlePost.dateCreate,
                   author: {
                     "@type": "Person",
                     name: "Tác giả Solar TP",

@@ -75,6 +75,8 @@ public class ExcelServiceImpl implements ExcelServices{
                 article.setAltImage1(getCellValue(row.getCell(15)));
                 article.setAltImage2(getCellValue(row.getCell(17)));
                 article.setDateCreate(LocalDate.now().atStartOfDay());
+                article.setNote(getCellValue(row.getCell(18)));
+
 
                 // Gán ảnh tương ứng
                 int imgIndex = articleIndex * 2;
